@@ -1,6 +1,7 @@
 package com.mafazaa.ainaa.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -78,7 +79,7 @@ class AppViewModel(
 
 
 
-    fun submitReport(reportModel: ReportModel, result: (NetworkResult) -> Unit) {
+    fun submitReport(reportModel: ReportModel, result:  (NetworkResult) -> Unit) {
         viewModelScope.launch {
             remoteRepo.submitReportToGoogleForm(reportModel)
                 .collect { submitResult ->

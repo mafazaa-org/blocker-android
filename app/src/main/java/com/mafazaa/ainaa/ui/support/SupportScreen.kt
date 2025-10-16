@@ -81,7 +81,10 @@ fun SupportScreen(
                     onClick = onSupportClick,
                     colors = ButtonDefaults.buttonColors(containerColor = red)
                 ) {
-                    Text("ادعمنا")
+                    Text(
+                        text= "ادعمنا",
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
             }
         }
@@ -113,7 +116,11 @@ fun SupportScreen(
                     onClick = onJoinClick,
                     colors = ButtonDefaults.buttonColors(containerColor = red)
                 ) {
-                    Text("انضمام")
+                    Text(
+                        text="انضمام",
+                        color = MaterialTheme.colorScheme.onBackground
+
+                    )
                 }
             }
         }

@@ -18,11 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.domain.models.UpdateState
 import com.mafazaa.ainaa.ui.common.ReportLink
 import com.mafazaa.ainaa.ui.common.TwoColorText
@@ -47,7 +49,7 @@ fun ProtectionActivatedScreen(
     ) {
         // Title
         Text(
-            text = "مبارك!! تم تفعيل الحماية",
+            text = stringResource(R.string.protection_activated_title),
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             textAlign = TextAlign.Center
@@ -55,7 +57,7 @@ fun ProtectionActivatedScreen(
 
 // Subtitle
         Text(
-            text = "كيف أتأكد ان الحماية تعمل؟",
+            text = stringResource(R.string.how_check_activation_work_text),
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
             color = red,
@@ -81,7 +83,7 @@ fun ProtectionActivatedScreen(
                     .weight(1f)
                     .height(48.dp)
             ) {
-                Text(text = "ادعمنا")
+                Text(text = stringResource(R.string.support_us))
             }
 
             Button(

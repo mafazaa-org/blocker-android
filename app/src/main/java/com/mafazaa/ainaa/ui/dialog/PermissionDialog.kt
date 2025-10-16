@@ -10,16 +10,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.mafazaa.ainaa.domain.models.PermissionState
+import com.mafazaa.ainaa.ui.theme.red
 
 @Composable
 fun PermissionDialog(
@@ -62,11 +70,21 @@ fun PermissionDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("إلغاء")
+                        Text(
+                            text = "إلغاء",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
                     }
                     Spacer(modifier = Modifier.width(8.dp))
-                    Button(onClick = onClick) {
-                        Text("موافق")
+                    Button(
+                        onClick = onClick,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = red
+                        )
+                    ) {
+                        Text("موافق",
+                            color = Color.White)
                     }
                 }
             }

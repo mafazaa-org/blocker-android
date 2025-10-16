@@ -3,6 +3,7 @@ package com.mafazaa.ainaa.ui.theme
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -12,10 +13,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 
-private val DarkColorScheme = lightColorScheme(
-    primary = red,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
+private val DarkColorScheme = darkColorScheme(
+    primary = DarkPrimary,
+    secondary = DarkSecondary,
+    background = DarkBackground,
+    surface = DarkSurface,
+    onPrimary = DarkOnPrimary,
+    onSecondary = DarkOnSecondary,
+    onBackground = DarkOnBackground,
+    onSurface = DarkOnSurface,
+    error = DarkError,
+    onError = DarkOnError
 )
 
 private val LightColorScheme = lightColorScheme(

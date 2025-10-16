@@ -1,14 +1,26 @@
 [versions]
 agp = "8.11.1"
+coilCompose = "3.2.0"
+coreSplashscreen = "1.0.1"
+firebaseBom = "34.3.0"
+gson = "2.10.1"
+koinAndroid = "4.1.0"
+koinAndroidxCompose = "4.1.0"
+koinAndroidxWorkmanager = "4.1.0"
 kotlin = "2.2.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+ktorBom = "3.2.2"
+lifecycleCommonJava8 = "2.7.0"
+lifecycleRuntime = "2.7.0"
+lifecycleViewmodel = "2.7.0"
 material = "1.12.0"
 activity = "1.12.0-alpha04"
 constraintlayout = "2.2.1"
+materialVersion = "1.6.0"
 preference = "1.2.1"
 activityCompose = "1.10.1"
 nav3Core = "1.0.0-alpha05"
@@ -17,25 +29,57 @@ kotlinSerialization = "2.1.21"
 kotlinxSerializationCore = "1.8.1"
 composeBom = "2025.06.01"
 material3Android = "1.3.2"
+rhino = "1.7.14"
 runtimeLivedata = "1.8.3"
 lifecycleRuntimeKtx = "2.9.1"
 navigationComposeJvmstubs = "2.9.2"
 navigation3UiAndroid = "1.0.0-alpha05"
+mockk = "1.13.10"
+coroutinesTest = "1.7.3"
+savedstate = "1.2.1"
+workRuntimeKtx = "2.10.3"
 
 
 [libraries]
+androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-compose-runtime = { module = "androidx.compose.runtime:runtime" }
+androidx-compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui" }
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime", version.ref = "lifecycleRuntime" }
+androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "lifecycleCommonJava8" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleViewmodel" }
 androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
+androidx-savedstate = { module = "androidx.savedstate:savedstate", version.ref = "savedstate" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
+koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koinAndroidxWorkmanager" }
+ktor-bom = { module = "io.ktor:ktor-bom", version.ref = "ktorBom" }
+ktor-client-android = { module = "io.ktor:ktor-client-android" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging" }
+ktor-client-serialization = { module = "io.ktor:ktor-client-serialization" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+material-v160 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 nav3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" }
 nav3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
 androidx-lifecycle-viewmodel-nav3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "nav3Lifecycle" }
@@ -47,6 +91,10 @@ androidx-navigation3-ui-android = { group = "androidx.navigation3", name = "navi
 
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 androidx-navigation-compose-jvmstubs = { group = "androidx.navigation", name = "navigation-compose-jvmstubs", version.ref = "navigationComposeJvmstubs" }
+
+rhino = { module = "org.mozilla:rhino", version.ref = "rhino" }
+test-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

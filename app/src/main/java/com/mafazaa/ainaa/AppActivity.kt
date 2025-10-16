@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -25,7 +27,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.net.toUri
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.ViewCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
@@ -73,6 +81,8 @@ import com.mafazaa.ainaa.utils.requestVpnPermission
 import com.mafazaa.ainaa.utils.shareFile
 import com.mafazaa.ainaa.utils.startVpnService
 import com.mafazaa.ainaa.viewmodels.AppViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.java.KoinJavaComponent.inject
 
@@ -100,19 +110,31 @@ class AppActivity : ComponentActivity() {
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ViewCompat.setLayoutDirection(window.decorView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        val splashscreen = installSplashScreen()
+        var keepSplashScreen = true
         super.onCreate(savedInstanceState)
+        splashscreen.setKeepOnScreenCondition { keepSplashScreen }
+        lifecycleScope.launch {
+            delay(3000)
+            keepSplashScreen = false
+        }
         val viewModel: AppViewModel = getViewModel()
         val sharedPrefs: SharedPrefs by inject(SharedPrefs::class.java)
         viewModel.loadInstalledApps(getAllApps())
         MyLog.i(TAG, "Opening app")
         //viewModel.handleUpdateStatus(this)
         refreshPermissionState()
+        enableEdgeToEdge()
+
         setContent {
-            AinaaTheme {
-                MainRoot(
-                    viewModel = viewModel,
-                    sharedPrefs = sharedPrefs,
-                )
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                AinaaTheme {
+                    MainRoot(
+                        viewModel = viewModel,
+                        sharedPrefs = sharedPrefs,
+                    )
+                }
             }
         }
 
@@ -149,7 +171,7 @@ class AppActivity : ComponentActivity() {
                                 NetworkResult.Success -> {
                                     Toast.makeText(
                                         context,
-                                        "تم إرسال التقرير بنجاح",
+                                        context.getString(R.string.report_sent_message),
                                         Toast.LENGTH_LONG
                                     ).show()
                                 }
@@ -249,10 +271,15 @@ class AppActivity : ComponentActivity() {
             null -> {}
         }
 
+        // Current Screen
+        val currentScreen = backStack.lastOrNull()
+
         Scaffold(
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
             topBar = {
                 TopBar(
+                    onBack = { backStack.removeLastOrNull() },
+                    currentScreen = currentScreen,
                     supportUs = { backStack.add(Screen.Support) },
                     home = {
                         if (MyVpnService.isRunning) {
@@ -272,7 +299,8 @@ class AppActivity : ComponentActivity() {
                     }
                 }
             },
-            modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surface)
                 .windowInsetsPadding(WindowInsets.systemBars)
         ) { innerPadding ->
             NavDisplay(

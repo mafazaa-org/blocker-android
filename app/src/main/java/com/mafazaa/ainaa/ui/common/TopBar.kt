@@ -6,23 +6,33 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mafazaa.ainaa.R
+import com.mafazaa.ainaa.navigation.Screen
 import com.mafazaa.ainaa.ui.theme.red
 
 @Composable
 fun TopBar(
     supportUs: () -> Unit,
     home: () -> Unit,
+    currentScreen: Screen? = null,
+    onBack: (() -> Unit)? = null
 ) {
     Box(
         modifier = Modifier
@@ -46,11 +56,16 @@ fun TopBar(
                 .clickable { home() }
         )
         Text(
-            text = "ادعمنا",
+            text = if(currentScreen == Screen.Support)
+                    stringResource(R.string.back_text)
+                else stringResource(R.string.support_us),
             color = red,
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .clickable { supportUs() },
+                .clickable {
+                    if(currentScreen == Screen.Support)
+                        onBack?.invoke()
+                    else supportUs() },
             style = LocalTextStyle.current.copy(textDecoration = TextDecoration.Underline),
             lineHeight = 20.sp
         )

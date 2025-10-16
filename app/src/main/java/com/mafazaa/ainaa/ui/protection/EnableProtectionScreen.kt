@@ -84,7 +84,7 @@ fun ProtectYourDevice(enableProtection: () -> Unit, report: () -> Unit) {
                     modifier = Modifier.size(32.dp),
                     painter = painterResource(id = R.drawable.ic_white), // Replace with your lock icon
                     contentDescription = "Lock Icon",
-                    tint = MaterialTheme.colorScheme.surface
+                    tint = Color.White
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
@@ -93,7 +93,9 @@ fun ProtectYourDevice(enableProtection: () -> Unit, report: () -> Unit) {
                     fontWeight = FontWeight.Medium,
                     color = Color.White
                 )
+
             }
+
         }
 
         // Link at the Bottom
