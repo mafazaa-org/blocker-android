@@ -1,13 +1,17 @@
 package com.mafazaa.ainaa
 
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -31,6 +35,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.net.toUri
+import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.ViewCompat.setLayoutDirection
@@ -67,6 +72,7 @@ import com.mafazaa.ainaa.ui.support.SupportScreen
 import com.mafazaa.ainaa.ui.theme.AinaaTheme
 import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.domain.models.PermissionState
+import com.mafazaa.ainaa.helpers.LocaleHelper
 import com.mafazaa.ainaa.utils.getAllApps
 import com.mafazaa.ainaa.utils.hasAccessibilityPermission
 import com.mafazaa.ainaa.utils.hasNotificationPermission
@@ -86,6 +92,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.java.KoinJavaComponent.inject
+import java.util.Locale
 
 // Sealed dialog state to manage all dialogs from a single source of truth
 sealed interface DialogState {
@@ -438,5 +445,8 @@ class AppActivity : ComponentActivity() {
         const val TAG = "MainActivity"
     }
 
-
+    override fun attachBaseContext(newBase: Context) {
+        val context = LocaleHelper.forceArabicLocale(newBase)
+        super.attachBaseContext(context)
+    }
 }
