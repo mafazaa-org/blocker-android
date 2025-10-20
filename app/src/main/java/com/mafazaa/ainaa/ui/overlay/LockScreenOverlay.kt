@@ -16,10 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.domain.models.BlockReason
 import com.mafazaa.ainaa.ui.common.TwoColorText
 
@@ -51,7 +53,7 @@ fun LockScreenOverlay(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "لقد تخطيت الحماية",
+                        text = stringResource(R.string.protection_skipped_text),
                         color = Color.Black,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -61,7 +63,7 @@ fun LockScreenOverlay(
                     when (reason) {
                         is BlockReason.TryingToDisable -> {
                             Text(
-                                text = "لقد حاولت تعطيل الحماية، وهذا غير مسموح به.",
+                                text = stringResource(R.string.protection_skipped_message),
                                 color = MaterialTheme.colorScheme.primary,
                                 fontSize = 16.sp,
                                 textAlign = TextAlign.Center,
@@ -74,7 +76,7 @@ fun LockScreenOverlay(
 
                         is BlockReason.UsingBlockedApp -> {
                             Text(
-                                text = "لقد حاولت استخدام تطبيق محظور. ",
+                                text = stringResource(R.string.try_use_blocked_app_text),
                                 color = MaterialTheme.colorScheme.primary,
                                 fontSize = 16.sp,
                                 textAlign = TextAlign.Center,
@@ -86,14 +88,14 @@ fun LockScreenOverlay(
                         }
                     }
                     Text(
-                        text = "إذا كنت تعتقد أن هذا خطأ، شارك ملف السجل معنا وتواصل معنا",
+                        text = stringResource(R.string.share_logs_message),
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
                     TwoColorText(
-                        red = "مشاركة ملف السجل",
+                        red = stringResource(R.string.share_logs_text),
                         black = ""
                     ) { onShareLog() }
                     Button(
@@ -101,7 +103,7 @@ fun LockScreenOverlay(
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     ) {
                         Text(
-                            text = "إغلاق",
+                            text =stringResource(R.string.close_text),
                             color = Color.White
                         )
                     }

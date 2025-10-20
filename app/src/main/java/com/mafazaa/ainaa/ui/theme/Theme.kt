@@ -9,21 +9,34 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 
 private val DarkColorScheme = darkColorScheme(
-    primary = DarkPrimary,
-    secondary = DarkSecondary,
-    background = DarkBackground,
-    surface = DarkSurface,
-    onPrimary = DarkOnPrimary,
-    onSecondary = DarkOnSecondary,
-    onBackground = DarkOnBackground,
-    onSurface = DarkOnSurface,
-    error = DarkError,
-    onError = DarkOnError
+    primary = DarkPrimary, // Red
+    onPrimary = Color.White, // White text on Red buttons
+
+    secondary = lightGray, // Neutral gray for secondary elements
+    onSecondary = Color.Black,
+
+    tertiary = gray, // Another neutral gray
+    onTertiary = Color.White,
+
+    background = DarkBackground, // Pure Black
+    onBackground = DarkOnBackground, // White text on Black background
+
+    surface = DarkSurface, // Very dark gray for surfaces like cards
+    onSurface = DarkOnSurface, // White text on surfaces
+
+    surfaceVariant = gray,
+    onSurfaceVariant = Color.White,
+
+    error = DarkError, // A specific, softer red for errors
+    onError = Color.Black, // Black text on the error color for good contrast
+
+    outline = gray
 )
 
 private val LightColorScheme = lightColorScheme(

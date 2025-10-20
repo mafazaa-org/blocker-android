@@ -33,15 +33,16 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
+import androidx.core.view.ViewCompat.setLayoutDirection
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
-import com.mafazaa.ainaa.utils.Constants.contactSupportUrl
-import com.mafazaa.ainaa.utils.Constants.joinUrl
-import com.mafazaa.ainaa.utils.Constants.safeSearchUrl
-import com.mafazaa.ainaa.utils.Constants.supportUrl
+import com.mafazaa.ainaa.utils.Constants.SUPPORT_CONTACT_URL
+import com.mafazaa.ainaa.utils.Constants.JOIN_URL
+import com.mafazaa.ainaa.utils.Constants.SAFE_SEARCH_URL
+import com.mafazaa.ainaa.utils.Constants.SUPPORT_URL
 import com.mafazaa.ainaa.data.local.SharedPrefs
 import com.mafazaa.ainaa.data.models.NetworkResult
 import com.mafazaa.ainaa.domain.models.DnsProtectionLevel
@@ -110,7 +111,7 @@ class AppActivity : ComponentActivity() {
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ViewCompat.setLayoutDirection(window.decorView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        setLayoutDirection(window.decorView, ViewCompat.LAYOUT_DIRECTION_RTL)
         val splashscreen = installSplashScreen()
         var keepSplashScreen = true
         super.onCreate(savedInstanceState)
@@ -194,11 +195,8 @@ class AppActivity : ComponentActivity() {
 
             is DialogState.FirstTime -> {
                 OkDialog(
-                    title = "هذا إصدار تجريبي",
-                    message = """
-يرجى ملاحظة أن هذا التطبيق في مرحلة التجربة وقد يحتوي على بعض المشاكل.
-برجاء إبلاغنا عن أي مشكلة تحدث معك، و انتظار الاصدارات القادمة المحسنة بإذن الله.
-""".trimIndent(),
+                    title = stringResource(R.string.test_version_text),
+                    message = stringResource(R.string.test_version_message).trimIndent(),
                     onDismiss = {
                         dialogState = null
                         MyApp.isFirstTime = false
@@ -240,8 +238,8 @@ class AppActivity : ComponentActivity() {
             is DialogState.HowItWorks -> {
                 HowItWorksDialog(
                     onDismiss = { dialogState = null },
-                    onContactClicked = { context.openUrl(contactSupportUrl) },
-                    onSafeSearchClicked = { context.openUrl(safeSearchUrl) },
+                    onContactClicked = { context.openUrl(SUPPORT_CONTACT_URL) },
+                    onSafeSearchClicked = { context.openUrl(SAFE_SEARCH_URL) },
                     image = "file:///android_asset/howToKnow.jpg".toUri()
                 )
             }
@@ -253,7 +251,7 @@ class AppActivity : ComponentActivity() {
 
                         Toast.makeText(
                             context,
-                            "تم تفعيل الحماية بنجاح",
+                            context.getString(R.string.protection_activated_text),
                             Toast.LENGTH_LONG
                         ).show()
                         viewModel.saveLevel(d.level)
@@ -342,8 +340,8 @@ class AppActivity : ComponentActivity() {
 
                         Screen.Support -> NavEntry(key) {
                             SupportScreen(
-                                onSupportClick = { openUrl(supportUrl) },
-                                onJoinClick = { openUrl(joinUrl) },
+                                onSupportClick = { openUrl(SUPPORT_URL) },
+                                onJoinClick = { openUrl(JOIN_URL) },
                                 onShareLogFile = { this@AppActivity.shareFile(viewModel.getLogFile()) },
                                 onStopBlocking = { startAccessibilityService(MyAccessibilityService.ACTION_STOP) },
                                 onOpenScreenShotWindow = {

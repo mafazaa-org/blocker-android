@@ -79,7 +79,7 @@ class AppViewModel(
 
 
 
-    fun submitReport(reportModel: ReportModel, result:  (NetworkResult) -> Unit) {
+    fun submitReport(reportModel: ReportModel, result: (NetworkResult) -> Unit) {
         viewModelScope.launch {
             remoteRepo.submitReportToGoogleForm(reportModel)
                 .collect { submitResult ->

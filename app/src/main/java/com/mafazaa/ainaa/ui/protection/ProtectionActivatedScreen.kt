@@ -97,17 +97,32 @@ fun ProtectionActivatedScreen(
                     .weight(1f)
                     .height(48.dp)
             ) {
-                Text(text = "حجب تطبيق معين")
+                Text(text = stringResource(R.string.block_app_text))
             }
         }
         ReportLink(onReportClick = onReportClick)
         Spacer(modifier = Modifier.height(16.dp))
         val (black, red) = when (updateState) {
-            UpdateState.NoUpdate -> Pair("لا يوجد تحديث متاح", "اضغط للتحقق")
-            UpdateState.Checking -> Pair("جاري التحقق من وجود تحديثات", "")
-            is UpdateState.Downloading -> Pair("جاري تحميل التحديث... الرجاء الانتظار", "")
-            is UpdateState.Failed -> Pair("فشل تحميل التحديث", "حاول مرة أخرى")
-            UpdateState.Downloaded -> Pair("تم تحميل التحديث", "تثبيت")
+            UpdateState.NoUpdate -> Pair(
+                stringResource(R.string.no_update_found_text),
+                stringResource(R.string.click_to_check_text)
+            )
+            UpdateState.Checking -> Pair(
+                stringResource(R.string.check_update_text),
+                stringResource(R.string.empty_string)
+            )
+            is UpdateState.Downloading -> Pair(
+                stringResource(R.string.downloading_update_text),
+                stringResource(R.string.empty_string)
+            )
+            is UpdateState.Failed -> Pair(
+                stringResource(R.string.update_failed_text),
+                stringResource(R.string.try_again)
+            )
+            UpdateState.Downloaded -> Pair(
+                stringResource(R.string.update_done),
+                stringResource(R.string.confirmation_text)
+            )
         }
 
         TwoColorText(black = black, red = red, onClick = { onUpdateClick(updateState) })

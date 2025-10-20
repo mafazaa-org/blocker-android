@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,7 +60,7 @@ fun EnableProtectionDialog(
 
                 // Title
                 Text(
-                    text = " هل ترغب في تفعيل الحماية على جهازك؟",
+                    text = stringResource(R.string.enable_protection_text),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -68,7 +69,7 @@ fun EnableProtectionDialog(
 
                 // Description
                 Text(
-                    text = "بمجرد الموافقة، سيتم تفعيل الحماية الفورية لضمان أمان جهازك أثناء التصفح.",
+                    text = stringResource(R.string.confirm_protection_nable_message),
                     fontSize = 14.sp,
                     color = Color.DarkGray,
                     modifier = Modifier
@@ -85,14 +86,14 @@ fun EnableProtectionDialog(
                         modifier = Modifier.padding(end = 8.dp),
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = red)
                     ) {
-                        Text("لاحقاً")
+                        Text(stringResource(R.string.later_text))
                     }
 
                     Button(
                         onClick = onConfirm,
                         colors = ButtonDefaults.buttonColors(containerColor = red)
                     ) {
-                        Text("فعل الحماية", color = Color.White)
+                        Text(stringResource(R.string.enable_protection_text1), color = Color.White)
                     }
                 }
             }

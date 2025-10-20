@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mafazaa.ainaa.R
 
@@ -38,7 +39,7 @@ fun ScreenshotOverlay(
                 .padding(4.dp)
                 .background(Color.Transparent),
             painter = painterResource(id = R.drawable.drag_pan),
-            contentDescription = "Close",
+            contentDescription = stringResource(R.string.close_text),
 
             )
         Icon(
@@ -60,7 +61,7 @@ fun ScreenshotOverlay(
                         })
                 },
             painter = painterResource(id = R.drawable.screenshot),
-            contentDescription = "Screenshot"
+            contentDescription = stringResource(R.string.screenshot_text)
         )
 
 
@@ -74,7 +75,7 @@ fun ScreenshotOverlay(
                     onClose()
                 },
             painter = painterResource(id = R.drawable.baseline_close_24),
-            contentDescription = "Close",
+            contentDescription = stringResource(R.string.close_text),
 
             )
     }

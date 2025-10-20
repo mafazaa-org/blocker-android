@@ -76,7 +76,7 @@ fun ReportProblemDialog(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Close"
+                            contentDescription = stringResource(R.string.close_text)
                         )
                     }
                     Text(
@@ -90,7 +90,7 @@ fun ReportProblemDialog(
 
                 // Name Field
                 Text(
-                    text=stringResource(R.string.name_field_title),
+                    text = stringResource(R.string.name_field_title),
                     fontSize = 14.sp
                 )
                 OutlinedTextField(
@@ -110,15 +110,17 @@ fun ReportProblemDialog(
 
                 // Phone Field
                 Spacer(Modifier.height(12.dp))
-                Text("رقم الهاتف", fontSize = 14.sp)
+                Text(stringResource(R.string.phone_number_text), fontSize = 14.sp)
                 OutlinedTextField(
                     value = phone,
                     onValueChange = { it: String -> phone = it },
-                    placeholder = { Text(
-                        text=stringResource(R.string.phone_number_text),
-                        color = lightGray,
-                        fontSize = 12.sp
-                    ) },
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.phone_number_text),
+                            color = lightGray,
+                            fontSize = 12.sp
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -128,7 +130,7 @@ fun ReportProblemDialog(
                 // Email Field
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    text=stringResource(id= R.string.email_title),
+                    text = stringResource(id = R.string.email_title),
                     fontSize = 14.sp
                 )
                 OutlinedTextField(
@@ -149,7 +151,7 @@ fun ReportProblemDialog(
 
                 // Problem Field
                 Spacer(Modifier.height(12.dp))
-                Text("المشكلة", fontSize = 14.sp)
+                Text(stringResource(R.string.the_issue_text), fontSize = 14.sp)
                 OutlinedTextField(
                     value = problem,
                     onValueChange = { it: String -> problem = it },
@@ -158,7 +160,8 @@ fun ReportProblemDialog(
                             stringResource(R.string.write_here_message),
                             color = lightGray,
                             fontSize = 12.sp
-                        ) },
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(100.dp),
@@ -177,7 +180,7 @@ fun ReportProblemDialog(
                         .padding(top = 16.dp)
 
                 ) {
-                    Text("إرسال", color = Color.White)
+                    Text(stringResource(R.string.send_text), color = Color.White)
                 }
 
                 // Footer Message
