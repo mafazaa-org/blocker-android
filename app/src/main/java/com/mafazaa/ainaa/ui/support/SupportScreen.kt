@@ -44,7 +44,8 @@ fun SupportScreen(
             .fillMaxSize()
             .padding(8.dp)
             .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colorScheme.surface),
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
