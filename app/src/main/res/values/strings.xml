@@ -119,4 +119,12 @@
     <string name="music_label_text">Music</string>
     <string name="movies_label_text">Movies</string>
     <string name="tiktok_label_text">TikTok</string>
+    <string name="disclaimer_text">تنويه</string>
+    <string name="disclaimer_message">Once protection is activated, the following actions will be applied:</string>
+    <string name="uninstall_feature_text">Uninstall Protection Feature</string>
+    <string name="unistall_feature_message">When protection is enabled, a feature is activated that prevents the removal (uninstallation) of the app from the phone without going through specific and strict procedures. This feature is designed to ensure continued protection and to prevent any user from disabling it easily.</string>
+    <string name="classic_unistall_text">It will be impossible to uninstall the app using traditional methods (dragging or direct deletion).</string>
+    <string name="classic_unistall_message">If you wish to uninstall the app in the future, you will need to contact customer support and follow their verification and deactivation procedures.</string>
+    <string name="classic_unistall_message2">Therefore, your agreement to enable protection is considered an explicit consent to activate the uninstall protection feature and to comply with all associated security restrictions.</string>
+    <string name="enable_protection_confirm_text">Do you want to proceed and enable protection now?</string>
 </resources>

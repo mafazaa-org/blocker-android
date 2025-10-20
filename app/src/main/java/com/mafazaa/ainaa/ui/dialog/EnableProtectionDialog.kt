@@ -85,7 +85,7 @@ fun EnableProtectionDialog(
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(
-                        text = "تنويه",
+                        text = stringResource(R.string.disclaimer_text),
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 4.dp)
@@ -103,46 +103,46 @@ fun EnableProtectionDialog(
 
 
                 Text(
-                    text = "بمجرد تفعيل الحماية، سيتم تطبيق الإجراءات التالية:",
+                    text = stringResource(R.string.disclaimer_message),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.DarkGray,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = "خاصية عدم الحذف",
+                    text = stringResource(R.string.uninstall_feature_text),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
                 Text(
-                    text = "عند تفعيل الحماية، يتم تفعيل خاصية تمنع إزالة (حذف) البرنامج من الهاتف دون المرور بإجراءات محددة وصارمة. هذه الخاصية مصممة لضمان استمرارية الحماية ومنع أي مستخدم من تعطيلها بسهولة.",
+                    text = stringResource(R.string.unistall_feature_message),
                     fontSize = 13.sp,
                     color = Color.DarkGray,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = "سيكون من المستحيل إزالة التطبيق بالطرق التقليدية (السحب أو الحذف المباشر).",
+                    text = stringResource(R.string.classic_unistall_text),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = "في حال رغبتك بإزالة التطبيق مستقبلاً، سيتعين عليك التواصل مع خدمة العملاء واتباع إجراءات التحقق والفك الخاصة بهم.",
+                    text = stringResource(R.string.classic_unistall_message),
                     fontSize = 13.sp,
                     color = Color.DarkGray,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
                 Text(
-                    text = "لذلك، فإن موافقتك على تفعيل الحماية تعتبر موافقة صريحة منك على تفعيل خاصية عدم الإزالة والالتزام بجميع قيود الحماية المترتبة عليها.",
+                    text = stringResource(R.string.classic_unistall_message2),
                     fontSize = 13.sp,
                     color = Color.DarkGray,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = "هل ترغب في المتابعة وتفعيل الحماية الآن؟",
+                    text = stringResource(R.string.enable_protection_confirm_text),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                     color = red,
@@ -159,7 +159,7 @@ fun EnableProtectionDialog(
                     modifier = Modifier.padding(end = 8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = red)
                 ) {
-                    Text("لاحقاً")
+                    Text(stringResource(R.string.later_text))
                 }
 
                 Button(
@@ -174,7 +174,7 @@ fun EnableProtectionDialog(
             }}
         }
     }
-}
+
 
 @Preview(showBackground = false, showSystemUi = true)
 @Composable
