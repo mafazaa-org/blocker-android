@@ -24,7 +24,7 @@ object Constants {
             (function() {
               try {
                 var pkg = (screen && screen.pkg) || null;
-                return screen.hasAppName && pkg === "com.google.android.packageinstaller" ;
+                return screen.hasAppName && pkg === "com.google.android.packageinstaller" &&screen.root.children.length==6 ;
               } catch (e) {
                 return false;
               }
