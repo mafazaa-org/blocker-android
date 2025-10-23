@@ -155,7 +155,7 @@ fun Context.getAllApps(): List<AppInfo> {
     val packages = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
 
     for (applicationInfo in packages) {
-        if (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) { // User app
+        if (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0 && applicationInfo.packageName!= this.packageName) {
             val name = packageManager.getApplicationLabel(applicationInfo).toString()
             val icon = packageManager.getApplicationIcon(applicationInfo)
             apps.add(AppInfo(name, icon, applicationInfo.packageName))
