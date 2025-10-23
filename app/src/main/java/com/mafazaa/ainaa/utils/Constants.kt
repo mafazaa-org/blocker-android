@@ -76,6 +76,19 @@ for (h in ls) {
   }
 })();
         """.trimIndent()
+        ), ScriptCode(
+            "background apps dialog xiaomi", """          
+(function() {     
+            try {
+            if (!screen.hasAppName )
+                return false;
+    
+    return  containsText(screen.root, "fgs_manager_app_item_label");
+  } catch (e) {
+    return false;
+  }
+})();
+        """.trimIndent()
         )
     )
 }
