@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,11 +35,10 @@ fun ScreenshotOverlay(
         var isHeld by remember { mutableStateOf(false) }
         Icon(
             modifier = Modifier
-                .padding(4.dp)
-                .background(Color.Transparent),
+                .padding(4.dp),
             painter = painterResource(id = R.drawable.drag_pan),
             contentDescription = stringResource(R.string.close_text),
-
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         Icon(
             modifier = Modifier
@@ -61,7 +59,8 @@ fun ScreenshotOverlay(
                         })
                 },
             painter = painterResource(id = R.drawable.screenshot),
-            contentDescription = stringResource(R.string.screenshot_text)
+            contentDescription = stringResource(R.string.screenshot_text),
+            tint = if (isHeld) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimaryContainer
         )
 
 
@@ -71,12 +70,12 @@ fun ScreenshotOverlay(
                 .background(
                     MaterialTheme.colorScheme.primaryContainer, shape = MaterialTheme.shapes.small
                 )
-                .clickable {
+                .clickable { 
                     onClose()
                 },
             painter = painterResource(id = R.drawable.baseline_close_24),
             contentDescription = stringResource(R.string.close_text),
-
+            tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
     }
 }

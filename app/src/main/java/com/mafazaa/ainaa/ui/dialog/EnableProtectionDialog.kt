@@ -106,7 +106,7 @@ fun EnableProtectionDialog(
                     text = stringResource(R.string.disclaimer_message),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color.DarkGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
@@ -119,7 +119,7 @@ fun EnableProtectionDialog(
                 Text(
                     text = stringResource(R.string.unistall_feature_message),
                     fontSize = 13.sp,
-                    color = Color.DarkGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
@@ -131,14 +131,14 @@ fun EnableProtectionDialog(
                 Text(
                     text = stringResource(R.string.classic_unistall_message),
                     fontSize = 13.sp,
-                    color = Color.DarkGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
                 Text(
                     text = stringResource(R.string.classic_unistall_message2),
                     fontSize = 13.sp,
-                    color = Color.DarkGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
@@ -183,4 +183,3 @@ fun EnableProtectionDialogPreview() {
         EnableProtectionDialog(onDismiss = {}, onConfirm = {})
     }
 }
-

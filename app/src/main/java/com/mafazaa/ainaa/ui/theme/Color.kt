@@ -23,8 +23,8 @@ val black100 = Color(0xFF414141)
 
 // Dark Theme Colors
 val DarkPrimary = Color(0xFFE74C3C) // Red
-val DarkBackground = Color(0xFF000000) // Black
-val DarkOnBackground = Color(0xFFFFFFFF) // White
+val DarkBackground = Color(0xFF121212) // A very dark gray, not pure black
+val DarkOnBackground = Color(0xFFE0E0E0) // An off-white, not pure white
 val DarkSurface = Color(0xFF1C1C1E) // Slightly lighter black for surfaces
-val DarkOnSurface = Color(0xFFFFFFFF) // White
+val DarkOnSurface = Color(0xFFE0E0E0) // An off-white, not pure white
 val DarkError = Color(0xFFCF6679) // A slightly softer red for errors
