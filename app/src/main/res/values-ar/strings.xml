@@ -129,5 +129,6 @@
     <string name="enable_protection_confirm_text">هل ترغب في المتابعة وتفعيل الحماية الآن؟</string>
     <string name="admin_permission_message">    يحتاج التطبيق إلى تفعيل ميزة المسؤول عن الجهاز لحظر التطبيقات بشكل فعال. يرجى تفعيل هذه الميزة للاستفادة الكاملة من وظائف التطبيق"</string>
     <string name="protection_activated_message">\n                       لحماية مفعلة الآن!\n                       يمكنك تعديل التطبيقات المحجوبة من خلال الضغط على \"حظر التطبيقات\" في الشاشة الرئيسية</string>
+    <string name="administrative_permission_text">تفعيل ميزة المسؤول</string>
 
 </resources>

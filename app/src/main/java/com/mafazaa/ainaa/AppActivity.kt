@@ -74,6 +74,7 @@ import com.mafazaa.ainaa.helpers.LocaleHelper
 import com.mafazaa.ainaa.receiver.AppDeviceAdminReceiver
 import com.mafazaa.ainaa.utils.getAllApps
 import com.mafazaa.ainaa.utils.hasAccessibilityPermission
+import com.mafazaa.ainaa.utils.hasAdminPermission
 import com.mafazaa.ainaa.utils.hasNotificationPermission
 import com.mafazaa.ainaa.utils.hasOverlayPermission
 import com.mafazaa.ainaa.utils.hasUsageStatsPermission
@@ -133,7 +134,7 @@ class AppActivity : ComponentActivity() {
         // Handle result if needed
     }
     private val permissionChain = listOf(
-        PermissionState.UsageStats,
+        PermissionState.Administrative,
         PermissionState.Overlay,
         PermissionState.Accessibility,
         PermissionState.Vpn,
@@ -434,12 +435,13 @@ class AppActivity : ComponentActivity() {
         // Check permissions in the defined order
         return permissionChain.firstOrNull { permission ->
             !when (permission) {
-                PermissionState.UsageStats -> hasUsageStatsPermission()
+                PermissionState.Administrative -> hasAdminPermission(adminReceiver)
                 PermissionState.Overlay -> hasOverlayPermission()
                 PermissionState.Accessibility -> hasAccessibilityPermission()
                 PermissionState.Vpn -> hasVpnPermission()
                 PermissionState.Notification ->  hasNotificationPermission()
                 PermissionState.Granted -> true
+                else -> true
             }
         }
     }
@@ -494,8 +496,8 @@ class AppActivity : ComponentActivity() {
 
             PermissionState.Vpn -> requestVpnPermission()
             PermissionState.Overlay -> requestDrawOverlaysPermission()
-            PermissionState.UsageStats -> requestUsageStatsPermission()
             PermissionState.Accessibility -> requestAccessibilityPermission()
+            PermissionState.Administrative -> requestAdminPermission(adminReceiver, requestAdmin)
             PermissionState.Granted -> {}
         }
     }
