@@ -156,7 +156,7 @@ class AppActivity : ComponentActivity() {
         val snackbarHostState = remember { SnackbarHostState() }
         val backStack = remember {
             mutableStateListOf(
-                if (!MyAccessibilityService.isRunning) Screen.EnableProtection
+                if (!MyAccessibilityService.isRunning||! MyVpnService.isRunning) Screen.EnableProtection
                 else Screen.ProtectionActivated
             )
         }

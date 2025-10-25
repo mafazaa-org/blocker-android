@@ -13,28 +13,35 @@ import androidx.savedstate.SavedStateRegistryOwner
  * it's for using compose in overlay window
  */
 class MyLifecycleOwner : LifecycleOwner, SavedStateRegistryOwner {
-    private val savedStateController = SavedStateRegistryController.create(this)
-    private val lifecycleRegistry = LifecycleRegistry(this)
 
-    override val lifecycle: Lifecycle
-        get() = lifecycleRegistry
 
-    fun handleLifecycleEvent(event: Event) {
-        lifecycleRegistry.handleLifecycleEvent(event)
-    }
+private val savedStateController = SavedStateRegistryController.create(this)
+private val lifecycleRegistry = LifecycleRegistry(this)
 
-    override val savedStateRegistry: SavedStateRegistry
-        get() = savedStateController.savedStateRegistry
+init {
+    // Attach and restore during initialization to avoid:
+    // "Restarter must be created only during owner's initialization stage"
+    savedStateController.performAttach()
+    savedStateController.performRestore(null)
+    lifecycleRegistry.currentState = Lifecycle.State.CREATED
+}
 
-    fun onStart() {
-        savedStateController.performAttach()
-        savedStateController.performRestore(null)
-        handleLifecycleEvent(Event.ON_CREATE)
-        handleLifecycleEvent(Event.ON_START)
-        handleLifecycleEvent(Event.ON_RESUME)
-    }
+override val lifecycle: Lifecycle
+    get() = lifecycleRegistry
 
+fun handleLifecycleEvent(event: Event) {
+    lifecycleRegistry.handleLifecycleEvent(event)
+}
+
+override val savedStateRegistry: SavedStateRegistry
+    get() = savedStateController.savedStateRegistry
+
+fun onStart() {
+    handleLifecycleEvent(Event.ON_START)
+    handleLifecycleEvent(Event.ON_RESUME)
+}
     fun onDestroy() {
+
         handleLifecycleEvent(Event.ON_PAUSE)
         handleLifecycleEvent(Event.ON_STOP)
         handleLifecycleEvent(Event.ON_DESTROY)
