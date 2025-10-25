@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -84,16 +85,18 @@ fun ProtectYourDevice(enableProtection: () -> Unit, report: () -> Unit) {
                     modifier = Modifier.size(32.dp),
                     painter = painterResource(id = R.drawable.ic_white), // Replace with your lock icon
                     contentDescription = "Lock Icon",
-                    tint = MaterialTheme.colorScheme.surface
+                    tint = Color.White
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "تفعيل الحماية",
+                    text = stringResource(R.string.enable_protection_label_text),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.White
                 )
+
             }
+
         }
 
         // Link at the Bottom

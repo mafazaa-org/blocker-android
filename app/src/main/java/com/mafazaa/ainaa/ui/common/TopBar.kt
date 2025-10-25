@@ -12,17 +12,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mafazaa.ainaa.R
+import com.mafazaa.ainaa.navigation.Screen
 import com.mafazaa.ainaa.ui.theme.red
 
 @Composable
 fun TopBar(
     supportUs: () -> Unit,
     home: () -> Unit,
+    currentScreen: Screen? = null,
+    onBack: (() -> Unit)? = null
 ) {
     Box(
         modifier = Modifier
@@ -46,11 +50,17 @@ fun TopBar(
                 .clickable { home() }
         )
         Text(
-            text = "ادعمنا",
+            text = if (currentScreen == Screen.Support)
+                stringResource(R.string.back_text)
+            else stringResource(R.string.support_us),
             color = red,
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .clickable { supportUs() },
+                .clickable {
+                    if (currentScreen == Screen.Support)
+                        onBack?.invoke()
+                    else supportUs()
+                },
             style = LocalTextStyle.current.copy(textDecoration = TextDecoration.Underline),
             lineHeight = 20.sp
         )

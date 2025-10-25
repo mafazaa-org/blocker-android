@@ -3,11 +3,11 @@ package com.mafazaa.ainaa.utils
 import com.mafazaa.ainaa.domain.models.ScriptCode
 
 object Constants {
-    const val vpnAddress = "10.0.0.2"
-    const val supportUrl = "https://ainaa.mafazaa.com/support_us"
-    const val joinUrl = "https://www.mafazaa.com/join"
-    const val contactSupportUrl = "https://ainaa.mafazaa.com/support"
-    const val safeSearchUrl = "https://google.com/safesearch"
+    const val VPN_ADDRESS = "10.0.0.2"
+    const val SUPPORT_URL = "https://ainaa.mafazaa.com/support_us"
+    const val JOIN_URL = "https://www.mafazaa.com/join"
+    const val SUPPORT_CONTACT_URL = "https://ainaa.mafazaa.com/support"
+    const val SAFE_SEARCH_URL = "https://google.com/safesearch"
 
     /**
      * See [com.mafazaa.ainaa.data.remote.KtorRepo.getLatestVersion]
@@ -24,7 +24,7 @@ object Constants {
             (function() {
               try {
                 var pkg = (screen && screen.pkg) || null;
-                return screen.hasAppName && pkg === "com.google.android.packageinstaller" ;
+                return screen.hasAppName && pkg === "com.google.android.packageinstaller" &&screen.root.children.length==6 ;
               } catch (e) {
                 return false;
               }
@@ -71,6 +71,19 @@ for (h in ls) {
             && children[2].cls === "android.widget.CheckBox" 
             && children[3].cls === "android.widget.Button"   
             && children[4].cls === "android.widget.Button"   
+  } catch (e) {
+    return false;
+  }
+})();
+        """.trimIndent()
+        ), ScriptCode(
+            "background apps dialog xiaomi", """          
+(function() {     
+            try {
+            if (!screen.hasAppName )
+                return false;
+    
+    return  containsText(screen.root, "fgs_manager_app_item_label");
   } catch (e) {
     return false;
   }
