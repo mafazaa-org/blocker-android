@@ -6,5 +6,7 @@ enum class PermissionState {
     Overlay,
     Vpn,
     Accessibility,
+
+    //Administrative,
     Granted,
 }

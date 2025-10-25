@@ -108,6 +108,12 @@ sealed interface DialogState {
 
 
 class AppActivity : ComponentActivity() {
+    var dialogState by mutableStateOf<DialogState?>(if (MyApp.isFirstTime) DialogState.FirstTime else null)
+
+    val backStack = mutableStateListOf(
+            if (!MyAccessibilityService.isRunning) Screen.EnableProtection
+            else Screen.ProtectionActivated
+    )
     private var vpnPermission by mutableStateOf(false)
     private var overlayPermission by mutableStateOf(false)
     private var usageStatsPermission by mutableStateOf(false)
@@ -126,6 +132,13 @@ class AppActivity : ComponentActivity() {
     {
         // Handle result if needed
     }
+    private val permissionChain = listOf(
+        PermissionState.UsageStats,
+        PermissionState.Overlay,
+        PermissionState.Accessibility,
+        PermissionState.Vpn,
+        PermissionState.Notification,
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setLayoutDirection(window.decorView, ViewCompat.LAYOUT_DIRECTION_RTL)
@@ -161,23 +174,15 @@ class AppActivity : ComponentActivity() {
 
     @Composable
     private fun MainRoot(
+        context: Context = LocalContext.current,
         viewModel: AppViewModel,
         sharedPrefs: SharedPrefs,
     ) {
         val snackbarHostState = remember { SnackbarHostState() }
-        val backStack = remember {
-            mutableStateListOf(
-                if (!MyAccessibilityService.isRunning) Screen.EnableProtection
-                else Screen.ProtectionActivated
-            )
-        }
-        val context = LocalContext.current
         val apps = viewModel.apps.collectAsState().value
 
         // Single dialog state drives all dialogs; initialize with FirstTime if needed
-        var dialogState by remember {
-            mutableStateOf<DialogState?>(if (MyApp.isFirstTime) DialogState.FirstTime else null)
-        }
+
 
         // Centralized dialogs rendering
         when (val d = dialogState) {
@@ -265,20 +270,24 @@ class AppActivity : ComponentActivity() {
             is DialogState.EnableProtectionConfirm -> {
                 EnableProtectionDialog(
                     onConfirm = {
-                        // Submit phone & activate
-
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.protection_activated_text),
-                            Toast.LENGTH_LONG
-                        ).show()
+                        dialogState = null // Close the confirmation dialog
                         viewModel.saveLevel(d.level)
-                        startAccessibilityService()
-                        context.startVpnService()
-                        backStack.add(Screen.ProtectionActivated)
-                        backStack.remove(Screen.EnableProtection)
-                        dialogState = null
 
+                        val nextPermission = findNextMissingPermission()
+                        if (nextPermission == null) {
+                            // All permissions are already granted! Activate protection.
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.protection_activated_text),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            startAccessibilityService()
+                            context.startVpnService()
+                            backStack.add(Screen.ProtectionActivated)
+                            backStack.remove(Screen.EnableProtection)
+                        } else {
+                            dialogState = DialogState.Permission(nextPermission)
+                        }
                     },
                     onDismiss = { dialogState = null }
                 )
@@ -420,13 +429,52 @@ class AppActivity : ComponentActivity() {
             accessibilityPermission = hasAccessibilityPermission()
         }
 
+    }
+    private fun findNextMissingPermission(): PermissionState? {
+        // Check permissions in the defined order
+        return permissionChain.firstOrNull { permission ->
+            !when (permission) {
+                PermissionState.UsageStats -> hasUsageStatsPermission()
+                PermissionState.Overlay -> hasOverlayPermission()
+                PermissionState.Accessibility -> hasAccessibilityPermission()
+                PermissionState.Vpn -> hasVpnPermission()
+                PermissionState.Notification ->  hasNotificationPermission()
+                PermissionState.Granted -> true
+            }
+        }
+    }
 
+    private fun checkAndContinuePermissionLoop() {
+        val nextPermission = findNextMissingPermission()
+        if (nextPermission != null) {
+            // If the user is still in the process and another permission is needed, show the next dialog.
+            // We only show it if a permission dialog isn't already showing.
+            if (dialogState == null) {
+                dialogState = DialogState.Permission(nextPermission)
+            }
+        } else {
+            // No more missing permissions!
+            // Check if the service isn't running yet, then activate.
+            if (!MyAccessibilityService.isRunning) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.protection_activated_message)
+                        .trimIndent(),
+                    Toast.LENGTH_SHORT
+                ).show()
+                startAccessibilityService()
+                startVpnService()
+                backStack.add(Screen.ProtectionActivated)
+                backStack.remove(Screen.EnableProtection)
+            }
+        }
     }
 
 
     override fun onResume() {
         super.onResume()
         refreshPermissionState()
+        checkAndContinuePermissionLoop()
     }
 
 
