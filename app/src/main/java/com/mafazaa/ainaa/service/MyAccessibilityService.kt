@@ -31,7 +31,7 @@ class MyAccessibilityService : AccessibilityService() {
     lateinit var overlay: LockOverlayManager
     private val serviceScope = CoroutineScope(Dispatchers.Default + Job())
     lateinit var lockOverlayManager: LockOverlayManager
-    private var blockedApps = emptySet<String>()
+
     private val sharedPrefs: SharedPrefs by inject(SharedPrefs::class.java)
     private val scriptRepo: ScriptRepo by inject(ScriptRepo::class.java)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -68,12 +68,7 @@ class MyAccessibilityService : AccessibilityService() {
         overlay =
             LockOverlayManager(this) // This seems redundant as overlayManager is already initialized.
 
-        if (blockedApps.isEmpty() && isKeyguardSecure()) {
-            blockedApps = sharedPrefs.blockedApps
-            MyLog.d(TAG, "Loaded blocked apps: ")
 
-
-        }
 
     }
 
@@ -144,8 +139,10 @@ class MyAccessibilityService : AccessibilityService() {
 
 
     private fun checkBlockedApp(currentApp: String?): Boolean {
+        if (!this.isKeyguardSecure())
+            return false
         return currentApp != null &&
-                currentApp in blockedApps
+                currentApp in sharedPrefs.blockedApps
     }
 
     private fun block(reason: BlockReason) {

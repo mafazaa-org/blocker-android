@@ -24,7 +24,7 @@ object Constants {
             (function() {
               try {
                 var pkg = (screen && screen.pkg) || null;
-                return screen.hasAppName && pkg === "com.google.android.packageinstaller" ;
+                return screen.hasAppName && pkg === "com.google.android.packageinstaller" &&screen.root.children.length==6 ;
               } catch (e) {
                 return false;
               }
@@ -71,6 +71,19 @@ for (h in ls) {
             && children[2].cls === "android.widget.CheckBox" 
             && children[3].cls === "android.widget.Button"   
             && children[4].cls === "android.widget.Button"   
+  } catch (e) {
+    return false;
+  }
+})();
+        """.trimIndent()
+        ), ScriptCode(
+            "background apps dialog xiaomi", """          
+(function() {     
+            try {
+            if (!screen.hasAppName )
+                return false;
+    
+    return  containsText(screen.root, "fgs_manager_app_item_label");
   } catch (e) {
     return false;
   }

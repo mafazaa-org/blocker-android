@@ -1,5 +1,6 @@
 package com.mafazaa.ainaa.utils
 
+import android.os.Build
 import android.text.format.DateFormat
 import android.util.Log
 import com.mafazaa.ainaa.data.local.FakeFileRepo
@@ -88,7 +89,7 @@ object MyLog {
         val fileName = "$codeName.txt"
         val logFile = fileRepo.getLogFile(fileName)
         fileRepo.wipeLog(fileName)
-        fileRepo.saveToLog((screenAnalysis).toString(), fileName)
+        fileRepo.saveToLog("${Build.MANUFACTURER}\n"+(screenAnalysis).toString(), fileName)
         return logFile
     }
 
