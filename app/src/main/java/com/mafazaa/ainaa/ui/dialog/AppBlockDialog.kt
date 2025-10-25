@@ -164,7 +164,7 @@ fun AppBlockItem(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, fontScale = 1.5f)
 @Composable
 fun PreviewBlockAppDialog() {
     val sampleApps = listOf(
