@@ -3,6 +3,7 @@ package com.mafazaa.ainaa.utils
 import android.os.Build
 import android.text.format.DateFormat
 import android.util.Log
+import com.mafazaa.ainaa.BuildConfig
 import com.mafazaa.ainaa.data.local.FakeFileRepo
 import com.mafazaa.ainaa.domain.FileRepo
 import com.mafazaa.ainaa.domain.models.ScreenAnalysis
@@ -89,7 +90,24 @@ object MyLog {
         val fileName = "$codeName.txt"
         val logFile = fileRepo.getLogFile(fileName)
         fileRepo.wipeLog(fileName)
-        fileRepo.saveToLog("${Build.MANUFACTURER}\n"+(screenAnalysis).toString(), fileName)
+        val header = buildString {
+            append("App version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})\n")
+            append("Device: ${Build.MANUFACTURER} ${Build.MODEL}\n")
+            append(
+                "Time: ${
+                    DateFormat.format(
+                        "yyyy-MM-dd HH:mm:ss",
+                        System.currentTimeMillis()
+                    )
+                }\n\n"
+            )
+        }
+        val content = buildString {
+            append(header)
+            append("Screen analysis:\n")
+            append(screenAnalysis.toString())
+        }
+        fileRepo.saveToLog(content, fileName)
         return logFile
     }
 
