@@ -18,6 +18,7 @@ import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
+import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.service.MyAccessibilityService
 import com.mafazaa.ainaa.service.MyVpnService
 import com.mafazaa.ainaa.domain.models.AppInfo
@@ -147,6 +148,28 @@ fun Context.shareFile(logFile: File) {
     startActivity(Intent.createChooser(shareIntent, "Share log file").apply {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     })
+}
+fun Context.hasAdminPermission(
+    adminReceiver: android.content.ComponentName
+): Boolean {
+    val dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as android.app.admin.DevicePolicyManager
+    return dpm.isAdminActive(adminReceiver)
+}
+
+fun Context.requestAdminPermission(
+    
+    adminReceiver: android.content.ComponentName,
+    requestAdmin: androidx.activity.result.ActivityResultLauncher<Intent>
+) {
+    val dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as android.app.admin.DevicePolicyManager
+    val isAdminActive = dpm.isAdminActive(adminReceiver)
+    if (!isAdminActive) {
+        val intent = Intent(android.app.admin.DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
+        intent.putExtra(android.app.admin.DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiver)
+        intent.putExtra(android.app.admin.DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+            getString(R.string.admin_permission_message))
+        requestAdmin.launch(intent)
+    }
 }
 
 fun Context.getAllApps(): List<AppInfo> {

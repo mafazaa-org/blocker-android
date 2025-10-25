@@ -127,4 +127,5 @@
     <string name="classic_unistall_message">If you wish to uninstall the app in the future, you will need to contact customer support and follow their verification and deactivation procedures.</string>
     <string name="classic_unistall_message2">Therefore, your agreement to enable protection is considered an explicit consent to activate the uninstall protection feature and to comply with all associated security restrictions.</string>
     <string name="enable_protection_confirm_text">Do you want to proceed and enable protection now?</string>
+    <string name="admin_permission_message">Please enable Device Admin to allow app blocking functionality.</string>
 </resources>
