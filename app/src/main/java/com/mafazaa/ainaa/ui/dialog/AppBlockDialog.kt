@@ -27,8 +27,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,14 +39,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.mafazaa.ainaa.R
-import com.mafazaa.ainaa.helpers.toPainter
 import com.mafazaa.ainaa.domain.models.AppInfo
+import com.mafazaa.ainaa.helpers.toPainter
 import com.mafazaa.ainaa.ui.theme.red
 
-/*
- * A dialog that shows a list of apps to block
- * and allows the user to block an app
- */
+
 @Composable
 fun BlockAppDialog(
     onDismiss: () -> Unit,
@@ -72,11 +71,11 @@ fun BlockAppDialog(
                     IconButton(onClick = onDismiss) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Close"
+                            contentDescription = stringResource(R.string.close_text)
                         )
                     }
                     Text(
-                        text = "حجب تطبيق معين",
+                        text = stringResource(R.string.block_app_text),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f),
@@ -89,7 +88,7 @@ fun BlockAppDialog(
                 )
 
                 Text(
-                    text = "بمجرد حجب برنامج، لن تتمكن من التراجع أو إعادة تشغيله لاحقاً",
+                    text = stringResource(R.string.block_app_message),
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp,
                     modifier = Modifier
@@ -143,7 +142,14 @@ fun AppBlockItem(
             modifier = Modifier
                 .height(40.dp)
         ) {
-            Text(text = if (app.isSelected) "محجوب" else "حجب")
+            Text(
+                text = if (app.isSelected)
+                    stringResource(R.string.blocked_text)
+                else
+                    stringResource(R.string.block_text)
+                ,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
         }
         Spacer(modifier = Modifier.width(8.dp))
 
@@ -168,9 +174,26 @@ fun AppBlockItem(
 @Composable
 fun PreviewBlockAppDialog() {
     val sampleApps = listOf(
-        AppInfo("واتساب", null, "com.whatsapp", false),
-        AppInfo("فيسبوك", null, "com.facebook.katana", true),
-        AppInfo("انستغرام", null, "com.instagram.android", false)
+        AppInfo(
+            stringResource(
+                R.string.whatsapp_text
+            ),
+            null,
+            stringResource(R.string.whatsapp_package_text),
+            false
+        ),
+        AppInfo(
+            stringResource(R.string.facebook_text),
+            null,
+            stringResource(R.string.facebook_package_text),
+            true
+        ),
+        AppInfo(
+            stringResource(R.string.instagram_text),
+            null,
+            stringResource(R.string.instagram_package_text),
+            false
+        )
     )
     BlockAppDialog(
         onDismiss = {},

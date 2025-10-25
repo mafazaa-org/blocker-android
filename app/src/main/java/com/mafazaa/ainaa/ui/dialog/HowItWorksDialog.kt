@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.rememberAsyncImagePainter
+import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.ui.theme.lightGray
 import com.mafazaa.ainaa.ui.theme.red
 
@@ -53,7 +55,7 @@ fun HowItWorksDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     Button(onClick = onDismiss) {
-                        Text("حسناً")
+                        Text(stringResource(R.string.okay_text))
                     }
                 }
             }
@@ -66,25 +68,10 @@ fun HowItWorksDialog(
                     .padding(innerPadding),
             ) {
 
-
-                val title = " مبروك تفعيل الحماية!!"
-
-                val introText = """
-        إن وجدت الحماية غير مفعلة، يمكنك التواصل مع أحد ممثلي خدمة العملاء
-        للتأكد من أن الحماية تم تفعيلها عن طريق البحث الأمن الخاص بجوجل،
-    """.trimIndent()
-
-                val failureText = """
-        
-        ماذا أفعل إن فشل تفعيل الحماية؟
-        1. أغلق المتصفح وافتحه مرة أخرى
-        2. أعد تشغيل الهاتف وافتحه مرة أخرى
-    """.trimIndent()
-
-                val outroText = """
-        
-        إن لم تستطع بعد تفعيل الحماية، يمكنك التواصل مع أحد ممثلي خدمة العملاء عن طريق الرابط التالي
-    """.trimIndent()
+                val title = stringResource(R.string.congrats_enable_protection_text)
+                val introText = stringResource(R.string.enable_protection_service_message).trimIndent()
+                val failureText = stringResource(R.string.enable_protection_failed_message).trimIndent()
+                val outroText = stringResource(R.string.enable_protection_report_message).trimIndent()
 
                 Column(
                     modifier = Modifier
@@ -112,7 +99,7 @@ fun HowItWorksDialog(
 
                     // First clickable link
                     Text(
-                        text = "اضغط على الرابط",
+                        text = stringResource(R.string.click_link_text),
                         color = red,
                         textDecoration = TextDecoration.Underline,
                         modifier = Modifier.clickable {
@@ -122,7 +109,7 @@ fun HowItWorksDialog(
                     )
                     Image(
                         painter = rememberAsyncImagePainter(model = image),
-                        contentDescription = "Safe Search Image",
+                        contentDescription = stringResource(R.string.safe_search_image),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
@@ -137,7 +124,7 @@ fun HowItWorksDialog(
 
                     // Second clickable link
                     Text(
-                        text = "اضغط هنا للتواصل مع أحد ممثلي خدمة العملاء",
+                        text = stringResource(R.string.contact_customer_service_text),
                         color = red,
                         textDecoration = TextDecoration.Underline,
                         modifier = Modifier.clickable {

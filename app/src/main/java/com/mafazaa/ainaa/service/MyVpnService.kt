@@ -53,7 +53,7 @@ class MyVpnService : VpnService() {
         )
 
         val builder = Builder().apply {
-            addAddress(Constants.vpnAddress, 32)
+            addAddress(Constants.VPN_ADDRESS, 32)
             addDnsServer(dnsProtectionLevel.primaryDns)
             addDnsServer(dnsProtectionLevel.secondaryDns)
             setSession("SafeDNS")

@@ -27,11 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.domain.models.DnsProtectionLevel
 import com.mafazaa.ainaa.ui.theme.red
 
@@ -47,7 +49,7 @@ fun ProtectionLevelSelector(
     ) {
 
         Text(
-            text = "اختر مستوى الحماية",
+            text = stringResource(R.string.pick_protection_lvl_text),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             modifier = Modifier.padding(bottom = 8.dp),
@@ -56,9 +58,14 @@ fun ProtectionLevelSelector(
 
         // High Protection Card
         ProtectionCard(
-            title = "الحماية العالية",
-            description = "توفر لك حماية شاملة من معظم أنواع المحتوى غير المرغوب فيه، مما يضمن تجربة تصفح أكثر أماناً وراحة مثل:",
-            examples = listOf("كل ما في الحماية المنخفضة", "الموسيقى", "الأفلام", "التيك توك"),
+            title = stringResource(R.string.protection_high_lvl_text),
+            description = stringResource(R.string.protection_high_lvl_message),
+            examples = listOf(
+                stringResource(R.string.all_in_low_lvl_label_text),
+                stringResource(R.string.music_label_text),
+                stringResource(R.string.movies_label_text),
+                stringResource(R.string.tiktok_label_text)
+            ),
             selected = selectedLevel == DnsProtectionLevel.HIGH,
             onClick = { onLevelSelected(DnsProtectionLevel.HIGH) }
         )
@@ -67,15 +74,15 @@ fun ProtectionLevelSelector(
 
         // Low Protection Card
         ProtectionCard(
-            title = "الحماية المنخفضة",
-            description = "تحجب لك فقط الأساسيات التي قد تُزعجك أو تُعدّ غير مناسبة. مع إبقاء معظم المحتوى متاحاً لتصفح أكثر حرية مثل:",
+            title = stringResource(R.string.protection_low_lvl_text),
+            description = stringResource(R.string.protection_low_lvl_message),
             examples = listOf(
-                "الإباحية",
-                "القمار",
-                "الإعلانات",
-                "المزاح",
-                "الأدب غير المناسب",
-                "المواقع العربية الغير لائقة"
+                stringResource(R.string.p_rn_label_text),
+                stringResource(R.string.gamble_label_text),
+                stringResource(R.string.ads_label_text),
+                stringResource(R.string.joke_label_text),
+                stringResource(R.string.inappropriate_behavior_label_text),
+                stringResource(R.string.arabic_nfsw_label_text)
             ),
             selected = selectedLevel == DnsProtectionLevel.LOW,
             onClick = { onLevelSelected(DnsProtectionLevel.LOW) }

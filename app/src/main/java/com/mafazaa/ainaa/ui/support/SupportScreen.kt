@@ -19,12 +19,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mafazaa.ainaa.BuildConfig
+import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.ui.common.TwoColorText
 import com.mafazaa.ainaa.ui.theme.red
 
@@ -42,13 +44,14 @@ fun SupportScreen(
             .fillMaxSize()
             .padding(8.dp)
             .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colorScheme.surface),
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
 
         Text(
-            text = "ادعم مسيرتنا وساهم في تطوير مستقبل أكثر أماناً للإنترنت",
+            text = stringResource(R.string.support_us_label_text),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -66,13 +69,13 @@ fun SupportScreen(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "🎉 الدعم المادي",
+                    text = stringResource(R.string.donation_label_text),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = "مساهمتك المالية تمكننا من تطوير خدماتنا، تحسين الحماية، وتقديم مزايا جديدة للجميع. حتى المساهمة البسيطة تحدث فرقاً كبيراً!",
+                    text = stringResource(R.string.donation_label_message),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(bottom = 16.dp)
@@ -81,7 +84,10 @@ fun SupportScreen(
                     onClick = onSupportClick,
                     colors = ButtonDefaults.buttonColors(containerColor = red)
                 ) {
-                    Text("ادعمنا")
+                    Text(
+                        text= stringResource(R.string.support_us_text),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
             }
         }
@@ -98,13 +104,13 @@ fun SupportScreen(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "👨‍💻 انضم إلى فريق العمل",
+                    text = stringResource(R.string.join_us_text),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = "نبحث دائماً عن أشخاص يشاركونا الشغف لتقديم تجربة أفضل للمستخدمين.",
+                    text = stringResource(R.string.join_us_message),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(bottom = 16.dp)
@@ -113,20 +119,24 @@ fun SupportScreen(
                     onClick = onJoinClick,
                     colors = ButtonDefaults.buttonColors(containerColor = red)
                 ) {
-                    Text("انضمام")
+                    Text(
+                        text= stringResource(R.string.join_text),
+                        color = MaterialTheme.colorScheme.onBackground
+
+                    )
                 }
             }
         }
-        TwoColorText(black = "مشاركة ملف السجل", red = "اضغط هنا") {
+        TwoColorText(black = stringResource(R.string.share_register_folder_text), red = stringResource(R.string.click_here_text)) {
             onShareLogFile()
         }
-        TwoColorText(black = "لمشاركة شاشة غير محجوبة", red = "اضغط هنا") {
+        TwoColorText(black = stringResource(R.string.share_screen_not_blocked_text), red = stringResource(R.string.click_here_text)) {
             onOpenScreenShotWindow()
 
         }
         if (BuildConfig.DEBUG) {
             Spacer(modifier = Modifier.height(16.dp))
-            TwoColorText(black = "إيقاف الحجب مؤقتاً", red = "اضغط هنا") {
+            TwoColorText(black = stringResource(R.string.stop_blocktemp_text), red = stringResource(R.string.click_here_text)) {
                 onStopBlocking()
             }
         }

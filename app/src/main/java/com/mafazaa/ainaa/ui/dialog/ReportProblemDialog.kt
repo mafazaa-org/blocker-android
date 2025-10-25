@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -35,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.data.models.ReportModel
 import com.mafazaa.ainaa.ui.theme.lightGray
 
@@ -47,6 +49,7 @@ fun ReportProblemDialog(
     var phone by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var problem by remember { mutableStateOf("") }
+
     Dialog(onDismissRequest = onClose) {
         Surface(
             shape = RoundedCornerShape(12.dp),
@@ -73,11 +76,11 @@ fun ReportProblemDialog(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Close"
+                            contentDescription = stringResource(R.string.close_text)
                         )
                     }
                     Text(
-                        text = "الإبلاغ عن مشكلة",
+                        text = stringResource(R.string.report_problem_text),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
 
@@ -86,13 +89,16 @@ fun ReportProblemDialog(
                 }
 
                 // Name Field
-                Text("الاسم", fontSize = 14.sp)
+                Text(
+                    text = stringResource(R.string.name_field_title),
+                    fontSize = 14.sp
+                )
                 OutlinedTextField(
                     value = name,
                     onValueChange = { it: String -> name = it },
                     placeholder = {
                         Text(
-                            "برجاء إدخال الاسم",
+                            stringResource(R.string.enter_name_placeholder),
                             color = lightGray,
                             fontSize = 12.sp
                         )
@@ -104,11 +110,17 @@ fun ReportProblemDialog(
 
                 // Phone Field
                 Spacer(Modifier.height(12.dp))
-                Text("رقم الهاتف", fontSize = 14.sp)
+                Text(stringResource(R.string.phone_number_text), fontSize = 14.sp)
                 OutlinedTextField(
                     value = phone,
                     onValueChange = { it: String -> phone = it },
-                    placeholder = { Text("رقم الهاتف", color = lightGray, fontSize = 12.sp) },
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.phone_number_text),
+                            color = lightGray,
+                            fontSize = 12.sp
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -117,13 +129,16 @@ fun ReportProblemDialog(
 
                 // Email Field
                 Spacer(Modifier.height(12.dp))
-                Text("البريد الإلكتروني", fontSize = 14.sp)
+                Text(
+                    text = stringResource(id = R.string.email_title),
+                    fontSize = 14.sp
+                )
                 OutlinedTextField(
                     value = email,
                     onValueChange = { it: String -> email = it },
                     placeholder = {
                         Text(
-                            "برجاء إدخال البريد الإلكتروني",
+                            stringResource(R.string.enter_email_text),
                             color = lightGray,
                             fontSize = 12.sp
                         )
@@ -136,11 +151,17 @@ fun ReportProblemDialog(
 
                 // Problem Field
                 Spacer(Modifier.height(12.dp))
-                Text("المشكلة", fontSize = 14.sp)
+                Text(stringResource(R.string.the_issue_text), fontSize = 14.sp)
                 OutlinedTextField(
                     value = problem,
                     onValueChange = { it: String -> problem = it },
-                    placeholder = { Text("اكتب هنا..", color = lightGray, fontSize = 12.sp) },
+                    placeholder = {
+                        Text(
+                            stringResource(R.string.write_here_message),
+                            color = lightGray,
+                            fontSize = 12.sp
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(100.dp),
@@ -159,12 +180,12 @@ fun ReportProblemDialog(
                         .padding(top = 16.dp)
 
                 ) {
-                    Text("إرسال", color = Color.White)
+                    Text(stringResource(R.string.send_text), color = Color.White)
                 }
 
                 // Footer Message
                 Text(
-                    text = "سنتواصل معك عبر البريد الإلكتروني أو الهاتف في أقرب وقت.",
+                    text = stringResource(R.string.email_phone_contact_message),
                     fontSize = 12.sp,
                     color = lightGray,
                     textAlign = TextAlign.Center,
