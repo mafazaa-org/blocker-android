@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,14 +55,13 @@ fun ConfirmBlockedDialog(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_close_24),
-                        contentDescription = "close",
-
+                        contentDescription = stringResource(R.string.close_text)
                         )
                 }
 
                 // Title
                 Text(
-                    text = "هل انت متأكد من انك تريد حجب ${app.name}",
+                    text = stringResource(R.string.block_alert_message, app.name),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -86,14 +86,14 @@ fun ConfirmBlockedDialog(
                         modifier = Modifier.padding(end = 8.dp),
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = red)
                     ) {
-                        Text("الغاء")
+                        Text(stringResource(R.string.cancel_text))
                     }
 
                     Button(
                         onClick = { onConfirm(app) },
                         colors = ButtonDefaults.buttonColors(containerColor = red)
                     ) {
-                        Text("متأكد", color = Color.White)
+                        Text(stringResource(R.string.confirm_text), color = Color.White)
                     }
                 }
             }

@@ -18,11 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.domain.models.UpdateState
 import com.mafazaa.ainaa.ui.common.ReportLink
 import com.mafazaa.ainaa.ui.common.TwoColorText
@@ -47,7 +49,7 @@ fun ProtectionActivatedScreen(
     ) {
         // Title
         Text(
-            text = "مبارك!! تم تفعيل الحماية",
+            text = stringResource(R.string.protection_activated_title),
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             textAlign = TextAlign.Center
@@ -55,7 +57,7 @@ fun ProtectionActivatedScreen(
 
 // Subtitle
         Text(
-            text = "كيف أتأكد ان الحماية تعمل؟",
+            text = stringResource(R.string.how_check_activation_work_text),
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
             color = red,
@@ -81,7 +83,7 @@ fun ProtectionActivatedScreen(
                     .weight(1f)
                     .height(48.dp)
             ) {
-                Text(text = "ادعمنا")
+                Text(text = stringResource(R.string.support_us))
             }
 
             Button(
@@ -95,17 +97,32 @@ fun ProtectionActivatedScreen(
                     .weight(1f)
                     .height(48.dp)
             ) {
-                Text(text = "حجب تطبيق معين")
+                Text(text = stringResource(R.string.block_app_text))
             }
         }
         ReportLink(onReportClick = onReportClick)
         Spacer(modifier = Modifier.height(16.dp))
         val (black, red) = when (updateState) {
-            UpdateState.NoUpdate -> Pair("لا يوجد تحديث متاح", "اضغط للتحقق")
-            UpdateState.Checking -> Pair("جاري التحقق من وجود تحديثات", "")
-            is UpdateState.Downloading -> Pair("جاري تحميل التحديث... الرجاء الانتظار", "")
-            is UpdateState.Failed -> Pair("فشل تحميل التحديث", "حاول مرة أخرى")
-            UpdateState.Downloaded -> Pair("تم تحميل التحديث", "تثبيت")
+            UpdateState.NoUpdate -> Pair(
+                stringResource(R.string.no_update_found_text),
+                stringResource(R.string.click_to_check_text)
+            )
+            UpdateState.Checking -> Pair(
+                stringResource(R.string.check_update_text),
+                stringResource(R.string.empty_string)
+            )
+            is UpdateState.Downloading -> Pair(
+                stringResource(R.string.downloading_update_text),
+                stringResource(R.string.empty_string)
+            )
+            is UpdateState.Failed -> Pair(
+                stringResource(R.string.update_failed_text),
+                stringResource(R.string.try_again)
+            )
+            UpdateState.Downloaded -> Pair(
+                stringResource(R.string.update_done),
+                stringResource(R.string.confirmation_text)
+            )
         }
 
         TwoColorText(black = black, red = red, onClick = { onUpdateClick(updateState) })

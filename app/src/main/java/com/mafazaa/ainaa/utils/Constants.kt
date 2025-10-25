@@ -3,11 +3,11 @@ package com.mafazaa.ainaa.utils
 import com.mafazaa.ainaa.domain.models.ScriptCode
 
 object Constants {
-    const val vpnAddress = "10.0.0.2"
-    const val supportUrl = "https://ainaa.mafazaa.com/support_us"
-    const val joinUrl = "https://www.mafazaa.com/join"
-    const val contactSupportUrl = "https://ainaa.mafazaa.com/support"
-    const val safeSearchUrl = "https://google.com/safesearch"
+    const val VPN_ADDRESS = "10.0.0.2"
+    const val SUPPORT_URL = "https://ainaa.mafazaa.com/support_us"
+    const val JOIN_URL = "https://www.mafazaa.com/join"
+    const val SUPPORT_CONTACT_URL = "https://ainaa.mafazaa.com/support"
+    const val SAFE_SEARCH_URL = "https://google.com/safesearch"
 
     /**
      * See [com.mafazaa.ainaa.data.remote.KtorRepo.getLatestVersion]

@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,7 +32,7 @@ fun BottomBar(
         modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Android:$androidVersion",
+            text = stringResource(R.string.android, androidVersion),
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(end = 8.dp),
@@ -66,6 +67,10 @@ fun BottomBar(
 @Composable
 fun BottomBarPreview(modifier: Modifier = Modifier) {
     Box(Modifier.fillMaxSize()) {
-        BottomBar(modifier.align(Alignment.BottomCenter), "14", "v0.0.0") {}
+        BottomBar(
+            modifier.align(Alignment.BottomCenter),
+            stringResource(R.string.android_version),
+            stringResource(R.string.app_version_number)
+        ) {}
     }
 }

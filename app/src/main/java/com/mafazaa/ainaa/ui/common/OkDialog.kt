@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.mafazaa.ainaa.R
 
 /**
  * A simple dialog with a title, message, and an "OK" button to dismiss.
@@ -29,7 +30,7 @@ fun OkDialog(
     title: String,
     message: String,
     onDismiss: () -> Unit,
-    okText: String = "موافق",
+    okText: String = stringResource(R.string.ok_text),
 ) {
     Dialog(
         onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -37,7 +38,7 @@ fun OkDialog(
         Surface(
             shape = RoundedCornerShape(16.dp),
             color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.fillMaxWidth(.9f)
+            modifier = modifier.fillMaxWidth(.9f)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
