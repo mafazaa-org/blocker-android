@@ -8,6 +8,12 @@ sealed class BlockReason {
         }
     }
 
+    data class UsingBlockedKeyword(val keyword: String) : BlockReason() {
+        override fun getName(): String {
+            return "كلمة محظورة: $keyword"
+        }
+    }
+
     data class TryingToDisable(
         val codeName: String,
         val screenAnalysis: ScreenAnalysis

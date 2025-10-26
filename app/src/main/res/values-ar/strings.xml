@@ -127,5 +127,17 @@
     <string name="classic_unistall_message">في حال رغبتك بإزالة التطبيق مستقبلاً، سيتعين عليك التواصل مع خدمة العملاء واتباع إجراءات التحقق والفك الخاصة بهم.</string>
     <string name="classic_unistall_message2">لذلك، فإن موافقتك على تفعيل الحماية تعتبر موافقة صريحة منك على تفعيل خاصية عدم الإزالة والالتزام بجميع قيود الحماية المترتبة عليها.</string>
     <string name="enable_protection_confirm_text">هل ترغب في المتابعة وتفعيل الحماية الآن؟</string>
+    <string name="blocked_keywords_text">الكلمات المحظورة</string>
+    <string name="add_keyword_text">إضافة كلمة</string>
+    <string name="manage_keywords_text">إدارة الكلمات المحظورة</string>
+    <string name="enter_keyword_text">أدخل الكلمة المراد حظرها</string>
+    <string name="keyword_added_text">تمت إضافة الكلمة بنجاح</string>
+    <string name="keyword_removed_text">تم حذف الكلمة</string>
+    <string name="no_keywords_text">لا توجد كلمات محظورة بعد</string>
+    <string name="add_keyword_hint">اكتب الكلمة هنا...</string>
+    <string name="keyword_empty_error">لا يمكن أن تكون الكلمة فارغة</string>
+    <string name="blocked_keyword_message">هذا المحتوى يحتوي على كلمة محظورة</string>
+    <string name="delete_keyword_text">حذف</string>
+    <string name="confirm_delete_keyword">هل أنت متأكد من حذف هذه الكلمة؟</string>
 
 </resources>

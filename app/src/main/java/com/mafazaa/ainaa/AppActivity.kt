@@ -64,6 +64,7 @@ import com.mafazaa.ainaa.ui.dialog.BlockAppDialog
 import com.mafazaa.ainaa.ui.dialog.ConfirmBlockedDialog
 import com.mafazaa.ainaa.ui.dialog.EnableProtectionDialog
 import com.mafazaa.ainaa.ui.dialog.HowItWorksDialog
+import com.mafazaa.ainaa.ui.dialog.ManageKeywordsDialog
 import com.mafazaa.ainaa.ui.dialog.PermissionDialog
 import com.mafazaa.ainaa.ui.dialog.ReportProblemDialog
 import com.mafazaa.ainaa.ui.protection.EnableProtectionScreen
@@ -105,6 +106,7 @@ sealed interface DialogState {
     data object HowItWorks : DialogState
     data class EnableProtectionConfirm(val level: DnsProtectionLevel) :
         DialogState
+    data object ManageKeywords : DialogState
 }
 
 
@@ -273,6 +275,30 @@ class AppActivity : ComponentActivity() {
                 )
             }
 
+            is DialogState.ManageKeywords -> {
+                val keywords = viewModel.blockedKeywords.collectAsState().value
+                ManageKeywordsDialog(
+                    keywords = keywords,
+                    onDismiss = { dialogState = null },
+                    onAddKeyword = { keyword ->
+                        viewModel.addBlockedKeyword(keyword)
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.keyword_added_text),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
+                    onRemoveKeyword = { keyword ->
+                        viewModel.removeBlockedKeyword(keyword)
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.keyword_removed_text),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                )
+            }
+
             null -> {}
         }
 
@@ -322,6 +348,7 @@ class AppActivity : ComponentActivity() {
                             ProtectionActivatedScreen(
                                 onSupportClick = { backStack.add(Screen.Support) },
                                 onBlockAppClick = { dialogState = DialogState.BlockApps() },
+                                onManageKeywordsClick = { dialogState = DialogState.ManageKeywords },
                                 onReportClick = { dialogState = DialogState.ReportProblem },
                                 onConfirmProtectionClick = { dialogState = DialogState.HowItWorks },
                                 onUpdateClick = { updateStatus ->

@@ -127,4 +127,16 @@
     <string name="classic_unistall_message">If you wish to uninstall the app in the future, you will need to contact customer support and follow their verification and deactivation procedures.</string>
     <string name="classic_unistall_message2">Therefore, your agreement to enable protection is considered an explicit consent to activate the uninstall protection feature and to comply with all associated security restrictions.</string>
     <string name="enable_protection_confirm_text">Do you want to proceed and enable protection now?</string>
+    <string name="blocked_keywords_text">Blocked Keywords</string>
+    <string name="add_keyword_text">Add Keyword</string>
+    <string name="manage_keywords_text">Manage Blocked Keywords</string>
+    <string name="enter_keyword_text">Enter keyword to block</string>
+    <string name="keyword_added_text">Keyword added successfully</string>
+    <string name="keyword_removed_text">Keyword removed</string>
+    <string name="no_keywords_text">No blocked keywords yet</string>
+    <string name="add_keyword_hint">Type keyword here...</string>
+    <string name="keyword_empty_error">Keyword cannot be empty</string>
+    <string name="blocked_keyword_message">This content contains a blocked keyword</string>
+    <string name="delete_keyword_text">Remove</string>
+    <string name="confirm_delete_keyword">Are you sure you want to remove this keyword?</string>
 </resources>

@@ -66,6 +66,46 @@ object ScreenAnalyser {
         }
 
     /**
+     * Checks if the screen contains any of the blocked keywords.
+     *
+     * @param screenNode The root screen node to search.
+     * @param blockedKeywords Set of keywords to check for.
+     * @return The first blocked keyword found, or null if none found.
+     */
+    fun containsBlockedKeyword(screenNode: ScreenNode, blockedKeywords: Set<String>): String? {
+        if (blockedKeywords.isEmpty()) return null
+        
+        fun searchNode(node: ScreenNode): String? {
+            // Check text field
+            node.text?.let { text ->
+                for (keyword in blockedKeywords) {
+                    if (text.contains(keyword, ignoreCase = true)) {
+                        return keyword
+                    }
+                }
+            }
+            
+            // Check description field
+            node.desc?.let { desc ->
+                for (keyword in blockedKeywords) {
+                    if (desc.contains(keyword, ignoreCase = true)) {
+                        return keyword
+                    }
+                }
+            }
+            
+            // Recursively check children
+            for (child in node.children) {
+                searchNode(child)?.let { return it }
+            }
+            
+            return null
+        }
+        
+        return searchNode(screenNode)
+    }
+
+    /**
      * Determines if the given package name likely belongs to a system settings app.
      *
      * @param pkg The package name to check.

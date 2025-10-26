@@ -37,7 +37,32 @@ class AppViewModel(
     private val _apps = MutableStateFlow<List<AppInfo>>(emptyList())
     val apps: StateFlow<List<AppInfo>> = _apps.asStateFlow()
 
+    private val _blockedKeywords = MutableStateFlow<Set<String>>(emptySet())
+    val blockedKeywords: StateFlow<Set<String>> = _blockedKeywords.asStateFlow()
+
     var updateState = mutableStateOf<UpdateState>(UpdateState.NoUpdate)
+    
+    init {
+        loadBlockedKeywords()
+    }
+    
+    private fun loadBlockedKeywords() {
+        _blockedKeywords.value = sharedPrefs.blockedKeywords
+    }
+    
+    fun addBlockedKeyword(keyword: String) {
+        val trimmedKeyword = keyword.trim()
+        if (trimmedKeyword.isNotEmpty()) {
+            sharedPrefs.blockedKeywords = sharedPrefs.blockedKeywords.add(trimmedKeyword)
+            loadBlockedKeywords()
+        }
+    }
+    
+    fun removeBlockedKeyword(keyword: String) {
+        sharedPrefs.blockedKeywords = sharedPrefs.blockedKeywords.remove(keyword)
+        loadBlockedKeywords()
+    }
+    
     fun loadInstalledApps(appList: List<AppInfo>) {
         val appList = appList.toMutableList()
         val selectedApps = sharedPrefs.blockedApps

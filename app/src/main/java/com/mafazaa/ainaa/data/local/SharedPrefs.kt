@@ -9,6 +9,11 @@ class SharedPrefs(sharedPreferences: SharedPreferences) {
      */
     var blockedApps by sharedPreferences.delegates.stringSet()
 
+    /**
+     * Set of blocked keywords entered by the user.
+     */
+    var blockedKeywords by sharedPreferences.delegates.stringSet()
+
     var dnsProtectionLevel by sharedPreferences.delegates.protectionLevel()
 
     /**
