@@ -34,7 +34,6 @@ import com.mafazaa.ainaa.ui.theme.red
 fun ProtectionActivatedScreen(
     onSupportClick: () -> Unit,
     onBlockAppClick: () -> Unit,
-    onManageKeywordsClick: () -> Unit,
     onReportClick: () -> Unit,
     onConfirmProtectionClick: () -> Unit,
     onUpdateClick: (updateState: UpdateState) -> Unit = { /* Default no-op */ },
@@ -101,22 +100,6 @@ fun ProtectionActivatedScreen(
                 Text(text = stringResource(R.string.block_app_text))
             }
         }
-        
-        // Keyword management button
-        Button(
-            onClick = onManageKeywordsClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = red,
-                contentColor = Color.White
-            ),
-            shape = RoundedCornerShape(12.dp),
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-                .height(48.dp)
-        ) {
-            Text(text = stringResource(R.string.manage_keywords_text))
-        }
-        
         ReportLink(onReportClick = onReportClick)
         Spacer(modifier = Modifier.height(16.dp))
         val (black, red) = when (updateState) {

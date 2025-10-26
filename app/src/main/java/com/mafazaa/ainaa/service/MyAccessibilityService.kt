@@ -105,15 +105,6 @@ class MyAccessibilityService : AccessibilityService() {
                     block(BlockReason.UsingBlockedApp(currentPackage ?: "unknown"))
                     return@launch
                 }
-                
-                // Check for blocked keywords
-                val blockedKeyword = checkBlockedKeywords(analysisResult.root)
-                if (blockedKeyword != null) {
-                    MyLog.i(TAG, "Blocked keyword detected: $blockedKeyword")
-                    block(BlockReason.UsingBlockedKeyword(blockedKeyword))
-                    return@launch
-                }
-                
                 // Evaluate scripts and measure the time taken
                 val (scriptResult, scriptEvalDuration) = measureTimedValue {
                     scriptRepo.evaluate(
@@ -152,12 +143,6 @@ class MyAccessibilityService : AccessibilityService() {
             return false
         return currentApp != null &&
                 currentApp in sharedPrefs.blockedApps
-    }
-
-    private fun checkBlockedKeywords(screenNode: com.mafazaa.ainaa.domain.models.ScreenNode): String? {
-        if (!this.isKeyguardSecure())
-            return null
-        return ScreenAnalyser.containsBlockedKeyword(screenNode, sharedPrefs.blockedKeywords)
     }
 
     private fun block(reason: BlockReason) {
