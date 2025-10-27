@@ -8,6 +8,9 @@ import com.mafazaa.ainaa.data.local.FakeFileRepo
 import com.mafazaa.ainaa.domain.FileRepo
 import com.mafazaa.ainaa.domain.models.ScreenAnalysis
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * Lg is a logging utility object that provides logging to both Logcat and a file.
@@ -90,24 +93,27 @@ object MyLog {
         val fileName = "$codeName.txt"
         val logFile = fileRepo.getLogFile(fileName)
         fileRepo.wipeLog(fileName)
-        val header = buildString {
-            append("App version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})\n")
-            append("Device: ${Build.MANUFACTURER} ${Build.MODEL}\n")
+        val jsonFileName = "$codeName.json"
+        fileRepo.wipeLog(jsonFileName)
+        val jsonPayload = buildString {
+            append("{")
+            append("\"meta\":{")
+            append("\"versionName\":\"${BuildConfig.VERSION_NAME}\",")
+            append("\"versionCode\":${BuildConfig.VERSION_CODE},")
+            append("\"manufacturer\":\"${Build.MANUFACTURER}\",")
+            append("\"model\":\"${Build.MODEL}\"},")
             append(
-                "Time: ${
-                    DateFormat.format(
-                        "yyyy-MM-dd HH:mm:ss",
-                        System.currentTimeMillis()
-                    )
-                }\n\n"
+                "\"time\":\"${
+                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+                        .format(Date(System.currentTimeMillis()))
+                }\""
             )
+            append("},")
+            append("\"screenAnalysis\":")
+            append(screenAnalysis.toJson())
+            append("}")
         }
-        val content = buildString {
-            append(header)
-            append("Screen analysis:\n")
-            append(screenAnalysis.toString())
-        }
-        fileRepo.saveToLog(content, fileName)
+        fileRepo.saveToLog(jsonPayload, jsonFileName)
         return logFile
     }
 
