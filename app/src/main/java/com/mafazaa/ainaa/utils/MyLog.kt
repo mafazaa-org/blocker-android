@@ -93,8 +93,7 @@ object MyLog {
         val fileName = "$codeName.txt"
         val logFile = fileRepo.getLogFile(fileName)
         fileRepo.wipeLog(fileName)
-        val jsonFileName = "$codeName.json"
-        fileRepo.wipeLog(jsonFileName)
+
         val jsonPayload = buildString {
             append("{")
             append("\"meta\":{")
@@ -113,7 +112,7 @@ object MyLog {
             append(screenAnalysis.toJson())
             append("}")
         }
-        fileRepo.saveToLog(jsonPayload, jsonFileName)
+        fileRepo.saveToLog(jsonPayload, fileName)
         return logFile
     }
 
