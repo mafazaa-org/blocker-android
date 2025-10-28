@@ -130,4 +130,6 @@
     <string name="admin_permission_message">Please enable Device Admin to allow app blocking functionality.</string>
     <string name="protection_activated_message">\n                       لحماية مفعلة الآن!\n                       يمكنك تعديل التطبيقات المحجوبة من خلال الضغط على \"حظر التطبيقات\" في الشاشة الرئيسية</string>
     <string name="administrative_permission_text">Device Admin</string>
+    <string name="report_send__faild_message">فشل في أرسال التقرير : %1$c{it.message}</string>
+    <string name="howtoknow_asset">file:///android_asset/howToKnow.jpg</string>
 </resources>

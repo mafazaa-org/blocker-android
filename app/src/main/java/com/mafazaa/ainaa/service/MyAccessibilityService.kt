@@ -3,10 +3,19 @@ package com.mafazaa.ainaa.service
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.os.SystemClock
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import androidx.core.app.NotificationCompat
+import com.mafazaa.ainaa.AppActivity
 import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.utils.MyLog.logUiTree
 import com.mafazaa.ainaa.R
@@ -36,6 +45,13 @@ class MyAccessibilityService : AccessibilityService() {
     private val scriptRepo: ScriptRepo by inject(ScriptRepo::class.java)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
+            ACTION_START -> {
+                if (!isRunning) {
+                    isRunning = true
+                    startForeground(NOTIFICATION_ID, createNotification())
+                    MyLog.i(TAG, "Accessibility Service started and moved to foreground.")
+                }
+            }
             ACTION_STOP -> {
                 stopSelf()
                 isRunning = false
@@ -164,6 +180,8 @@ class MyAccessibilityService : AccessibilityService() {
         const val ACTION_STOP = "STOP_ACCESSIBILITY"
         const val ACTION_START = "START_ACCESSIBILITY"
         const val ACTION_SHARE_CURRENT_SCREEN = "SHARE_CURRENT_SCREEN"
+        private const val NOTIFICATION_ID = 101 // Unique ID for the notification
+        private const val NOTIFICATION_CHANNEL_ID = "AINAA_PROTECTION_CHANNEL"
         var isRunning = false
         const val TAG = "MyAccessibilityService"
     }
@@ -179,5 +197,46 @@ class MyAccessibilityService : AccessibilityService() {
         MyLog.w(TAG, "Service interrupted")
         isRunning = false
 
+    }
+    private fun createNotification(): Notification {
+        // Create a notification channel for Android 8.0 (API 26) and higher
+        val channel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID,
+            "حماية عائلة", // Channel name visible in settings
+            NotificationManager.IMPORTANCE_LOW // Low importance to be less intrusive
+        ).apply {
+            description = "الإشعار المستمر لتفعيل الحماية"
+        }
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+
+        // Create an intent that opens your app when the notification is tapped
+        val pendingIntent = Intent(this, AppActivity::class.java).let { notificationIntent ->
+            PendingIntent.getActivity(this, 0, notificationIntent,
+                PendingIntent.FLAG_IMMUTABLE)
+        }
+
+        // Build the notification
+        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setContentTitle("الحماية مفعلة")
+            .setContentText("تطبيق عائلة يعمل على حمايتك في الخلفية.")
+            .setSmallIcon(R.drawable.ic_red) // **Create a small, simple icon for this**
+            .setContentIntent(pendingIntent)
+            .setOngoing(true) // Makes the notification non-dismissible
+            .build()
+    }
+
+    // When the service is destroyed (e.g., by the system), try to restart it
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        val restartServiceIntent = Intent(applicationContext, this.javaClass)
+        restartServiceIntent.setPackage(packageName)
+        // Use a PendingIntent to allow the system to restart it
+        val restartServicePendingIntent = PendingIntent.getService(
+            applicationContext, 1, restartServiceIntent,
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val alarmService = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePendingIntent)
+        super.onTaskRemoved(rootIntent)
     }
 }

@@ -184,9 +184,6 @@ class AppActivity : ComponentActivity() {
         val snackbarHostState = remember { SnackbarHostState() }
         val apps = viewModel.apps.collectAsState().value
 
-        // Single dialog state drives all dialogs; initialize with FirstTime if needed
-
-
         // Centralized dialogs rendering
         when (val d = dialogState) {
             is DialogState.ReportProblem -> {
@@ -206,7 +203,7 @@ class AppActivity : ComponentActivity() {
                                 is NetworkResult.Error -> {
                                     Toast.makeText(
                                         context,
-                                        "فشل في أرسال التقرير : ${'$'}{it.message}",
+                                        getString(R.string.report_send__faild_message, '$'),
                                         Toast.LENGTH_LONG
                                     ).show()
                                 }
@@ -266,7 +263,7 @@ class AppActivity : ComponentActivity() {
                     onDismiss = { dialogState = null },
                     onContactClicked = { context.openUrl(SUPPORT_CONTACT_URL) },
                     onSafeSearchClicked = { context.openUrl(SAFE_SEARCH_URL) },
-                    image = "file:///android_asset/howToKnow.jpg".toUri()
+                    image = stringResource(R.string.howtoknow_asset).toUri()
                 )
             }
 
@@ -443,7 +440,6 @@ class AppActivity : ComponentActivity() {
                 PermissionState.Vpn -> hasVpnPermission()
                 PermissionState.Notification ->  hasNotificationPermission()
                 PermissionState.Granted -> true
-                else -> true
             }
         }
     }
