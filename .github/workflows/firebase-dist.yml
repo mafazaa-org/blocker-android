@@ -47,6 +47,14 @@ jobs:
       # - name: Build Release AAB
       #   run: ./gradlew bundleRelease
 
+      # Find the APK and set its path as an output
+      - name: Find APK
+        id: find_apk
+        run: |
+          apk_path=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          echo "apk_path=$apk_path" >> $GITHUB_OUTPUT
+          echo "Found APK at: $apk_path"
+
       # 6️⃣ Upload to Firebase App Distribution
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -54,4 +62,4 @@ jobs:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: karamelmannai@gmail.com
-          file: "**/*.apk"
+          file: ${{ steps.find_apk.outputs.apk_path }}
