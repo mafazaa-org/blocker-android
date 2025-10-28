@@ -30,8 +30,7 @@ object Constants {
               }
             })();
         """.trimIndent()
-        ),
-        ScriptCode(
+        ), ScriptCode(
             "Overlay screen xiaomi", """          
 (function() {               
     try {
@@ -89,6 +88,69 @@ for (h in ls) {
   }
 })();
         """.trimIndent()
+        ),
+        // New script: uninstall dialog from com.android.launcher3 with 9 nodes
+        ScriptCode(
+            "uninstall screen realme", """
+(function() {
+  try {
+    if (!screen.root) return false;
+    // exact node count observed for this layout
+    if (screen.nodesCount !== 9) return false;
+    // launcher app package from the provided structure
+    if (screen.app !== "com.android.launcher3") return false;
+    // this dialog includes our app name and is not a settings screen
+    if (!screen.hasAppName) return false;
+    if (screen.isSettingsScreen) return false;
+
+    // Title contains 'Uninstall' and the app name in quotes
+    if (!containsText(screen.root, "Uninstall")) return false;
+
+    // Message text about app data removal
+    if (!containsText(screen.root, "App data, including files and settings")) return false;
+
+    // Ensure both Cancel and Uninstall buttons exist (by text or by android ids)
+    const hasCancel = containsText(screen.root, "Cancel") || !!findById(screen.root, "android:id/button2");
+    const hasUninstall = containsText(screen.root, "Uninstall") || !!findById(screen.root, "android:id/button1");
+    if (!hasCancel || !hasUninstall) return false;
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+})();
+            """.trimIndent()
+        ),
+        // New script: uninstall dialog from com.google.android.packageinstaller with 6 nodes
+        ScriptCode(
+            "uninstall screen samsung", """
+(function() {
+  try {
+    if (!screen.root) return false;
+    // expected node count for this layout
+    if (screen.nodesCount !== 6) return false;
+    if (screen.app !== "com.google.android.packageinstaller") return false;
+    if (!screen.hasAppName) return false;
+    if (screen.isSettingsScreen) return false;
+
+    // message asking to uninstall
+    if (!containsText(screen.root, "Do you want to uninstall this app?")) return false;
+
+    // title may be the app name (Arabic) or an alert title id
+    const hasTitle = containsText(screen.root, "عَيْنًا سَلْسَبِيلًا") || containsText(screen.root, "alertTitle") || !!findById(screen.root, "android:id/alertTitle");
+    if (!hasTitle) return false;
+
+    // Ensure both Cancel and OK (Uninstall) buttons exist
+    const hasCancel = containsText(screen.root, "Cancel") || !!findById(screen.root, "android:id/button2");
+    const hasOk = containsText(screen.root, "OK") || !!findById(screen.root, "android:id/button1");
+    if (!hasCancel || !hasOk) return false;
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+})();
+            """.trimIndent()
         )
     )
 }
