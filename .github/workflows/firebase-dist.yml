@@ -61,5 +61,5 @@ jobs:
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          testers: karamelmannai@gmail.com # Testers group in Firebase App Distribution
+          groups: qa-testers # Specify your tester groups in firebase app distribution console
           file: ${{ steps.find_apk.outputs.apk_path }} # Use the APK path found earlier
