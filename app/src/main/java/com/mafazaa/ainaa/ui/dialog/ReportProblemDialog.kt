@@ -2,9 +2,9 @@ package com.mafazaa.ainaa.ui.dialog
 
 import android.util.Patterns
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,16 +15,13 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,13 +29,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.data.models.ReportModel
+import com.mafazaa.ainaa.ui.common.LabelledTextField
 import com.mafazaa.ainaa.ui.theme.lightGray
 
 
@@ -52,10 +49,17 @@ fun ReportProblemDialog(
     onClose: () -> Unit,
     onSubmit: (ReportModel) -> Unit,
 ) {
-    var name by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var problem by remember { mutableStateOf("") }
+
+    val nameState = remember { mutableStateOf("") }
+    val phoneState = remember { mutableStateOf("") }
+    val emailState = remember { mutableStateOf("") }
+    val problemState = remember { mutableStateOf("") }
+
+    val nameErrorState = remember { mutableStateOf(false) }
+    val phoneErrorState = remember { mutableStateOf(false) }
+    val emailErrorState = remember { mutableStateOf(false) }
+    val problemErrorState = remember { mutableStateOf(false) }
+
 
     Dialog(onDismissRequest = onClose) {
         Surface(
@@ -69,7 +73,8 @@ fun ReportProblemDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surface)
-                    .padding(20.dp)
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 // Header with close button and title
                 Box(
@@ -95,93 +100,82 @@ fun ReportProblemDialog(
                     )
                 }
 
+
                 // Name Field
-                Text(
-                    text = stringResource(R.string.name_field_title),
-                    fontSize = 14.sp
-                )
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { it: String -> name = it },
-                    placeholder = {
-                        Text(
-                            stringResource(R.string.enter_name_placeholder),
-                            color = lightGray,
-                            fontSize = 12.sp
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    textStyle = LocalTextStyle.current.copy(textDirection = TextDirection.Rtl)
+                LabelledTextField(
+                    labelResId = R.string.name_field_label,
+                    placeholderResId = R.string.name_field_placeholder,
+                    valueState = nameState,
+                    errorState = nameErrorState,
                 )
 
                 // Phone Field
-                Spacer(Modifier.height(12.dp))
-                Text(stringResource(R.string.phone_number_text), fontSize = 14.sp)
-                OutlinedTextField(
-                    value = phone,
-                    onValueChange = { it: String -> phone = it },
-                    placeholder = {
-                        Text(
-                            text = stringResource(R.string.phone_number_text),
-                            color = lightGray,
-                            fontSize = 12.sp
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    textStyle = LocalTextStyle.current.copy(textDirection = TextDirection.Rtl)
+                LabelledTextField(
+                    labelResId = R.string.phone_number_field_label,
+                    placeholderResId = R.string.phone_number_field_placeholder,
+                    valueState = phoneState,
+                    errorState = phoneErrorState,
+                    keyboardType = KeyboardType.Phone,
                 )
 
                 // Email Field
-                Spacer(Modifier.height(12.dp))
-                Text(
-                    text = stringResource(id = R.string.email_title),
-                    fontSize = 14.sp
-                )
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { it: String -> email = it },
-                    placeholder = {
-                        Text(
-                            stringResource(R.string.enter_email_text),
-                            color = lightGray,
-                            fontSize = 12.sp
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    textStyle = LocalTextStyle.current.copy(textDirection = TextDirection.Rtl)
+                LabelledTextField(
+                    labelResId = R.string.email_field_label,
+                    placeholderResId = R.string.email_field_placeholder,
+                    valueState = emailState,
+                    errorState = emailErrorState,
+                    keyboardType = KeyboardType.Email,
                 )
 
                 // Problem Field
-                Spacer(Modifier.height(12.dp))
-                Text(stringResource(R.string.the_issue_text), fontSize = 14.sp)
-                OutlinedTextField(
-                    value = problem,
-                    onValueChange = { it: String -> problem = it },
-                    placeholder = {
-                        Text(
-                            stringResource(R.string.write_here_message),
-                            color = lightGray,
-                            fontSize = 12.sp
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp),
-                    textStyle = LocalTextStyle.current.copy(
-                        textDirection = TextDirection.Rtl,
-                        textAlign = TextAlign.Right
-                    ),
-                    maxLines = 5
+                LabelledTextField(
+                    labelResId = R.string.issue_field_label,
+                    placeholderResId = R.string.issue_field_placeholder,
+                    valueState = problemState,
+                    errorState = problemErrorState,
+                    modifier = Modifier.height(100.dp),
+                    keyboardOptions = KeyboardOptions.Default,
+                    maxLines = 5,
                 )
+
+
+                // Local functions to validate fields and update error states
+                val validate = { valueState: MutableState<String>,
+                                 regex: Regex,
+                                 errorState: MutableState<Boolean> ->
+                    errorState.value = valueState.value.trim().matches(regex).not()
+                }
+
+                // Function to check for validation errors in user input
+                val isValidationError: () -> Boolean = {
+                    validate(nameState, nameValidRegex, nameErrorState)
+                    validate(phoneState, phoneValidRegex, phoneErrorState)
+                    validate(emailState, emailValidRegex, emailErrorState)
+                    problemErrorState.value = problemState.value.trim().length < 10
+
+                    booleanArrayOf(
+                        nameErrorState.value,
+                        phoneErrorState.value,
+                        emailErrorState.value,
+                        problemErrorState.value
+                    )
+                        .any { it }
+                }
+
 
                 // Submit Button
                 Button(
-                    onClick = { onSubmit(ReportModel(name, phone, email, problem)) },
+                    onClick = {
+                        if (isValidationError().not())
+                            onSubmit(
+                                ReportModel(
+                                    name = nameState.value,
+                                    phone = phoneState.value,
+                                    email = emailState.value,
+                                    problem = problemState.value,
+                                )
+                            )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp)
