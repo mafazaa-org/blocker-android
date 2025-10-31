@@ -1,5 +1,6 @@
 package com.mafazaa.ainaa.ui.dialog
 
+import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,8 +44,7 @@ import com.mafazaa.ainaa.ui.theme.lightGray
 
 val nameValidRegex = Regex("[\\w\\s]{3,}")
 val phoneValidRegex = Regex("\\d{10,14}")
-val emailValidRegex = Regex("[a-z-._]{2,}@[a-z.-]{2,}\\.[a-z]{2,}")
-val problemValidRegex = Regex("[\\w\\s]{10,}") //TODO: handle multiline
+val emailValidRegex = Regex(Patterns.EMAIL_ADDRESS.pattern())
 
 
 @Composable
