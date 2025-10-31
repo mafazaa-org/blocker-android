@@ -19,11 +19,10 @@
     <string name="modifying_app_settings_or_attempting_to_disable_the_app_is_not_allowed">تعديل إعدادات التطبيق أو محاولة تعطيله غير مسموح</string>
     <string name="report_sent_message">تم إرسال التقرير بنجاح</string>
     <string name="email_phone_contact_message">سنتواصل معك عبر البريد الإلكتروني أو الهاتف في أقرب وقت.</string>
-    <string name="write_here_message">اكتب هنا..</string>
-    <string name="enter_email_text">برجاء إدخال البريد الإلكتروني</string>
+    <string name="write_here_message">برجاء وصف المشكلة بدقة</string>
     <string name="email_title">البريد الإلكتروني</string>
     <string name="phone_number_text">رقم الهاتف</string>
-    <string name="enter_name_placeholder">برجاء إدخال الاسم</string>
+    <string name="enter_name_placeholder">أحمد محمد</string>
     <string name="name_field_title">الاسم</string>
     <string name="report_problem_text">الإبلاغ عن مشكلة</string>
     <string name="back_text">العودة</string>
@@ -69,7 +68,7 @@
     <string name="safe_search_image">Safe Search Image</string>
     <string name="contact_customer_service_text">اضغط هنا للتواصل مع أحد ممثلي خدمة العملاء</string>
     <string name="click_link_text">اضغط على الرابط</string>
-    <string name="the_issue_text">المشكلة</string>
+    <string name="the_issue_text">وصف المشكلة</string>
     <string name="send_text">إرسال</string>
     <string name="protection_skipped_text">لقد تخطيت الحماية</string>
     <string name="protection_skipped_message">لقد حاولت تعطيل الحماية، وهذا غير مسموح به.</string>

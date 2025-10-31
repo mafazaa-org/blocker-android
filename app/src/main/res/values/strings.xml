@@ -19,11 +19,12 @@
     <string name="modifying_app_settings_or_attempting_to_disable_the_app_is_not_allowed">Changing app settings or trying to disable the app is not allowed</string>
     <string name="report_sent_message">Report sent successfully</string>
     <string name="email_phone_contact_message">We’ll contact you by email or phone as soon as possible.</string>
-    <string name="write_here_message">Write here...</string>
-    <string name="enter_email_text">Please enter your email</string>
+    <string name="write_here_message">Please provide clear and concise details about the issue.</string>
+    <string name="enter_email_placeholder" translatable="false">name@example.com</string>
     <string name="email_title">Email</string>
     <string name="phone_number_text">Phone number</string>
-    <string name="enter_name_placeholder">Please enter your name</string>
+    <string name="phone_number_placeholder" translatable="false">01234567890</string>
+    <string name="enter_name_placeholder">Ahmed Mohamed</string>
     <string name="name_field_title">Name</string>
     <string name="report_problem_text">Report a Problem</string>
     <string name="back_text">Back</string>
@@ -68,7 +69,7 @@
     <string name="safe_search_image">Safe Search Image</string>
     <string name="contact_customer_service_text">Tap here to contact customer support</string>
     <string name="click_link_text">Tap the link</string>
-    <string name="the_issue_text">The Issue</string>
+    <string name="the_issue_text">Issue description</string>
     <string name="send_text">Send</string>
     <string name="protection_skipped_text">Protection Skipped</string>
     <string name="protection_skipped_message">You tried to disable protection, which is not allowed.</string>
