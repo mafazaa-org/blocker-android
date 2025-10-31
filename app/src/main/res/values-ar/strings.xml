@@ -123,7 +123,7 @@
     <string name="disclaimer_message">بمجرد تفعيل الحماية، سيتم تطبيق الإجراءات التالية:</string>
     <string name="uninstall_feature_text">خاصية عدم الحذف</string>
     <string name="unistall_feature_message">عند تفعيل الحماية، يتم تفعيل خاصية تمنع إزالة (حذف) البرنامج من الهاتف دون المرور بإجراءات محددة وصارمة. هذه الخاصية مصممة لضمان استمرارية الحماية ومنع أي مستخدم من تعطيلها بسهولة.</string>
-    <string name="classic_unistall_text">سيكون من المستحيل إزالة التطبيق بالطرق التقليدية (السحب أو الحذف المباشر).</string>
+    <string name="classic_unistall_text">سيكون من الصعب إزالة التطبيق بالطرق التقليدية (السحب أو الحذف المباشر).</string>
     <string name="classic_unistall_message">في حال رغبتك بإزالة التطبيق مستقبلاً، سيتعين عليك التواصل مع خدمة العملاء واتباع إجراءات التحقق والفك الخاصة بهم.</string>
     <string name="classic_unistall_message2">لذلك، فإن موافقتك على تفعيل الحماية تعتبر موافقة صريحة منك على تفعيل خاصية عدم الإزالة والالتزام بجميع قيود الحماية المترتبة عليها.</string>
     <string name="enable_protection_confirm_text">هل ترغب في المتابعة وتفعيل الحماية الآن؟</string>
