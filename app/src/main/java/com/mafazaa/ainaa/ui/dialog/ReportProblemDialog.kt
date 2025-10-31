@@ -40,6 +40,13 @@ import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.data.models.ReportModel
 import com.mafazaa.ainaa.ui.theme.lightGray
 
+
+val nameValidRegex = Regex("[\\w\\s]{3,}")
+val phoneValidRegex = Regex("\\d{10,14}")
+val emailValidRegex = Regex("[a-z-._]{2,}@[a-z.-]{2,}\\.[a-z]{2,}")
+val problemValidRegex = Regex("[\\w\\s]{10,}") //TODO: handle multiline
+
+
 @Composable
 fun ReportProblemDialog(
     onClose: () -> Unit,
