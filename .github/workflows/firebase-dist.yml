@@ -1,4 +1,4 @@
-name: Build & Upload Release to Firebase App Distribution
+name: Build & Upload Debug to Firebase App Distribution
 
 on:
   push:
@@ -43,20 +43,20 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # 6️⃣ Build Release APK
-      - name: Build Release APK
-        run: ./gradlew assembleRelease -x lintVitalRelease
+      # 6️⃣ Build Debug APK
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
 
-      # 7️⃣ Find the Release APK
-      - name: Find Release APK
+      # 7️⃣ Find the Debug APK
+      - name: Find Debug APK
         id: find_apk
         run: |
-          apk_path=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          apk_path=$(find app/build/outputs/apk/debug -name "*.apk" | head -n 1)
           echo "apk_path=$apk_path" >> $GITHUB_OUTPUT
-          echo "✅ Found Release APK at: $apk_path"
+          echo "✅ Found Debug APK at: $apk_path"
 
-      # 8️⃣ Upload Release APK to Firebase App Distribution
-      - name: Upload Release APK to Firebase App Distribution
+      # 8️⃣ Upload Debug APK to Firebase App Distribution
+      - name: Upload Debug APK to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
