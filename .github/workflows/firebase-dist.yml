@@ -1,9 +1,9 @@
 name: Build & Upload Debug to Firebase App Distribution
 
 on:
-  push:
+  pull_request:
     branches:
-      - feature/gh-action
+      - test
   workflow_dispatch:
 
 jobs:
