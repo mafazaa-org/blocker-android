@@ -14,7 +14,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       # 1️⃣ Checkout code
       - name: Checkout repository
@@ -43,23 +42,25 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # 6️⃣ Build Release APK
-      - name: Build Release APK
-        run: ./gradlew assembleRelease -x lintVitalRelease
+      # 6️⃣ Build Release AAB (Recommended for best practice)
+      # Building an AAB is the modern Google-recommended method for distribution.
+      - name: Build Release AAB
+        run: ./gradlew bundleRelease -x lintVitalRelease
 
-      # 7️⃣ Find the Release APK
-      - name: Find Release APK
-        id: find_apk
+      # 7️⃣ Find the Release AAB
+      - name: Find Release AAB
+        id: find_aab
         run: |
-          apk_path=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
-          echo "apk_path=$apk_path" >> $GITHUB_OUTPUT
-          echo "✅ Found Release APK at: $apk_path"
+          aab_path=$(find app/build/outputs/bundle/release -name "*.aab" | head -n 1)
+          echo "aab_path=$aab_path" >> $GITHUB_OUTPUT
+          echo "✅ Found Release AAB at: $aab_path"
 
-      # 8️⃣ Upload Release APK to Firebase App Distribution
-      - name: Upload Release APK to Firebase App Distribution
+      # 8️⃣ Upload Release AAB to Firebase App Distribution
+      - name: Upload Release AAB to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: qa-testers
-          file: ${{ steps.find_apk.outputs.apk_path }}
+          # Changed file output to use the AAB path
+          file: ${{ steps.find_aab.outputs.aab_path }}
