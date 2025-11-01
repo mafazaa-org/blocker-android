@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - test
-      - gh-action
+      - feature/gh-action
   pull_request:
     branches:
       - test
-      - gh-action
+      - feature/gh-action
   workflow_dispatch:
 
 jobs:
