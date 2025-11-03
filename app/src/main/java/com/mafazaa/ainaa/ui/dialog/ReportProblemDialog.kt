@@ -39,7 +39,7 @@ import com.mafazaa.ainaa.ui.common.LabelledTextField
 import com.mafazaa.ainaa.ui.theme.lightGray
 
 
-val nameValidRegex = Regex("[\\w\\s]{3,}")
+val nameValidRegex = Regex("[\\p{L}-\\s]{3,}")
 val phoneValidRegex = Regex("\\d{10,14}")
 val emailValidRegex = Regex(Patterns.EMAIL_ADDRESS.pattern())
 
