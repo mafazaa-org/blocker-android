@@ -4,7 +4,6 @@ import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -43,22 +42,21 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
-import com.mafazaa.ainaa.utils.Constants.SUPPORT_CONTACT_URL
-import com.mafazaa.ainaa.utils.Constants.JOIN_URL
-import com.mafazaa.ainaa.utils.Constants.SAFE_SEARCH_URL
-import com.mafazaa.ainaa.utils.Constants.SUPPORT_URL
 import com.mafazaa.ainaa.data.local.SharedPrefs
 import com.mafazaa.ainaa.data.models.NetworkResult
+import com.mafazaa.ainaa.domain.models.AppInfo
 import com.mafazaa.ainaa.domain.models.DnsProtectionLevel
+import com.mafazaa.ainaa.domain.models.PermissionState
 import com.mafazaa.ainaa.domain.models.UpdateState
+import com.mafazaa.ainaa.helpers.LocaleHelper
+import com.mafazaa.ainaa.navigation.Screen
+import com.mafazaa.ainaa.receiver.AppDeviceAdminReceiver
 import com.mafazaa.ainaa.service.MyAccessibilityService
 import com.mafazaa.ainaa.service.MyAccessibilityService.Companion.startAccessibilityService
 import com.mafazaa.ainaa.service.MyVpnService
-import com.mafazaa.ainaa.domain.models.AppInfo
 import com.mafazaa.ainaa.ui.common.BottomBar
-import com.mafazaa.ainaa.navigation.Screen
-import com.mafazaa.ainaa.ui.common.TopBar
 import com.mafazaa.ainaa.ui.common.OkDialog
+import com.mafazaa.ainaa.ui.common.TopBar
 import com.mafazaa.ainaa.ui.dialog.BlockAppDialog
 import com.mafazaa.ainaa.ui.dialog.ConfirmBlockedDialog
 import com.mafazaa.ainaa.ui.dialog.EnableProtectionDialog
@@ -69,10 +67,11 @@ import com.mafazaa.ainaa.ui.protection.EnableProtectionScreen
 import com.mafazaa.ainaa.ui.protection.ProtectionActivatedScreen
 import com.mafazaa.ainaa.ui.support.SupportScreen
 import com.mafazaa.ainaa.ui.theme.AinaaTheme
+import com.mafazaa.ainaa.utils.Constants.JOIN_URL
+import com.mafazaa.ainaa.utils.Constants.SAFE_SEARCH_URL
+import com.mafazaa.ainaa.utils.Constants.SUPPORT_CONTACT_URL
+import com.mafazaa.ainaa.utils.Constants.SUPPORT_URL
 import com.mafazaa.ainaa.utils.MyLog
-import com.mafazaa.ainaa.domain.models.PermissionState
-import com.mafazaa.ainaa.helpers.LocaleHelper
-import com.mafazaa.ainaa.receiver.AppDeviceAdminReceiver
 import com.mafazaa.ainaa.utils.getAllApps
 import com.mafazaa.ainaa.utils.hasAccessibilityPermission
 import com.mafazaa.ainaa.utils.hasAdminPermission
@@ -85,7 +84,6 @@ import com.mafazaa.ainaa.utils.openUrl
 import com.mafazaa.ainaa.utils.requestAccessibilityPermission
 import com.mafazaa.ainaa.utils.requestAdminPermission
 import com.mafazaa.ainaa.utils.requestDrawOverlaysPermission
-import com.mafazaa.ainaa.utils.requestUsageStatsPermission
 import com.mafazaa.ainaa.utils.requestVpnPermission
 import com.mafazaa.ainaa.utils.shareFile
 import com.mafazaa.ainaa.utils.startVpnService
@@ -94,7 +92,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.java.KoinJavaComponent.inject
-import java.util.Locale
 
 // Sealed dialog state to manage all dialogs from a single source of truth
 sealed interface DialogState {
@@ -114,8 +111,8 @@ class AppActivity : ComponentActivity() {
     var dialogState by mutableStateOf<DialogState?>(if (MyApp.isFirstTime) DialogState.FirstTime else null)
 
     val backStack = mutableStateListOf(
-            if (!MyAccessibilityService.isRunning) Screen.EnableProtection
-            else Screen.ProtectionActivated
+        if (!MyAccessibilityService.isRunning) Screen.EnableProtection
+        else Screen.ProtectionActivated
     )
     private var vpnPermission by mutableStateOf(false)
     private var overlayPermission by mutableStateOf(false)
@@ -131,14 +128,15 @@ class AppActivity : ComponentActivity() {
         )
     }
     private val requestAdmin = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult())
+        ActivityResultContracts.StartActivityForResult()
+    )
     {
         // Handle result if needed
     }
     private val permissionChain = listOf(
-        PermissionState.Administrative,
-        PermissionState.Overlay,
         PermissionState.Accessibility,
+        PermissionState.Overlay,
+        PermissionState.Administrative,
         PermissionState.Vpn,
         PermissionState.Notification,
     )
@@ -430,15 +428,16 @@ class AppActivity : ComponentActivity() {
         }
 
     }
+
     private fun findNextMissingPermission(): PermissionState? {
         // Check permissions in the defined order
         return permissionChain.firstOrNull { permission ->
             !when (permission) {
-                PermissionState.Administrative -> hasAdminPermission(adminReceiver)
                 PermissionState.Overlay -> hasOverlayPermission()
                 PermissionState.Accessibility -> hasAccessibilityPermission()
+                PermissionState.Administrative -> hasAdminPermission(adminReceiver)
                 PermissionState.Vpn -> hasVpnPermission()
-                PermissionState.Notification ->  hasNotificationPermission()
+                PermissionState.Notification -> hasNotificationPermission()
                 PermissionState.Granted -> true
             }
         }
