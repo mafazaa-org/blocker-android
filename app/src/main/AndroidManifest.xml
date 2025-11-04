@@ -80,6 +80,20 @@
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
+        <!-- Inside the <application> tag in AndroidManifest.xml -->
+
+        <receiver
+            android:name=".receiver.WatchdogReceiver"
+            android:enabled="true"
+            android:exported="true">
+        <intent-filter>
+            <!-- This action is triggered when the user unlocks their phone -->
+            <action android:name="android.intent.action.USER_PRESENT" />
+            <!-- This is triggered frequently on some devices -->
+            <action android:name="android.intent.action.TIME_TICK" />
+        </intent-filter>
+            </receiver>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
