@@ -80,7 +80,6 @@
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-        <!-- Inside the <application> tag in AndroidManifest.xml -->
 
         <receiver
             android:name=".receiver.WatchdogReceiver"
