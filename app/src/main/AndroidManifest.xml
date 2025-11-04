@@ -69,12 +69,11 @@
             android:directBootAware="true"
             android:enabled="true"
             android:exported="true"
-
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                 <!--For HTC devices-->
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWEROFF" />
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />

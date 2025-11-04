@@ -86,8 +86,8 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onCreate() {
         super.onCreate()
         MyLog.i(TAG, "Accessibility Service created.")
-
-
+        lockOverlayManager = inject<LockOverlayManager>(LockOverlayManager::class.java).value
+        overlay = lockOverlayManager
 
     }
 

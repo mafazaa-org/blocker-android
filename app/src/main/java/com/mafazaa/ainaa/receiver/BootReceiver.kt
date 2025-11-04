@@ -20,11 +20,10 @@ class BootReceiver : BroadcastReceiver() {
             intent.action != Intent.ACTION_REBOOT
         ) {
             MyLog.d("BootReceiver", "Device rebooted. Attempting to start accessibility service.")
-            // Use the start function you already have
-            context.startService(Intent(context, MyAccessibilityService::class.java).apply {
+            val serviceIntent = Intent(context, MyAccessibilityService::class.java).apply {
                 action = MyAccessibilityService.ACTION_START
-            })
-            return
+            }
+            context.startForegroundService(serviceIntent)
         }
 
         if (!context.isKeyguardSecure()) {
