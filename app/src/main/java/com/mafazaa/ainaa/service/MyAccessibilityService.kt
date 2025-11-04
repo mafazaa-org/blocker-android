@@ -85,9 +85,7 @@ class MyAccessibilityService : AccessibilityService() {
 
     override fun onCreate() {
         super.onCreate()
-        lockOverlayManager = inject<LockOverlayManager>(LockOverlayManager::class.java).value
-        overlay =
-            LockOverlayManager(this) // This seems redundant as overlayManager is already initialized.
+        MyLog.i(TAG, "Accessibility Service created.")
 
 
 
@@ -187,7 +185,7 @@ class MyAccessibilityService : AccessibilityService() {
         const val ACTION_SHARE_CURRENT_SCREEN = "SHARE_CURRENT_SCREEN"
         private const val NOTIFICATION_ID = 101 // Unique ID for the notification
         private const val NOTIFICATION_CHANNEL_ID = "AINAA_PROTECTION_CHANNEL"
-        private const val WATCHDOG_INTERVAL_MS =  30 * 1000L
+        private const val WATCHDOG_INTERVAL_MS =  15 *60 * 1000L
         var isRunning = false
         const val TAG = "MyAccessibilityService"
     }
@@ -207,7 +205,6 @@ class MyAccessibilityService : AccessibilityService() {
 
     }
     private fun createNotification(): Notification {
-        // Create a notification channel for Android 8.0 (API 26) and higher
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
             "حماية عائلة", // Channel name visible in settings
