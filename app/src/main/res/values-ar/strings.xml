@@ -19,12 +19,11 @@
     <string name="modifying_app_settings_or_attempting_to_disable_the_app_is_not_allowed">تعديل إعدادات التطبيق أو محاولة تعطيله غير مسموح</string>
     <string name="report_sent_message">تم إرسال التقرير بنجاح</string>
     <string name="email_phone_contact_message">سنتواصل معك عبر البريد الإلكتروني أو الهاتف في أقرب وقت.</string>
-    <string name="write_here_message">اكتب هنا..</string>
-    <string name="enter_email_text">برجاء إدخال البريد الإلكتروني</string>
-    <string name="email_title">البريد الإلكتروني</string>
-    <string name="phone_number_text">رقم الهاتف</string>
-    <string name="enter_name_placeholder">برجاء إدخال الاسم</string>
-    <string name="name_field_title">الاسم</string>
+    <string name="issue_field_placeholder">برجاء وصف المشكلة بدقة</string>
+    <string name="email_field_label">البريد الإلكتروني</string>
+    <string name="phone_number_field_label">رقم الهاتف</string>
+    <string name="name_field_placeholder">أحمد محمد</string>
+    <string name="name_field_label">الاسم</string>
     <string name="report_problem_text">الإبلاغ عن مشكلة</string>
     <string name="back_text">العودة</string>
     <string name="protection_activated_title">مبارك!! تم تفعيل الحماية</string>
@@ -69,7 +68,7 @@
     <string name="safe_search_image">Safe Search Image</string>
     <string name="contact_customer_service_text">اضغط هنا للتواصل مع أحد ممثلي خدمة العملاء</string>
     <string name="click_link_text">اضغط على الرابط</string>
-    <string name="the_issue_text">المشكلة</string>
+    <string name="issue_field_label">وصف المشكلة</string>
     <string name="send_text">إرسال</string>
     <string name="protection_skipped_text">لقد تخطيت الحماية</string>
     <string name="protection_skipped_message">لقد حاولت تعطيل الحماية، وهذا غير مسموح به.</string>
@@ -123,7 +122,7 @@
     <string name="disclaimer_message">بمجرد تفعيل الحماية، سيتم تطبيق الإجراءات التالية:</string>
     <string name="uninstall_feature_text">خاصية عدم الحذف</string>
     <string name="unistall_feature_message">عند تفعيل الحماية، يتم تفعيل خاصية تمنع إزالة (حذف) البرنامج من الهاتف دون المرور بإجراءات محددة وصارمة. هذه الخاصية مصممة لضمان استمرارية الحماية ومنع أي مستخدم من تعطيلها بسهولة.</string>
-    <string name="classic_unistall_text">سيكون من المستحيل إزالة التطبيق بالطرق التقليدية (السحب أو الحذف المباشر).</string>
+    <string name="classic_unistall_text">سيكون من الصعب إزالة التطبيق بالطرق التقليدية (السحب أو الحذف المباشر).</string>
     <string name="classic_unistall_message">في حال رغبتك بإزالة التطبيق مستقبلاً، سيتعين عليك التواصل مع خدمة العملاء واتباع إجراءات التحقق والفك الخاصة بهم.</string>
     <string name="classic_unistall_message2">لذلك، فإن موافقتك على تفعيل الحماية تعتبر موافقة صريحة منك على تفعيل خاصية عدم الإزالة والالتزام بجميع قيود الحماية المترتبة عليها.</string>
     <string name="enable_protection_confirm_text">هل ترغب في المتابعة وتفعيل الحماية الآن؟</string>
