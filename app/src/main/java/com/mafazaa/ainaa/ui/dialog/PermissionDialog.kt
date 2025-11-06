@@ -31,13 +31,13 @@ fun PermissionDialog(
     permissionState: PermissionState,
 ) {
     val (permissionTitle, permissionDescription) = when (permissionState) {
+        PermissionState.Administrative ->
+            stringResource(R.string.administrative_permission_text) to stringResource(
+            R.string.admin_permission_message
+        )
         PermissionState.Notification ->
             stringResource(R.string.notification_permission_text) to stringResource(
             R.string.notification_permission_message
-        )
-        PermissionState.UsageStats ->
-            stringResource(R.string.usage_stats_permission_text) to stringResource(
-            R.string.usage_stats_permission_message
         )
         PermissionState.Overlay -> stringResource(R.string.overlay_permission_text) to stringResource(
             R.string.overlay_permission_message

@@ -86,7 +86,7 @@ fun SupportScreen(
                 ) {
                     Text(
                         text= stringResource(R.string.support_us_text),
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.surface
                     )
                 }
             }
@@ -121,7 +121,7 @@ fun SupportScreen(
                 ) {
                     Text(
                         text= stringResource(R.string.join_text),
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.surface
 
                     )
                 }
