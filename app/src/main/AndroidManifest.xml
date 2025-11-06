@@ -53,8 +53,6 @@
             </intent-filter>
         </service>
 
-
-
         <activity
             android:exported="true"
             android:name=".AppActivity">
@@ -64,6 +62,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <receiver
             android:name=".receiver.BootReceiver"
             android:directBootAware="true"
@@ -81,6 +80,10 @@
         </receiver>
 
         <receiver
+            android:name=".receiver.RestartReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
             android:name=".receiver.WatchdogReceiver"
             android:enabled="true"
             android:exported="true">
@@ -91,7 +94,6 @@
             <action android:name="android.intent.action.TIME_TICK" />
         </intent-filter>
             </receiver>
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -126,7 +128,6 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
-
 
     </application>
 

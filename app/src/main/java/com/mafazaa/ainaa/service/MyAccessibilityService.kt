@@ -4,28 +4,26 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.annotation.SuppressLint
 import android.app.AlarmManager
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.SystemClock
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
-import androidx.core.app.NotificationCompat
-import com.mafazaa.ainaa.AppActivity
-import com.mafazaa.ainaa.utils.MyLog
-import com.mafazaa.ainaa.utils.MyLog.logUiTree
 import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.data.local.SharedPrefs
-import com.mafazaa.ainaa.utils.isKeyguardSecure
 import com.mafazaa.ainaa.domain.models.BlockReason
-import com.mafazaa.ainaa.helpers.ScreenAnalyser
 import com.mafazaa.ainaa.domain.models.ScriptResult
 import com.mafazaa.ainaa.domain.repo.ScriptRepo
 import com.mafazaa.ainaa.helpers.LockOverlayManager
-import com.mafazaa.ainaa.receiver.WatchdogReceiver
+import com.mafazaa.ainaa.helpers.ScreenAnalyser
+import com.mafazaa.ainaa.receiver.RestartReceiver
+import com.mafazaa.ainaa.utils.MyLog
+import com.mafazaa.ainaa.utils.MyLog.logUiTree
+import com.mafazaa.ainaa.utils.block
+import com.mafazaa.ainaa.utils.cancelWatchdog
+import com.mafazaa.ainaa.utils.checkBlockedApp
+import com.mafazaa.ainaa.utils.createNotification
+import com.mafazaa.ainaa.utils.scheduleWatchdog
 import com.mafazaa.ainaa.utils.shareFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,14 +35,11 @@ import kotlin.time.measureTimedValue
 
 @SuppressLint("AccessibilityPolicy")
 class MyAccessibilityService : AccessibilityService() {
-    lateinit var overlay: LockOverlayManager
-    private val serviceScope = CoroutineScope(Dispatchers.Default + Job())
-    lateinit var lockOverlayManager: LockOverlayManager
-
-    private var alarmManager: AlarmManager? = null
-    private var watchdogPendingIntent: PendingIntent? = null
-
-    private val sharedPrefs: SharedPrefs by inject(SharedPrefs::class.java)
+    val lockOverlayManager: LockOverlayManager by inject(LockOverlayManager::class.java)
+    internal val serviceScope = CoroutineScope(Dispatchers.Default + Job())
+    internal var alarmManager: AlarmManager? = null
+    internal var watchdogPendingIntent: PendingIntent? = null
+    internal val sharedPrefs: SharedPrefs by inject(SharedPrefs::class.java)
     private val scriptRepo: ScriptRepo by inject(ScriptRepo::class.java)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
@@ -82,13 +77,28 @@ class MyAccessibilityService : AccessibilityService() {
         }
         return START_STICKY
     }
+    companion object {
+        fun Context.startAccessibilityService(action: String = ACTION_START) {
+            isRunning = true
+            val intent = Intent(this, MyAccessibilityService::class.java).apply {
+                this@apply.action = action
+            }
+            startService(intent)
+        }
+
+        const val ACTION_STOP = "STOP_ACCESSIBILITY"
+        const val ACTION_START = "START_ACCESSIBILITY"
+        const val ACTION_SHARE_CURRENT_SCREEN = "SHARE_CURRENT_SCREEN"
+        internal const val NOTIFICATION_ID = 101 // Unique ID for the notification
+        internal const val NOTIFICATION_CHANNEL_ID = "AINAA_PROTECTION_CHANNEL"
+        internal const val WATCHDOG_INTERVAL_MS =  15 *60 * 1000L
+        var isRunning = false
+        const val TAG = "MyAccessibilityService"
+    }
 
     override fun onCreate() {
         super.onCreate()
         MyLog.i(TAG, "Accessibility Service created.")
-        lockOverlayManager = inject<LockOverlayManager>(LockOverlayManager::class.java).value
-        overlay = lockOverlayManager
-
     }
 
     override fun onServiceConnected() {
@@ -99,7 +109,6 @@ class MyAccessibilityService : AccessibilityService() {
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
         serviceInfo = info
     }
-
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         // Return early if event is null or service is not running
@@ -156,120 +165,27 @@ class MyAccessibilityService : AccessibilityService() {
         }
     }
 
-
-    private fun checkBlockedApp(currentApp: String?): Boolean {
-        if (!this.isKeyguardSecure())
-            return false
-        return currentApp != null &&
-                currentApp in sharedPrefs.blockedApps
-    }
-
-    private fun block(reason: BlockReason) {
-        serviceScope.launch(Dispatchers.Main) {
-            lockOverlayManager.showOverlay(reason)
-        }
-        performGlobalAction(GLOBAL_ACTION_BACK)
-    }
-
-    companion object {
-        fun Context.startAccessibilityService(action: String = ACTION_START) {
-            isRunning = true
-            val intent = Intent(this, MyAccessibilityService::class.java).apply {
-                this@apply.action = action
-            }
-            startService(intent)
-        }
-
-        const val ACTION_STOP = "STOP_ACCESSIBILITY"
-        const val ACTION_START = "START_ACCESSIBILITY"
-        const val ACTION_SHARE_CURRENT_SCREEN = "SHARE_CURRENT_SCREEN"
-        private const val NOTIFICATION_ID = 101 // Unique ID for the notification
-        private const val NOTIFICATION_CHANNEL_ID = "AINAA_PROTECTION_CHANNEL"
-        private const val WATCHDOG_INTERVAL_MS =  15 *60 * 1000L
-        var isRunning = false
-        const val TAG = "MyAccessibilityService"
-    }
-
-    override fun onDestroy() {
-        val broadcastIntent = Intent(this, WatchdogReceiver::class.java)
-        sendBroadcast(broadcastIntent)
-        super.onDestroy()
-        serviceScope.cancel()
-        isRunning = false
-    }
-
     override fun onInterrupt() {
         serviceScope.cancel()
         MyLog.w(TAG, "Service interrupted")
         isRunning = false
 
     }
-    private fun createNotification(): Notification {
-        val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID,
-            "حماية عائلة", // Channel name visible in settings
-            NotificationManager.IMPORTANCE_LOW // Low importance to be less intrusive
-        ).apply {
-            description = "الإشعار المستمر لتفعيل الحماية"
-        }
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
 
-        // Create an intent that opens your app when the notification is tapped
-        val pendingIntent = Intent(this, AppActivity::class.java).let { notificationIntent ->
-            PendingIntent.getActivity(this, 0, notificationIntent,
-                PendingIntent.FLAG_IMMUTABLE)
-        }
-
-        // Build the notification
-        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("الحماية مفعلة")
-            .setContentText("تطبيق عائلة يعمل على حمايتك في الخلفية.")
-            .setSmallIcon(R.drawable.ic_red) // **Create a small, simple icon for this**
-            .setContentIntent(pendingIntent)
-            .setOngoing(true) // Makes the notification non-dismissible
-            .build()
-    }
-
-    // When the service is destroyed (e.g., by the system), try to restart it
     override fun onTaskRemoved(rootIntent: Intent?) {
-        val restartServiceIntent = Intent(applicationContext, this.javaClass)
-        restartServiceIntent.setPackage(packageName)
-        // Use a PendingIntent to allow the system to restart it
-        val restartServicePendingIntent = PendingIntent.getService(
-            applicationContext, 1, restartServiceIntent,
-            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
-        )
-        val alarmService = applicationContext.getSystemService(ALARM_SERVICE) as AlarmManager
-        alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePendingIntent)
+        MyLog.w(TAG, "Task removed, scheduling restart")
+        val restartIntent = Intent(this, RestartReceiver::class.java).apply {
+            setPackage(packageName)
+
+        }
+        sendBroadcast(restartIntent)
+        MyLog.d(TAG, "Restart broadcast sent")
         super.onTaskRemoved(rootIntent)
+        MyLog.w(TAG, "Task removed")
     }
-    private fun scheduleWatchdog() {
-        alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-
-        val intent = Intent(this, WatchdogReceiver::class.java)
-        watchdogPendingIntent = PendingIntent.getBroadcast(
-            this,
-            0, // request code
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        watchdogPendingIntent?.let {
-            alarmManager?.setInexactRepeating(
-                AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + WATCHDOG_INTERVAL_MS,
-                WATCHDOG_INTERVAL_MS,
-                it
-            )
-            MyLog.d(TAG, "Watchdog alarm scheduled.")
-        }
-    }
-
-    private fun cancelWatchdog() {
-        // Use a safe call here too
-        watchdogPendingIntent?.let {
-            alarmManager?.cancel(it)
-            MyLog.d(TAG, "Watchdog alarm cancelled.")
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        serviceScope.cancel()
+        isRunning = false
     }
 }
