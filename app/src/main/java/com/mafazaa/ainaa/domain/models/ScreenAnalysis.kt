@@ -1,7 +1,5 @@
 package com.mafazaa.ainaa.domain.models
 
-import com.mafazaa.ainaa.domain.models.ScreenNode
-
 data class ScreenAnalysis(
     /**
      * the package name of the app currently in foreground
@@ -24,6 +22,7 @@ data class ScreenAnalysis(
      */
     val isSettingsScreen: Boolean,
     val root: ScreenNode,
+    val allTexts: List<String>
 ) {
     override fun toString(): String {
         return "nodes:$nodesCount, app:$pkg, has our app name:$hasAppName,is a settings screen:$isSettingsScreen" +

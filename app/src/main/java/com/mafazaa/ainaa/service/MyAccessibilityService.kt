@@ -14,6 +14,7 @@ import com.mafazaa.ainaa.data.local.SharedPrefs
 import com.mafazaa.ainaa.domain.models.BlockReason
 import com.mafazaa.ainaa.domain.models.ScriptResult
 import com.mafazaa.ainaa.domain.repo.ScriptRepo
+import com.mafazaa.ainaa.helpers.DeviceUtils
 import com.mafazaa.ainaa.helpers.LockOverlayManager
 import com.mafazaa.ainaa.helpers.ScreenAnalyser
 import com.mafazaa.ainaa.receiver.RestartReceiver
@@ -94,6 +95,9 @@ class MyAccessibilityService : AccessibilityService() {
         internal const val WATCHDOG_INTERVAL_MS =  15 *60 * 1000L
         var isRunning = false
         const val TAG = "MyAccessibilityService"
+
+        private val SETTINGS_PACKAGE = DeviceUtils.settingsPackageName
+        private val ACCESSIBILITY_SETTINGS = "${SETTINGS_PACKAGE}.accessibility.AccessibilitySettings"
     }
 
     override fun onCreate() {
@@ -115,7 +119,20 @@ class MyAccessibilityService : AccessibilityService() {
         event ?: return
         if (!isRunning) return
         // Only handle window content changed events
-        if (event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) return
+        if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED &&
+            event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
+            return
+        }
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            val componentName = event.className?.toString()
+            if (event.packageName == SETTINGS_PACKAGE &&
+                (componentName == ACCESSIBILITY_SETTINGS ||
+                        componentName?.contains("accessibility", true) == true)) {
+
+                block(BlockReason.UsingBlockedApp(SETTINGS_PACKAGE))
+                return
+            }
+        }
 
         rootInActiveWindow?.let { rootNode ->
             serviceScope.launch {
