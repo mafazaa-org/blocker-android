@@ -16,7 +16,7 @@
 [![Event](https://img.shields.io/badge/Built%20For-Mafaza-black?logo=github)](https://ainaa.mafazaa.com/)
 &#160;
 [![Contributions](https://img.shields.io/badge/Contributions-Welcome-orange)]()
-[![upload to Firebase App Distribution](https://github.com/KvRae/Ainaa-android/actions/workflows/firebase-dist.yml/badge.svg?branch=feature%2Fgh-action)](https://github.com/KvRae/Ainaa-android/actions/workflows/firebase-dist.yml)
+[![upload to Firebase App Distribution](https://github.com/mafazaa-org/Ainaa-android/actions/workflows/firebase-dist.yml/badge.svg?branch=feature%2Fgh-action)](https://github.com/mafazaa-org/Ainaa-android/actions/workflows/firebase-dist.yml)
 
 </div>
 
