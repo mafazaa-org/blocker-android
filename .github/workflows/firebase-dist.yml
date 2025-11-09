@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - test
-      - feature/gh-action
+      - dev
   pull_request:
     branches:
-      - test
+      - dev
       - feature/gh-action
   workflow_dispatch:
 
