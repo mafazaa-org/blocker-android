@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.mafazaa.ainaa.service.MyAccessibilityService
 import com.mafazaa.ainaa.utils.MyLog
+import com.mafazaa.ainaa.utils.isServiceRunning
 
 
 /**
@@ -20,7 +21,10 @@ class WatchdogReceiver: BroadcastReceiver() {
         val action = intent?.action
         MyLog.d(TAG, "WatchdogReceiver triggered by action: $action")
 
-        if (!MyAccessibilityService.isRunning) {
+        if (!isServiceRunning(
+            context,
+            MyAccessibilityService::class.java
+        )) {
             MyLog.w(TAG, "Watchdog detects service is NOT running. Attempting to restart...")
             val restartIntent = Intent(context, MyAccessibilityService::class.java).apply {
                 this.action = MyAccessibilityService.ACTION_START

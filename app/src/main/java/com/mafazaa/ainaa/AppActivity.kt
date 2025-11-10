@@ -80,6 +80,7 @@ import com.mafazaa.ainaa.utils.hasOverlayPermission
 import com.mafazaa.ainaa.utils.hasUsageStatsPermission
 import com.mafazaa.ainaa.utils.hasVpnPermission
 import com.mafazaa.ainaa.utils.installApk
+import com.mafazaa.ainaa.utils.isServiceRunning
 import com.mafazaa.ainaa.utils.openUrl
 import com.mafazaa.ainaa.utils.requestAccessibilityPermission
 import com.mafazaa.ainaa.utils.requestAdminPermission
@@ -110,10 +111,12 @@ sealed interface DialogState {
 class AppActivity : ComponentActivity() {
     var dialogState by mutableStateOf<DialogState?>(if (MyApp.isFirstTime) DialogState.FirstTime else null)
 
-    val backStack = mutableStateListOf(
-        if (!MyAccessibilityService.isRunning) Screen.EnableProtection
-        else Screen.ProtectionActivated
-    )
+    val backStack by lazy {
+        mutableStateListOf(
+            if (!isServiceRunning(this, MyAccessibilityService::class.java)) Screen.EnableProtection
+            else Screen.ProtectionActivated
+        )
+    }
     private var vpnPermission by mutableStateOf(false)
     private var overlayPermission by mutableStateOf(false)
     private var usageStatsPermission by mutableStateOf(false)
@@ -305,8 +308,17 @@ class AppActivity : ComponentActivity() {
                     currentScreen = currentScreen,
                     supportUs = { backStack.add(Screen.Support) },
                     home = {
-                        if (MyVpnService.isRunning) {
-                            backStack.add(Screen.ProtectionActivated)
+                        if (isServiceRunning(context, MyVpnService::class.java)) {
+                            // If already on the screen, don't add it again
+                            if (backStack.lastOrNull() != Screen.ProtectionActivated) {
+                                backStack.add(Screen.ProtectionActivated)
+                            }
+                        } else {
+                            // If service is not running, navigate to the enable screen
+                            if (backStack.lastOrNull() != Screen.EnableProtection) {
+                                backStack.clear() // Or handle navigation as you see fit
+                                backStack.add(Screen.EnableProtection)
+                            }
                         }
                     }
                 )
@@ -317,8 +329,10 @@ class AppActivity : ComponentActivity() {
                     appVersion = BuildConfig.VERSION_NAME,
                     androidVersion = Build.VERSION.RELEASE
                 ) {
-                    if (MyAccessibilityService.isRunning) {
-                        backStack.add(Screen.ProtectionActivated)
+                    if (isServiceRunning(context, MyAccessibilityService::class.java)) {
+                        if (backStack.lastOrNull() != Screen.ProtectionActivated) {
+                            backStack.add(Screen.ProtectionActivated)
+                        }
                     }
                 }
             },
@@ -454,7 +468,7 @@ class AppActivity : ComponentActivity() {
         } else {
             // No more missing permissions!
             // Check if the service isn't running yet, then activate.
-            if (!MyAccessibilityService.isRunning) {
+            if (!isServiceRunning(this, MyAccessibilityService::class.java)) {
                 Toast.makeText(
                     this,
                     getString(R.string.protection_activated_message)

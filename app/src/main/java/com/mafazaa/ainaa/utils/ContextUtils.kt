@@ -2,9 +2,15 @@ package com.mafazaa.ainaa.utils
 
 import android.Manifest.permission.POST_NOTIFICATIONS
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.app.ActivityManager
 import android.app.AppOpsManager
 import android.app.KeyguardManager
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -15,13 +21,16 @@ import android.provider.Settings
 import android.provider.Settings.canDrawOverlays
 import android.view.accessibility.AccessibilityManager
 import androidx.activity.ComponentActivity
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
+import com.mafazaa.ainaa.AppActivity
 import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.service.MyAccessibilityService
 import com.mafazaa.ainaa.service.MyVpnService
 import com.mafazaa.ainaa.domain.models.AppInfo
+import com.mafazaa.ainaa.service.MyAccessibilityService.Companion.NOTIFICATION_CHANNEL_ID
 import java.io.File
 
 /*
@@ -45,14 +54,28 @@ fun Context.installApk(apkFile: File) {
     }
 }
 
-fun Context.startVpnService() {
+/**
+ * Checks if a specific service class is currently running.
+ *
+ * @param serviceClass The class of the service to check.
+ * @return True if the service is running, false otherwise.
+ */
+fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
+    val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    // getRunningServices is deprecated for checking other apps, but works reliably for the app's own services.
+    for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+        if (serviceClass.name == service.service.className) {
+            return true
+        }
+    }
+    return false
+}
 
+fun Context.startVpnService() {
     val intent = Intent(this, MyVpnService::class.java).apply {
         action = MyVpnService.ACTION_START
     }
-    prepare(this)
-    ContextCompat.startForegroundService(this, intent)
-    MyVpnService.isRunning = true
+    startService(intent)
 }
 
 fun Context.openUrl(url: String) {
@@ -185,4 +208,31 @@ fun Context.getAllApps(): List<AppInfo> {
         }
     }
     return apps
+}
+
+internal fun Context.createNotification(): Notification {
+    val channel = NotificationChannel(
+        NOTIFICATION_CHANNEL_ID,
+        getString(R.string.app_name),// Channel name visible in settings
+        NotificationManager.IMPORTANCE_LOW // Low importance to be less intrusive
+    ).apply {
+        description = getString(R.string.app_notification_description)
+    }
+    val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+    notificationManager.createNotificationChannel(channel)
+
+    // Create an intent that opens your app when the notification is tapped
+    val pendingIntent = Intent(this, AppActivity::class.java).let { notificationIntent ->
+        PendingIntent.getActivity(this, 0, notificationIntent,
+            PendingIntent.FLAG_IMMUTABLE)
+    }
+
+    // Build the notification
+    return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        .setContentTitle(getString(R.string.protaction_active_text))
+        .setContentText(getString(R.string.click_return_app_text))
+        .setSmallIcon(R.drawable.ic_auto_protect)
+        .setContentIntent(pendingIntent)
+        .setOngoing(true) // Makes the notification non-dismissible
+        .build()
 }

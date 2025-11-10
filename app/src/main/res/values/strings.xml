@@ -36,8 +36,8 @@
     <string name="block_app_text">Block a specific app</string>
     <string name="no_update_found_text">No updates available</string>
     <string name="click_to_check_text">Tap to check</string>
-    <string name="check_update_text">Checking for updates...</string>
-    <string name="downloading_update_text">Downloading update... Please wait</string>
+    <string name="check_update_text">Checking for updates…</string>
+    <string name="downloading_update_text">Downloading update… Please wait</string>
     <string name="update_failed_text">Update failed</string>
     <string name="try_again">Try again</string>
     <string name="update_done">Update downloaded</string>
@@ -133,4 +133,7 @@
     <string name="administrative_permission_text">Device Admin</string>
     <string name="report_send__faild_message">فشل في أرسال التقرير : %1$c{it.message}</string>
     <string name="howtoknow_asset">file:///android_asset/howToKnow.jpg</string>
+    <string name="app_notification_description">الإشعار المستمر لتفعيل الحماية</string>
+    <string name="protaction_active_text">الحماية مفعلة.</string>
+    <string name="click_return_app_text">اضغط للعودة إلى التطبيق.</string>
 </resources>

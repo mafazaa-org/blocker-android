@@ -12,6 +12,10 @@ import com.mafazaa.ainaa.utils.isKeyguardSecure
 import com.mafazaa.ainaa.service.MyAccessibilityService.Companion.startAccessibilityService
 import com.mafazaa.ainaa.utils.startVpnService
 
+/**
+ * Receiver to handle device boot completion and start necessary services accordingly.
+ * It checks for accessibility and VPN permissions before starting the respective services.
+ */
 class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
