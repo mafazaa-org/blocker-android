@@ -18,15 +18,17 @@ import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.utils.isKeyguardSecure
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.GlobalContext.startKoin
 import java.util.concurrent.TimeUnit
 
-class MyApp : Application() {
+class MyApp : Application(){
     override fun onCreate() {
         super.onCreate()
         startKoin {
             androidContext(this@MyApp)
             modules(appModule)
+            workManagerFactory()
         }
 
         val fileRepo: FileRepo = getKoin().get()
