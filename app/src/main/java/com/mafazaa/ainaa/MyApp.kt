@@ -3,7 +3,6 @@ package com.mafazaa.ainaa
 import android.app.Application
 import android.content.Intent
 import android.content.IntentFilter
-import androidx.work.Configuration
 import androidx.core.content.ContextCompat
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -19,12 +18,11 @@ import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.utils.isKeyguardSecure
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.workmanager.factory.KoinWorkerFactory
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.GlobalContext.startKoin
 import java.util.concurrent.TimeUnit
 
-class MyApp : Application(), Configuration.Provider {
+class MyApp : Application(){
     override fun onCreate() {
         super.onCreate()
         startKoin {
@@ -94,13 +92,6 @@ class MyApp : Application(), Configuration.Provider {
             ContextCompat.RECEIVER_EXPORTED
         )
     }
-    override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder()
-            .setMinimumLoggingLevel(android.util.Log.INFO)
-            .setWorkerFactory(
-                KoinWorkerFactory()
-            )
-            .build()
 
     companion object {
         private const val TAG = "MyApp"
