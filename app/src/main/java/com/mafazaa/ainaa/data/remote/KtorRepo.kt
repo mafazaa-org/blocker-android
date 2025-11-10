@@ -2,10 +2,10 @@ package com.mafazaa.ainaa.data.remote
 
 import android.util.Log
 import com.mafazaa.ainaa.data.models.NetworkResult
-import com.mafazaa.ainaa.utils.Constants
 import com.mafazaa.ainaa.data.models.ReportModel
 import com.mafazaa.ainaa.data.models.VersionModel
 import com.mafazaa.ainaa.domain.repo.RemoteRepo
+import com.mafazaa.ainaa.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.logging.LogLevel
@@ -16,7 +16,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
-import io.ktor.client.statement.readBytes
+import io.ktor.client.statement.readRawBytes
 import io.ktor.http.ContentType
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
@@ -83,7 +83,7 @@ class KtorRepo : RemoteRepo {
             Log.d("KtorRepo", "Downloading file from $url to ${file.absolutePath}")
             val response: HttpResponse = client.get(url)
             if (response.status.isSuccess()) {
-                val bytes = response.readBytes()
+                val bytes = response.readRawBytes()
                 file.apply {
                     parentFile?.mkdirs() // Ensure parent directories exist
                     writeBytes(bytes) // Write the downloaded bytes to the file

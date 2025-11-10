@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.mafazaa.ainaa.service.MyAccessibilityService
 import com.mafazaa.ainaa.utils.MyLog
+import com.mafazaa.ainaa.utils.isServiceRunning
 
 
 /**
@@ -16,21 +17,21 @@ import com.mafazaa.ainaa.utils.MyLog
  */
 class WatchdogReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
+        if (context == null) return
         val action = intent?.action
-        if (action == null) {
-            MyLog.w(TAG, "Received broadcast with null action. Ignoring.")
-            return
-        }
-        MyLog.d(TAG, "Received watchdog broadcast")
+        MyLog.d(TAG, "WatchdogReceiver triggered by action: $action")
 
-        if (!MyAccessibilityService.isRunning) {
-            MyLog.d(TAG, "Accessibility service is not running. Restarting...")
+        if (!isServiceRunning(
+            context,
+            MyAccessibilityService::class.java
+        )) {
+            MyLog.w(TAG, "Watchdog detects service is NOT running. Attempting to restart...")
             val restartIntent = Intent(context, MyAccessibilityService::class.java).apply {
                 this.action = MyAccessibilityService.ACTION_START
             }
-            context?.startService(restartIntent)
+            context.startForegroundService(restartIntent)
         } else {
-            MyLog.d(TAG, "Accessibility service is already running.")
+            MyLog.d(TAG, "Watchdog confirms service is already running. No action needed.")
         }
     }
 
