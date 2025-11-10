@@ -17,7 +17,6 @@ object ScreenAnalyser {
      * Constant representing an unknown package name.
      */
     const val UNKNOWN_PACKAGE = "unknown"
-
     /**
      * Analyzes the accessibility node tree starting from the given root node.
      *
@@ -29,6 +28,8 @@ object ScreenAnalyser {
         withContext(Dispatchers.Default) {
             var hasAppName = false
             var nodesCount = 0
+            val allTexts = mutableListOf<String>()
+
 
             /**
              * Recursively converts an AccessibilityNodeInfo node and its children into a ScreenNode tree.
@@ -36,8 +37,18 @@ object ScreenAnalyser {
              */
             fun toScreenNode(node: AccessibilityNodeInfo): ScreenNode {
                 nodesCount++
-                if (!hasAppName && node.text?.contains(appName, true) == true) {
-                    hasAppName = true
+                val nodeText = node.text?.toString()
+                val nodeDesc = node.contentDescription?.toString()
+                if (!hasAppName) {
+                    if (nodeText?.contains(appName, true) == true || nodeDesc?.contains(appName, true) == true) {
+                        hasAppName = true
+                    }
+                }
+                if (!nodeText.isNullOrBlank()) {
+                    allTexts.add(nodeText)
+                }
+                if (!nodeDesc.isNullOrBlank()) {
+                    allTexts.add(nodeDesc)
                 }
                 val children = mutableListOf<ScreenNode>()
                 for (i in 0 until node.childCount) {
@@ -61,7 +72,9 @@ object ScreenAnalyser {
                 nodesCount = nodesCount,
                 hasAppName = hasAppName,
                 isSettingsScreen = isLikelySettingsPackage(root.packageName?.toString()),
-                root = screenNode
+
+                root = screenNode,
+                allTexts = allTexts
             )
         }
 
@@ -73,12 +86,13 @@ object ScreenAnalyser {
      */
     private fun isLikelySettingsPackage(pkg: String?): Boolean {
         if (pkg == null) return false
+        val dynamicPackageName = DeviceUtils.settingsPackageName
         val settingsPkgs = listOf(
+            dynamicPackageName,                  // Dynamically queried package name
             "com.android.settings",              // AOSP
             "com.samsung.android.settings",      // Samsung
             "com.miui.securitycenter",           // MIUI (may vary)
             "com.huawei.systemmanager"           // EMUI (may vary)
-            // add vendor-specific packages you target
         )
         return settingsPkgs.any { pkg.startsWith(it) } || pkg.contains(
             "settings",
