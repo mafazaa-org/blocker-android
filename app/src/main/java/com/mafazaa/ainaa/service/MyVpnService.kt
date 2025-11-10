@@ -18,18 +18,24 @@ class MyVpnService : VpnService() {
     companion object {
         internal const val TAG = "MyVpnService"
         const val ACTION_START = "START_VPN"
+
+        const val ACTION_START_FOREGROUND = "START_VPN_FOREGROUND"
         const val ACTION_STOP = "STOP_VPN"
     }
 
     override fun onCreate() {
         super.onCreate()
         MyLog.d(TAG, "VPN service created")
-        startForeground(MyAccessibilityService.NOTIFICATION_ID, createNotification())
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        startForeground(MyAccessibilityService.NOTIFICATION_ID, createNotification())
         when (intent?.action) {
+            ACTION_START_FOREGROUND -> {
+                MyLog.d(TAG, "Moving VPN service to foreground.")
+                startForeground(MyAccessibilityService.NOTIFICATION_ID, createNotification())
+                val level = sharedPrefs.dnsProtectionLevel
+                startVpn(level)
+            }
             ACTION_STOP -> {
                 stopVpn()
                 return START_NOT_STICKY
@@ -41,6 +47,7 @@ class MyVpnService : VpnService() {
                 return START_STICKY
             }
         }
+        return  START_STICKY
     }
 
     override fun onDestroy() {

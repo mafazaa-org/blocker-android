@@ -71,9 +71,15 @@ fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
     return false
 }
 
-fun Context.startVpnService() {
+fun Context.startVpnService( action: String = MyVpnService.ACTION_START) {
     val intent = Intent(this, MyVpnService::class.java).apply {
-        action = MyVpnService.ACTION_START
+        this.action = if (
+            action == MyVpnService.ACTION_START_FOREGROUND
+        ) {
+            MyVpnService.ACTION_START_FOREGROUND
+        } else {
+            MyVpnService.ACTION_START
+        }
     }
     startService(intent)
 }
@@ -229,8 +235,10 @@ internal fun Context.createNotification(): Notification {
 
     // Build the notification
     return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-        .setContentTitle(getString(R.string.protaction_active_text))
-        .setContentText(getString(R.string.click_return_app_text))
+        .setContentTitle(getString(R.string.app_name))
+        .setContentText(getString(R.string.protection_active_text))
+        // add description
+
         .setSmallIcon(R.drawable.ic_auto_protect)
         .setContentIntent(pendingIntent)
         .setOngoing(true) // Makes the notification non-dismissible

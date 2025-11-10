@@ -1,5 +1,6 @@
 package com.mafazaa.ainaa.utils
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.Service.STOP_FOREGROUND_REMOVE
@@ -14,6 +15,7 @@ import com.mafazaa.ainaa.service.MyVpnService.Companion.ACTION_START
 import com.mafazaa.ainaa.service.MyVpnService.Companion.TAG
 
 
+@SuppressLint("MissingPermission")
 internal fun MyVpnService.scheduleRestart() {
     val restartIntent = Intent(this, MyVpnService::class.java).apply {
         action = ACTION_START
@@ -32,7 +34,8 @@ internal fun MyVpnService.scheduleRestart() {
 
     // Use setExactAndAllowWhileIdle for better reliability on modern Android.
     try {
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtMillis, pendingIntent)
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtMillis, pendingIntent)
 
     } catch (e: SecurityException) {
         MyLog.e(TAG, "Failed to schedule restart alarm due to missing permission: ${e.message}", e)

@@ -21,11 +21,14 @@ import com.mafazaa.ainaa.receiver.RestartReceiver
 import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.utils.MyLog.logUiTree
 import com.mafazaa.ainaa.utils.block
+import com.mafazaa.ainaa.utils.cancelRestartAlarm
 import com.mafazaa.ainaa.utils.cancelWatchdog
 import com.mafazaa.ainaa.utils.checkBlockedApp
 import com.mafazaa.ainaa.utils.createNotification
+import com.mafazaa.ainaa.utils.scheduleRestart
 import com.mafazaa.ainaa.utils.scheduleWatchdog
 import com.mafazaa.ainaa.utils.shareFile
+import com.mafazaa.ainaa.utils.startVpnService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,11 +48,19 @@ class MyAccessibilityService : AccessibilityService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
+            ACTION_START_FOREGROUND -> {
+                startForeground(
+                    NOTIFICATION_ID,
+                    createNotification()
+                )
+                MyLog.i(TAG, "Accessibility Service started in foreground.")
+                startAccessibilityService()
+            }
             ACTION_START -> {
                 MyLog.i(TAG, "Accessibility Service started and moved to foreground.")
-                scheduleWatchdog()
             }
             ACTION_STOP -> {
+                cancelRestartAlarm()
                 cancelWatchdog()
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 stopSelf()
@@ -70,15 +81,21 @@ class MyAccessibilityService : AccessibilityService() {
         return START_STICKY
     }
     companion object {
-        fun Context.startAccessibilityService(action: String = ACTION_START) {
+        fun Context.startAccessibilityService(action: String = ACTION_START_FOREGROUND) {
             val intent = Intent(this, MyAccessibilityService::class.java).apply {
-                this@apply.action = action
+                this@apply.action = if (action == ACTION_START_FOREGROUND) {
+                    ACTION_START_FOREGROUND
+                } else {
+                    ACTION_START
+                }
             }
             startService(intent)
         }
 
         const val ACTION_STOP = "STOP_ACCESSIBILITY"
         const val ACTION_START = "START_ACCESSIBILITY"
+
+        const val ACTION_START_FOREGROUND = "START_ACCESSIBILITY_FOREGROUND"
         const val ACTION_SHARE_CURRENT_SCREEN = "SHARE_CURRENT_SCREEN"
         internal const val NOTIFICATION_ID = 101 // Unique ID for the notification
         internal const val NOTIFICATION_CHANNEL_ID = "AINAA_PROTECTION_CHANNEL"
@@ -93,7 +110,6 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onCreate() {
         super.onCreate()
         MyLog.i(TAG, "Accessibility Service created.")
-        startForeground(NOTIFICATION_ID, createNotification())
         scheduleWatchdog()
     }
 
@@ -177,14 +193,12 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onInterrupt() {
         serviceScope.cancel()
         MyLog.w(TAG, "Service interrupted")
+
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         MyLog.w(TAG, "Task removed, scheduling restart")
-        val restartIntent = Intent(this, RestartReceiver::class.java).apply {
-            setPackage(packageName)
-        }
-        sendBroadcast(restartIntent)
+        scheduleRestart()
         MyLog.d(TAG, "Restart broadcast sent")
         super.onTaskRemoved(rootIntent)
     }

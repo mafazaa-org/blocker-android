@@ -134,6 +134,6 @@
     <string name="report_send__faild_message">فشل في أرسال التقرير : %1$c{it.message}</string>
     <string name="howtoknow_asset">file:///android_asset/howToKnow.jpg</string>
     <string name="app_notification_description">الإشعار المستمر لتفعيل الحماية</string>
-    <string name="protaction_active_text">الحماية مفعلة.</string>
+    <string name="protection_active_text">الحماية مفعلة.</string>
     <string name="click_return_app_text">اضغط للعودة إلى التطبيق.</string>
 </resources>

@@ -282,8 +282,8 @@ class AppActivity : ComponentActivity() {
                                 context.getString(R.string.protection_activated_text),
                                 Toast.LENGTH_LONG
                             ).show()
-                            startAccessibilityService()
-                            context.startVpnService()
+                            startAccessibilityService(MyAccessibilityService.ACTION_START_FOREGROUND)
+                            startVpnService( MyAccessibilityService.ACTION_START_FOREGROUND)
                             backStack.add(Screen.ProtectionActivated)
                             backStack.remove(Screen.EnableProtection)
                         } else {
@@ -475,8 +475,8 @@ class AppActivity : ComponentActivity() {
                         .trimIndent(),
                     Toast.LENGTH_SHORT
                 ).show()
-                startAccessibilityService()
-                startVpnService()
+                startAccessibilityService(MyAccessibilityService.ACTION_START_FOREGROUND)
+                startVpnService(MyAccessibilityService.ACTION_START_FOREGROUND)
                 backStack.add(Screen.ProtectionActivated)
                 backStack.remove(Screen.EnableProtection)
             }
