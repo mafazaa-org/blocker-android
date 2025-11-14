@@ -3,21 +3,32 @@ package com.mafazaa.ainaa.service
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
-import com.mafazaa.ainaa.utils.MyLog
-import com.mafazaa.ainaa.utils.MyLog.logUiTree
 import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.data.local.SharedPrefs
-import com.mafazaa.ainaa.utils.isKeyguardSecure
 import com.mafazaa.ainaa.domain.models.BlockReason
-import com.mafazaa.ainaa.helpers.ScreenAnalyser
 import com.mafazaa.ainaa.domain.models.ScriptResult
 import com.mafazaa.ainaa.domain.repo.ScriptRepo
+import com.mafazaa.ainaa.helpers.DeviceUtils
 import com.mafazaa.ainaa.helpers.LockOverlayManager
+import com.mafazaa.ainaa.helpers.ScreenAnalyser
+import com.mafazaa.ainaa.receiver.RestartReceiver
+import com.mafazaa.ainaa.utils.MyLog
+import com.mafazaa.ainaa.utils.MyLog.logUiTree
+import com.mafazaa.ainaa.utils.block
+import com.mafazaa.ainaa.utils.cancelRestartAlarm
+import com.mafazaa.ainaa.utils.cancelWatchdog
+import com.mafazaa.ainaa.utils.checkBlockedApp
+import com.mafazaa.ainaa.utils.createNotification
+import com.mafazaa.ainaa.utils.scheduleRestart
+import com.mafazaa.ainaa.utils.scheduleWatchdog
 import com.mafazaa.ainaa.utils.shareFile
+import com.mafazaa.ainaa.utils.startVpnService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -28,24 +39,34 @@ import kotlin.time.measureTimedValue
 
 @SuppressLint("AccessibilityPolicy")
 class MyAccessibilityService : AccessibilityService() {
-    lateinit var overlay: LockOverlayManager
-    private val serviceScope = CoroutineScope(Dispatchers.Default + Job())
-    lateinit var lockOverlayManager: LockOverlayManager
-
-    private val sharedPrefs: SharedPrefs by inject(SharedPrefs::class.java)
+    val lockOverlayManager: LockOverlayManager by inject(LockOverlayManager::class.java)
+    internal val serviceScope = CoroutineScope(Dispatchers.Default + Job())
+    internal var alarmManager: AlarmManager? = null
+    internal var watchdogPendingIntent: PendingIntent? = null
+    internal val sharedPrefs: SharedPrefs by inject(SharedPrefs::class.java)
     private val scriptRepo: ScriptRepo by inject(ScriptRepo::class.java)
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            ACTION_STOP -> {
-                stopSelf()
-                isRunning = false
-                return START_NOT_STICKY
+            ACTION_START_FOREGROUND -> {
+                startForeground(
+                    NOTIFICATION_ID,
+                    createNotification()
+                )
+                MyLog.i(TAG, "Accessibility Service started in foreground.")
+                startAccessibilityService()
             }
+            ACTION_START -> {
+                MyLog.i(TAG, "Accessibility Service started and moved to foreground.")
+            }
+            ACTION_STOP -> {
+                cancelRestartAlarm()
+                cancelWatchdog()
+                stopForeground(STOP_FOREGROUND_REMOVE)
+                stopSelf()
 
+            }
             ACTION_SHARE_CURRENT_SCREEN -> {
-                if (!isRunning) {
-                    MyLog.w(TAG, "Service not running, cannot share screen")
-                }
                 serviceScope.launch {
                     val screenAnalysis = ScreenAnalyser.analyzeScreen(
                         rootInActiveWindow, getString(R.string.app_name)
@@ -53,23 +74,43 @@ class MyAccessibilityService : AccessibilityService() {
                     shareFile(logUiTree("screenShot", screenAnalysis))
                 }
             }
-
-            else -> {//or ACTION_START
-                isRunning = true
-                return START_STICKY
+            else -> {
+                MyLog.w(TAG, "Unknown action received: ${intent?.action}")
             }
         }
-        return super.onStartCommand(intent, flags, startId)
+        return START_STICKY
+    }
+    companion object {
+        fun Context.startAccessibilityService(action: String = ACTION_START_FOREGROUND) {
+            val intent = Intent(this, MyAccessibilityService::class.java).apply {
+                this@apply.action = if (action == ACTION_START_FOREGROUND) {
+                    ACTION_START_FOREGROUND
+                } else {
+                    ACTION_START
+                }
+            }
+            startService(intent)
+        }
+
+        const val ACTION_STOP = "STOP_ACCESSIBILITY"
+        const val ACTION_START = "START_ACCESSIBILITY"
+
+        const val ACTION_START_FOREGROUND = "START_ACCESSIBILITY_FOREGROUND"
+        const val ACTION_SHARE_CURRENT_SCREEN = "SHARE_CURRENT_SCREEN"
+        internal const val NOTIFICATION_ID = 101 // Unique ID for the notification
+        internal const val NOTIFICATION_CHANNEL_ID = "AINAA_PROTECTION_CHANNEL"
+        internal const val WATCHDOG_INTERVAL_MS =  15 *60 * 1000L
+
+        const val TAG = "MyAccessibilityService"
+
+        private val SETTINGS_PACKAGE = DeviceUtils.settingsPackageName
+        private val ACCESSIBILITY_SETTINGS = "${SETTINGS_PACKAGE}.accessibility.AccessibilitySettings"
     }
 
     override fun onCreate() {
         super.onCreate()
-        lockOverlayManager = inject<LockOverlayManager>(LockOverlayManager::class.java).value
-        overlay =
-            LockOverlayManager(this) // This seems redundant as overlayManager is already initialized.
-
-
-
+        MyLog.i(TAG, "Accessibility Service created.")
+        scheduleWatchdog()
     }
 
     override fun onServiceConnected() {
@@ -79,15 +120,27 @@ class MyAccessibilityService : AccessibilityService() {
         info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
         serviceInfo = info
+        MyLog.i(TAG, "Accessibility Service connected.")
     }
-
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         // Return early if event is null or service is not running
         event ?: return
-        if (!isRunning) return
         // Only handle window content changed events
-        if (event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) return
+        if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED &&
+            event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
+            return
+        }
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            val componentName = event.className?.toString()
+            if (event.packageName == SETTINGS_PACKAGE &&
+                (componentName == ACCESSIBILITY_SETTINGS ||
+                        componentName?.contains("accessibility", true) == true)) {
+
+                block(BlockReason.UsingBlockedApp(SETTINGS_PACKAGE))
+                return
+            }
+        }
 
         rootInActiveWindow?.let { rootNode ->
             serviceScope.launch {
@@ -137,47 +190,23 @@ class MyAccessibilityService : AccessibilityService() {
         }
     }
 
+    override fun onInterrupt() {
+        serviceScope.cancel()
+        MyLog.w(TAG, "Service interrupted")
 
-    private fun checkBlockedApp(currentApp: String?): Boolean {
-        if (!this.isKeyguardSecure())
-            return false
-        return currentApp != null &&
-                currentApp in sharedPrefs.blockedApps
     }
 
-    private fun block(reason: BlockReason) {
-        serviceScope.launch(Dispatchers.Main) {
-            lockOverlayManager.showOverlay(reason)
-        }
-        performGlobalAction(GLOBAL_ACTION_BACK)
-    }
-
-    companion object {
-        fun Context.startAccessibilityService(action: String = ACTION_START) {
-            isRunning = true
-            val intent = Intent(this, MyAccessibilityService::class.java).apply {
-                this@apply.action = action
-            }
-            startService(intent)
-        }
-
-        const val ACTION_STOP = "STOP_ACCESSIBILITY"
-        const val ACTION_START = "START_ACCESSIBILITY"
-        const val ACTION_SHARE_CURRENT_SCREEN = "SHARE_CURRENT_SCREEN"
-        var isRunning = false
-        const val TAG = "MyAccessibilityService"
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        MyLog.w(TAG, "Task removed, scheduling restart")
+        scheduleRestart()
+        MyLog.d(TAG, "Restart broadcast sent")
+        super.onTaskRemoved(rootIntent)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         serviceScope.cancel()
-        isRunning = false
-    }
-
-    override fun onInterrupt() {
-        serviceScope.cancel()
-        MyLog.w(TAG, "Service interrupted")
-        isRunning = false
+        cancelWatchdog()
 
     }
 }

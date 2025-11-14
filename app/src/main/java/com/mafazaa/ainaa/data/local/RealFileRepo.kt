@@ -22,7 +22,7 @@ class RealFileRepo(val context: Context) : FileRepo {
 
     override fun saveToLog(content: String, fileName: String) {
         val logFile = getLogFile(fileName)
-        logFile.appendText(content)
+        logFile.appendText(content, Charsets.UTF_8)
     }
 
     override fun getUpdateFile(): File = File(
