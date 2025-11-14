@@ -74,9 +74,9 @@ fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
 fun Context.startVpnService( action: String = MyVpnService.ACTION_START) {
     val intent = Intent(this, MyVpnService::class.java).apply {
         this.action = if (
-            action == MyVpnService.ACTION_START_FOREGROUND
+            action == MyVpnService.ACTION_START
         ) {
-            MyVpnService.ACTION_START_FOREGROUND
+            MyVpnService.ACTION_START
         } else {
             MyVpnService.ACTION_START
         }

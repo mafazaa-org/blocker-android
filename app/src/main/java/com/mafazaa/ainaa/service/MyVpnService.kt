@@ -20,12 +20,12 @@ import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 class MyVpnService : VpnService() {
-    private var vpnInterface: ParcelFileDescriptor? = null
+     var vpnInterface: ParcelFileDescriptor? = null
     private val sharedPrefs: SharedPrefs by inject(SharedPrefs::class.java)
     private val serviceScope = CoroutineScope(Dispatchers.Default + Job())
 
     companion object {
-        private const val TAG = "MyVpnService"
+        internal const val TAG = "MyVpnService"
         const val ACTION_START = "START_VPN"
         const val ACTION_STOP = "STOP_VPN"
         var isRunning = false//todo remove

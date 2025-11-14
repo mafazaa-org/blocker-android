@@ -49,6 +49,7 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_START_FOREGROUND -> {
+
                 startForeground(
                     NOTIFICATION_ID,
                     createNotification()
@@ -57,9 +58,11 @@ class MyAccessibilityService : AccessibilityService() {
                 startAccessibilityService()
             }
             ACTION_START -> {
+                isRunning = true
                 MyLog.i(TAG, "Accessibility Service started and moved to foreground.")
             }
             ACTION_STOP -> {
+                isRunning = false
                 cancelRestartAlarm()
                 cancelWatchdog()
                 stopForeground(STOP_FOREGROUND_REMOVE)
@@ -67,6 +70,9 @@ class MyAccessibilityService : AccessibilityService() {
 
             }
             ACTION_SHARE_CURRENT_SCREEN -> {
+                if (!isRunning) {
+                    MyLog.w(TAG, "Service not running, cannot share screen")
+                }
                 serviceScope.launch {
                     val screenAnalysis = ScreenAnalyser.analyzeScreen(
                         rootInActiveWindow, getString(R.string.app_name)
@@ -75,6 +81,7 @@ class MyAccessibilityService : AccessibilityService() {
                 }
             }
             else -> {
+                isRunning = true
                 MyLog.w(TAG, "Unknown action received: ${intent?.action}")
             }
         }
@@ -94,6 +101,7 @@ class MyAccessibilityService : AccessibilityService() {
 
         const val ACTION_STOP = "STOP_ACCESSIBILITY"
         const val ACTION_START = "START_ACCESSIBILITY"
+        var isRunning = false
 
         const val ACTION_START_FOREGROUND = "START_ACCESSIBILITY_FOREGROUND"
         const val ACTION_SHARE_CURRENT_SCREEN = "SHARE_CURRENT_SCREEN"
