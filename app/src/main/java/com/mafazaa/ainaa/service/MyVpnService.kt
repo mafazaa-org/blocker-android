@@ -4,17 +4,25 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.net.VpnService
 import android.os.ParcelFileDescriptor
+import android.util.Log
 import com.mafazaa.ainaa.AppActivity
-import com.mafazaa.ainaa.utils.Constants
-import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.data.local.SharedPrefs
 import com.mafazaa.ainaa.domain.models.DnsProtectionLevel
 import com.mafazaa.ainaa.helpers.MyNotificationManager
+import com.mafazaa.ainaa.utils.Constants
+import com.mafazaa.ainaa.utils.MyLog
+import com.mafazaa.ainaa.utils.hasVpnPermission
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 class MyVpnService : VpnService() {
     private var vpnInterface: ParcelFileDescriptor? = null
     private val sharedPrefs: SharedPrefs by inject(SharedPrefs::class.java)
+    private val serviceScope = CoroutineScope(Dispatchers.Default + Job())
 
     companion object {
         private const val TAG = "MyVpnService"
@@ -87,10 +95,11 @@ class MyVpnService : VpnService() {
         super.onDestroy()//todo
         isRunning = false
         MyLog.d(TAG, "VPN service destroyed")
-        if (isRunning) {
-            // إعادة التشغيل التلقائي
-            Intent(this, MyVpnService::class.java).apply {
-                action = ACTION_START
+        serviceScope.launch {
+            delay(5000)
+            if (MyAccessibilityService.isRunning&&this@MyVpnService.hasVpnPermission()) {
+                Log.d(TAG, "Restarting VPN service after revocation")
+                this@MyVpnService.startVpn(sharedPrefs.dnsProtectionLevel)
             }
 
         }
@@ -100,9 +109,8 @@ class MyVpnService : VpnService() {
         super.onRevoke()//todo
         isRunning = false
         MyLog.d(TAG, "VPN revoked")
-        Intent(this, MyVpnService::class.java).apply {
-            action = ACTION_START
-        }
+        serviceScope.launch {
 
+        }
     }
 }

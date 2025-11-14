@@ -47,11 +47,11 @@ class MyAccessibilityService : AccessibilityService() {
                     MyLog.w(TAG, "Service not running, cannot share screen")
                 }
                 serviceScope.launch {
-                    val screenAnalysis = ScreenAnalyser.analyzeScreen(
-                        rootInActiveWindow, getString(R.string.app_name)
-                    )
+                    rootInActiveWindow?.let {
+                        val screenAnalysis =
+                            ScreenAnalyser.analyzeScreen(it, getString(R.string.app_name))
                     shareFile(logUiTree("screenShot", screenAnalysis))
-                }
+                }}
             }
 
             else -> {//or ACTION_START
