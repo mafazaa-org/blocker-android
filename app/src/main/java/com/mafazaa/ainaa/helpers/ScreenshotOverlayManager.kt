@@ -63,11 +63,9 @@ class ScreenshotOverlayManager(val context: Context) {
                             )
                         },
                         onClose = { closeOverlay() },
-                        onScreenShot = { d ->
-                            serviceScope.launch {
-                                delay(d)
+                        onScreenShot = {
                                 context.startAccessibilityService(MyAccessibilityService.Companion.ACTION_SHARE_CURRENT_SCREEN)
-                            }
+
                         })
                 }
             }

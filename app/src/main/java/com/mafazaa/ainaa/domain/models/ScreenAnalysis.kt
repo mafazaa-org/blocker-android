@@ -25,10 +25,6 @@ data class ScreenAnalysis(
     val isSettingsScreen: Boolean,
     val root: ScreenNode,
 ) {
-    fun toJson():String {
-        val gson = Gson()
-        return gson.toJson(this)
-    }
     override fun toString(): String {
         return "nodes:$nodesCount, app:$pkg, has our app name:$hasAppName,is a settings screen:$isSettingsScreen" +
                 "\n" + root.toString()
