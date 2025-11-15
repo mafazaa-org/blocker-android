@@ -53,8 +53,6 @@
             </intent-filter>
         </service>
 
-
-
         <activity
             android:exported="true"
             android:name=".AppActivity">
