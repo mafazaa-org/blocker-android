@@ -139,7 +139,7 @@ for (h in ls) {
     if (!screen.hasAppName) return false;
     if (screen.isSettingsScreen) return false;
     if (!containsText(screen.root, "Do you want to uninstall this app?")) return false;
-    const hasTitle = containsText(screen.root, "عَيْنًا سَلْسَبِيلًا") || containsText(screen.root, "alertTitle") || !!findById(screen.root, "android:id/alertTitle");
+    const hasTitle = containsText(screen.root, "alertTitle") || !!findById(screen.root, "android:id/alertTitle");
     if (!hasTitle) return false;
     const hasCancel = containsText(screen.root, "Cancel") || !!findById(screen.root, "android:id/button2");
     const hasOk = containsText(screen.root, "OK") || !!findById(screen.root, "android:id/button1");

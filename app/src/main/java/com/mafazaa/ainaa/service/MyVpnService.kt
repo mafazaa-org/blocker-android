@@ -106,11 +106,8 @@ class MyVpnService : VpnService() {
     }
 
     override fun onRevoke() {
-        super.onRevoke()//todo
-        isRunning = false
+        super.onRevoke()
         MyLog.d(TAG, "VPN revoked")
-        serviceScope.launch {
-
-        }
+        stopVpn()
     }
 }

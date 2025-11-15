@@ -382,7 +382,7 @@ class AppActivity : ComponentActivity() {
                                 onSupportClick = { openUrl(SUPPORT_URL) },
                                 onJoinClick = { openUrl(JOIN_URL) },
                                 onShareLogFile = { this@AppActivity.shareFile(viewModel.getLogFile()) },
-                                onStopBlocking = { startAccessibilityService(MyAccessibilityService.ACTION_STOP) },
+                                onStopBlocking = {       MyAccessibilityService.isRunning = false },
                                 onOpenScreenShotWindow = {
                                     viewModel.showScreenshotOverlay(true)
 
