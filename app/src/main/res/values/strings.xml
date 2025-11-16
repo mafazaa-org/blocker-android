@@ -19,12 +19,13 @@
     <string name="modifying_app_settings_or_attempting_to_disable_the_app_is_not_allowed">Changing app settings or trying to disable the app is not allowed</string>
     <string name="report_sent_message">Report sent successfully</string>
     <string name="email_phone_contact_message">We’ll contact you by email or phone as soon as possible.</string>
-    <string name="write_here_message">Write here...</string>
-    <string name="enter_email_text">Please enter your email</string>
-    <string name="email_title">Email</string>
-    <string name="phone_number_text">Phone number</string>
-    <string name="enter_name_placeholder">Please enter your name</string>
-    <string name="name_field_title">Name</string>
+    <string name="issue_field_placeholder">Please provide clear and concise details about the issue.</string>
+    <string name="email_field_placeholder" translatable="false">name@example.com</string>
+    <string name="email_field_label">Email</string>
+    <string name="phone_number_field_label">Phone number</string>
+    <string name="phone_number_field_placeholder" translatable="false">01234567890</string>
+    <string name="name_field_placeholder">Ahmed Mohamed</string>
+    <string name="name_field_label">Name</string>
     <string name="report_problem_text">Report a Problem</string>
     <string name="back_text">Back</string>
     <string name="protection_activated_title">Congratulations! Protection Activated</string>
@@ -35,8 +36,8 @@
     <string name="block_app_text">Block a specific app</string>
     <string name="no_update_found_text">No updates available</string>
     <string name="click_to_check_text">Tap to check</string>
-    <string name="check_update_text">Checking for updates...</string>
-    <string name="downloading_update_text">Downloading update... Please wait</string>
+    <string name="check_update_text">Checking for updates…</string>
+    <string name="downloading_update_text">Downloading update… Please wait</string>
     <string name="update_failed_text">Update failed</string>
     <string name="try_again">Try again</string>
     <string name="update_done">Update downloaded</string>
@@ -68,7 +69,7 @@
     <string name="safe_search_image">Safe Search Image</string>
     <string name="contact_customer_service_text">Tap here to contact customer support</string>
     <string name="click_link_text">Tap the link</string>
-    <string name="the_issue_text">The Issue</string>
+    <string name="issue_field_label">Issue description</string>
     <string name="send_text">Send</string>
     <string name="protection_skipped_text">Protection Skipped</string>
     <string name="protection_skipped_message">You tried to disable protection, which is not allowed.</string>
@@ -123,20 +124,16 @@
     <string name="disclaimer_message">Once protection is activated, the following actions will be applied:</string>
     <string name="uninstall_feature_text">Uninstall Protection Feature</string>
     <string name="unistall_feature_message">When protection is enabled, a feature is activated that prevents the removal (uninstallation) of the app from the phone without going through specific and strict procedures. This feature is designed to ensure continued protection and to prevent any user from disabling it easily.</string>
-    <string name="classic_unistall_text">It will be impossible to uninstall the app using traditional methods (dragging or direct deletion).</string>
+    <string name="classic_unistall_text">It will be hard to uninstall the app using traditional methods (dragging or direct deletion).</string>
     <string name="classic_unistall_message">If you wish to uninstall the app in the future, you will need to contact customer support and follow their verification and deactivation procedures.</string>
     <string name="classic_unistall_message2">Therefore, your agreement to enable protection is considered an explicit consent to activate the uninstall protection feature and to comply with all associated security restrictions.</string>
     <string name="enable_protection_confirm_text">Do you want to proceed and enable protection now?</string>
-    <string name="blocked_keywords_text">Blocked Keywords</string>
-    <string name="add_keyword_text">Add Keyword</string>
-    <string name="manage_keywords_text">Manage Blocked Keywords</string>
-    <string name="enter_keyword_text">Enter keyword to block</string>
-    <string name="keyword_added_text">Keyword added successfully</string>
-    <string name="keyword_removed_text">Keyword removed</string>
-    <string name="no_keywords_text">No blocked keywords yet</string>
-    <string name="add_keyword_hint">Type keyword here...</string>
-    <string name="keyword_empty_error">Keyword cannot be empty</string>
-    <string name="blocked_keyword_message">This content contains a blocked keyword</string>
-    <string name="delete_keyword_text">Remove</string>
-    <string name="confirm_delete_keyword">Are you sure you want to remove this keyword?</string>
+    <string name="admin_permission_message">Please enable Device Admin to allow app blocking functionality.</string>
+    <string name="protection_activated_message">\n                       لحماية مفعلة الآن!\n                       يمكنك تعديل التطبيقات المحجوبة من خلال الضغط على \"حظر التطبيقات\" في الشاشة الرئيسية</string>
+    <string name="administrative_permission_text">Device Admin</string>
+    <string name="report_send__faild_message">فشل في أرسال التقرير : %1$c{it.message}</string>
+    <string name="howtoknow_asset">file:///android_asset/howToKnow.jpg</string>
+    <string name="app_notification_description">الإشعار المستمر لتفعيل الحماية</string>
+    <string name="protection_active_text">الحماية مفعلة.</string>
+    <string name="click_return_app_text">اضغط للعودة إلى التطبيق.</string>
 </resources>
