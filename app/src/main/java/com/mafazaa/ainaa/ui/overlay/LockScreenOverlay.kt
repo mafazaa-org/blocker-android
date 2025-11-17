@@ -1,7 +1,6 @@
 package com.mafazaa.ainaa.ui.overlay
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -29,7 +29,6 @@ import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.domain.models.BlockReason
 import com.mafazaa.ainaa.ui.common.TwoColorText
 import java.util.Locale
-import androidx.compose.ui.platform.LocalConfiguration
 
 @Composable
 fun LockScreenOverlay(
@@ -37,7 +36,7 @@ fun LockScreenOverlay(
     onShareLog: () -> Unit,
     onClose: () -> Unit
 ) {
-    val arabicLocale = Locale("ar")
+    val arabicLocale = Locale("ar",)
     val configuration = Configuration(LocalConfiguration.current)
     configuration.setLocale(arabicLocale)
     val arabicContext = LocalContext.current.createConfigurationContext(configuration)
@@ -124,12 +123,14 @@ fun LockScreenOverlay(
                         ) { onShareLog() }
                         Button(
                             onClick = onClose,
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
                             modifier = Modifier.padding(top = 16.dp)
                         ) {
                             Text(
-                                text = stringResource(R.string.close_text),
-                                color = MaterialTheme.colorScheme.onPrimary
+                                text = stringResource(R.string.close_text)
                             )
                         }
                     }

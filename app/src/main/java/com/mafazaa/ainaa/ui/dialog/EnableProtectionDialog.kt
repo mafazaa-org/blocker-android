@@ -56,7 +56,7 @@ fun EnableProtectionDialog(
                     .padding(20.dp)
 
             ) {
-                var scrollState = rememberScrollState()
+                val scrollState = rememberScrollState()
                 var isEndReached by remember {
                     mutableStateOf(false)
                 }
@@ -164,11 +164,13 @@ fun EnableProtectionDialog(
 
                 Button(
                     onClick = onConfirm,
-                    colors = ButtonDefaults.buttonColors(containerColor = red),
-
-                    ) {
-                        Text(stringResource(R.string.enable_protection_text1), color = Color.White)
-                    }
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = red,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(stringResource(R.string.enable_protection_text1))
+                }
                 }
 
             }}
