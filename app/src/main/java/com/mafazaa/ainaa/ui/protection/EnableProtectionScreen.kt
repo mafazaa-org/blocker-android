@@ -43,7 +43,7 @@ fun EnableProtectionScreen(
     selectedLevel: DnsProtectionLevel,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -74,7 +74,8 @@ fun ProtectYourDevice(enableProtection: () -> Unit, report: () -> Unit) {
                 .height(56.dp),
             colors = ButtonDefaults.buttonColors(
                 disabledContainerColor = Color.LightGray,
-                containerColor = red
+                containerColor = red,
+                contentColor = Color.White
             ),
         ) {
             Row(
