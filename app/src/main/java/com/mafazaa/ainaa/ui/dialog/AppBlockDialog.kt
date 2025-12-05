@@ -40,7 +40,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.domain.models.AppInfo
 import com.mafazaa.ainaa.helpers.toPainter
-import com.mafazaa.ainaa.ui.theme.red
 
 
 @Composable
@@ -133,7 +132,9 @@ fun AppBlockItem(
         Button(
             onClick = { onBlockClick(app) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (app.isSelected) Color.Gray else red,
+                containerColor = if (app.isSelected)
+                    MaterialTheme.colorScheme.secondary
+                else MaterialTheme.colorScheme.primary,
                 contentColor = Color.White
             ),
             enabled = !app.isSelected,

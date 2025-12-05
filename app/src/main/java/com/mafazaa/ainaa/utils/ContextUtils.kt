@@ -14,8 +14,10 @@ import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.net.VpnService.prepare
 import android.os.Build
+import android.os.PowerManager
 import android.os.Process
 import android.provider.Settings
 import android.provider.Settings.canDrawOverlays

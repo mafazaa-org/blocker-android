@@ -16,17 +16,24 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -53,9 +60,9 @@ import com.mafazaa.ainaa.navigation.Screen
 import com.mafazaa.ainaa.receiver.AppDeviceAdminReceiver
 import com.mafazaa.ainaa.service.MyAccessibilityService
 import com.mafazaa.ainaa.service.MyAccessibilityService.Companion.startAccessibilityService
-import com.mafazaa.ainaa.service.MyVpnService
-import com.mafazaa.ainaa.ui.common.BottomBar
+import com.mafazaa.ainaa.ui.common.MainDrawer
 import com.mafazaa.ainaa.ui.common.OkDialog
+import com.mafazaa.ainaa.ui.common.SupportUsBottomSheet
 import com.mafazaa.ainaa.ui.common.TopBar
 import com.mafazaa.ainaa.ui.dialog.BlockAppDialog
 import com.mafazaa.ainaa.ui.dialog.ConfirmBlockedDialog
@@ -176,6 +183,7 @@ class AppActivity : ComponentActivity() {
 
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun MainRoot(
         context: Context = LocalContext.current,
@@ -183,7 +191,13 @@ class AppActivity : ComponentActivity() {
         sharedPrefs: SharedPrefs,
     ) {
         val snackbarHostState = remember { SnackbarHostState() }
+        val uiScope = rememberCoroutineScope()
         val apps = viewModel.apps.collectAsState().value
+        val currentScreen = backStack.lastOrNull()
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        val sheetState = rememberModalBottomSheetState()
+        var showBottomSheet by remember { mutableStateOf(false) }
+
 
         // Centralized dialogs rendering
         when (val d = dialogState) {
@@ -298,130 +312,140 @@ class AppActivity : ComponentActivity() {
         }
 
         // Current Screen
-        val currentScreen = backStack.lastOrNull()
-
-        Scaffold(
-            snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-            topBar = {
-                TopBar(
-                    onBack = { backStack.removeLastOrNull() },
-                    currentScreen = currentScreen,
-                    supportUs = { backStack.add(Screen.Support) },
-                    home = {
-                        if (isServiceRunning(context, MyVpnService::class.java)) {
-                            // If already on the screen, don't add it again
-                            if (backStack.lastOrNull() != Screen.ProtectionActivated) {
-                                backStack.add(Screen.ProtectionActivated)
-                            }
-                        } else {
-                            // If service is not running, navigate to the enable screen
-                            if (backStack.lastOrNull() != Screen.EnableProtection) {
-                                backStack.clear() // Or handle navigation as you see fit
-                                backStack.add(Screen.EnableProtection)
-                            }
-                        }
-                    }
-                )
-            },
-            bottomBar = {
-                BottomBar(
-                    modifier = Modifier,
-                    appVersion = BuildConfig.VERSION_NAME,
-                    androidVersion = Build.VERSION.RELEASE
-                ) {
-                    if (isServiceRunning(context, MyAccessibilityService::class.java)) {
-                        if (backStack.lastOrNull() != Screen.ProtectionActivated) {
-                            backStack.add(Screen.ProtectionActivated)
-                        }
-                    }
-                }
-            },
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface)
-                .windowInsetsPadding(WindowInsets.systemBars)
-        ) { innerPadding ->
-            NavDisplay(
-                modifier = Modifier.padding(innerPadding),
-                backStack = backStack,
-                onBack = { backStack.removeLastOrNull() },
-                entryDecorators = listOf(
-                    rememberSceneSetupNavEntryDecorator(),
-                    rememberSavedStateNavEntryDecorator()
-                ),
-                entryProvider = { key ->
-                    when (key) {
-                        Screen.ProtectionActivated -> NavEntry(key) {
-                            ProtectionActivatedScreen(
-                                onSupportClick = { backStack.add(Screen.Support) },
-                                onBlockAppClick = { dialogState = DialogState.BlockApps() },
-                                onReportClick = { dialogState = DialogState.ReportProblem },
-                                onConfirmProtectionClick = { dialogState = DialogState.HowItWorks },
-                                onUpdateClick = { updateStatus ->
-                                    when (updateStatus) {
-                                        UpdateState.Downloaded -> {
-                                            context.installApk(viewModel.updateFile())
-                                        }
-
-                                        is UpdateState.Failed,
-                                        UpdateState.NoUpdate,
-                                            -> {
-                                            viewModel.handleUpdateStatus()
-                                        }
-
-                                        else -> {
-                                        }
+        MainDrawer(
+            drawerState = drawerState,
+            content = {
+                Scaffold(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .windowInsetsPadding(WindowInsets.systemBars),
+                    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+                    topBar = {
+                        TopBar(
+                            onBack = { backStack.removeLastOrNull() },
+                            currentScreen = currentScreen,
+                            supportUs = { backStack.add(Screen.Support) },
+                            openMenu = {
+                                uiScope.launch {
+                                    drawerState.apply {
+                                        if (isClosed) open() else close()
                                     }
-
-                                },
-                                updateState = viewModel.updateState.value,
-                            )
-                        }
-
-                        Screen.Support -> NavEntry(key) {
-                            SupportScreen(
-                                onSupportClick = { openUrl(SUPPORT_URL) },
-                                onJoinClick = { openUrl(JOIN_URL) },
-                                onShareLogFile = { this@AppActivity.shareFile(viewModel.getLogFile()) },
-                                onStopBlocking = { startAccessibilityService(MyAccessibilityService.ACTION_STOP) },
-                                onOpenScreenShotWindow = {
-                                    viewModel.showScreenshotOverlay(true)
-
                                 }
-                            )
-                        }
+                            }
+                        )
+                    },
+                    content = { innerPadding ->
+                        NavDisplay(
+                            modifier = Modifier.padding(innerPadding),
+                            backStack = backStack,
+                            onBack = { backStack.removeLastOrNull() },
+                            entryDecorators = listOf(
+                                rememberSceneSetupNavEntryDecorator(),
+                                rememberSavedStateNavEntryDecorator()
+                            ),
+                            entryProvider = { key ->
+                                when (key) {
+                                    Screen.ProtectionActivated -> NavEntry(key) {
+                                        ProtectionActivatedScreen(
+                                            onSupportClick = {
+                                                //
+                                            },
+                                            onBlockAppClick = { dialogState = DialogState.BlockApps() },
+                                            onReportClick = { dialogState = DialogState.ReportProblem },
+                                            onConfirmProtectionClick = { dialogState = DialogState.HowItWorks },
+                                            onUpdateClick = { updateStatus ->
+                                                when (updateStatus) {
+                                                    UpdateState.Downloaded -> {
+                                                        context.installApk(viewModel.updateFile())
+                                                    }
 
-                        Screen.EnableProtection -> NavEntry(key) {
-                            var selectedLevel by remember { mutableStateOf(DnsProtectionLevel.LOW) }
+                                                    is UpdateState.Failed,
+                                                    UpdateState.NoUpdate,
+                                                        -> {
+                                                        viewModel.handleUpdateStatus()
+                                                    }
 
-                            EnableProtectionScreen(
-                                report = { dialogState = DialogState.ReportProblem },
-                                enableProtection = { level: DnsProtectionLevel ->
-                                    selectedLevel = level
-                                    when {
-                                        !vpnPermission -> dialogState =
-                                            DialogState.Permission(PermissionState.Vpn)
+                                                    else -> {
+                                                    }
+                                                }
 
-                                        !notificationPermission -> dialogState =
-                                            DialogState.Permission(PermissionState.Notification)
-
-                                        !overlayPermission -> dialogState =
-                                            DialogState.Permission(PermissionState.Overlay)
-
-                                        !accessibilityPermission -> dialogState =
-                                            DialogState.Permission(PermissionState.Accessibility)
-
-                                        else -> dialogState = DialogState.EnableProtectionConfirm(
-                                            level = selectedLevel,
+                                            },
+                                            updateState = viewModel.updateState.value,
                                         )
                                     }
-                                },
-                                selectedLevel = selectedLevel,
-                            )
-                        }
-                    }
-                }
-            )
-        }
+
+                                    Screen.Support -> NavEntry(key) {
+                                        SupportScreen(
+                                            onSupportClick = { openUrl(SUPPORT_URL) },
+                                            onJoinClick = { openUrl(JOIN_URL) },
+                                            onShareLogFile = { this@AppActivity.shareFile(viewModel.getLogFile()) },
+                                            onStopBlocking = { startAccessibilityService(MyAccessibilityService.ACTION_STOP) },
+                                            onOpenScreenShotWindow = {
+                                                viewModel.showScreenshotOverlay(true)
+
+                                            }
+                                        )
+                                    }
+
+                                    Screen.EnableProtection -> NavEntry(key) {
+                                        var selectedLevel by remember { mutableStateOf(DnsProtectionLevel.NONE) }
+
+                                        EnableProtectionScreen(
+                                            report = { dialogState = DialogState.ReportProblem },
+                                            enableProtection = { level: DnsProtectionLevel ->
+                                                if (level == DnsProtectionLevel.NONE) {
+                                                    uiScope.launch {
+                                                        snackbarHostState
+                                                            .currentSnackbarData ?: snackbarHostState // Clear previous snackbar
+                                                            .showSnackbar(
+                                                                message = context.getString(R.string.pick_protect_level_text),
+                                                                duration = SnackbarDuration.Short,
+                                                            )
+                                                    }
+                                                    return@EnableProtectionScreen
+                                                }
+                                                selectedLevel = level
+                                                when {
+                                                    !vpnPermission -> dialogState =
+                                                        DialogState.Permission(PermissionState.Vpn)
+
+                                                    !notificationPermission -> dialogState =
+                                                        DialogState.Permission(PermissionState.Notification)
+
+                                                    !overlayPermission -> dialogState =
+                                                        DialogState.Permission(PermissionState.Overlay)
+
+                                                    !accessibilityPermission -> dialogState =
+                                                        DialogState.Permission(PermissionState.Accessibility)
+
+                                                    else -> dialogState = DialogState.EnableProtectionConfirm(
+                                                        level = selectedLevel,
+                                                    )
+                                                }
+                                            },
+                                            selectedLevel = selectedLevel,
+                                            supportUs = {
+                                                uiScope.launch {
+                                                    showBottomSheet = true
+                                                }
+                                            },
+
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                        if (showBottomSheet) {
+                            SupportUsBottomSheet(
+                                onDismiss = { showBottomSheet = false },
+                                sheetState = sheetState
+                            )                        }
+                    },
+                )
+            }
+        )
+
+
     }
 
     private fun refreshPermissionState() {

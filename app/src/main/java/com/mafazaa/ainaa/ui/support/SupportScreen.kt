@@ -13,6 +13,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import com.mafazaa.ainaa.BuildConfig
 import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.ui.common.TwoColorText
-import com.mafazaa.ainaa.ui.theme.red
 
 @Composable
 fun SupportScreen(
@@ -81,8 +81,8 @@ fun SupportScreen(
                 Button(
                     onClick = onSupportClick,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = red,
-                        contentColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
                     Text(
@@ -118,8 +118,8 @@ fun SupportScreen(
                 Button(
                     onClick = onJoinClick,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = red,
-                        contentColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
                     Text(

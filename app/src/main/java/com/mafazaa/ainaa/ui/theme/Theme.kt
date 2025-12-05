@@ -17,53 +17,53 @@ import androidx.compose.ui.unit.LayoutDirection
 private val DarkColorScheme = darkColorScheme(
     primary = DarkPrimary,
     onPrimary = DarkOnPrimary,
-
+    primaryContainer = DarkPrimaryContainer,
+    onPrimaryContainer = DarkOnPrimaryContainer,
     secondary = DarkSecondary,
     onSecondary = DarkOnSecondary,
-
+    secondaryContainer = DarkSecondaryContainer,
+    onSecondaryContainer = DarkOnSecondaryContainer,
     tertiary = DarkTertiary,
-    onTertiary = Color.White,
-
+    onTertiary = DarkOnTertiary,
     background = DarkBackground,
     onBackground = DarkOnBackground,
-
     surface = DarkSurface,
     onSurface = DarkOnSurface,
-
-    surfaceVariant = gray,
-    onSurfaceVariant = DarkOnSurface,
-
+    surfaceVariant = DarkSurfaceVariant,
+    onSurfaceVariant = DarkOnSurfaceVariant,
+    outline = DarkOutline,
+    outlineVariant = DarkOutlineVariant,
+    inverseSurface = DarkInverseSurface,
+    inverseOnSurface = DarkInverseOnSurface,
+    inversePrimary = DarkInversePrimary,
     error = DarkError,
-    onError = DarkOnError,
-
-    outline = lightGray,
-    outlineVariant = gray
+    onError = DarkOnError
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = LightPrimary,
     onPrimary = LightOnPrimary,
-
+    primaryContainer = LightPrimaryContainer,
+    onPrimaryContainer = LightOnPrimaryContainer,
     secondary = LightSecondary,
     onSecondary = LightOnSecondary,
-
+    secondaryContainer = LightSecondaryContainer,
+    onSecondaryContainer = LightOnSecondaryContainer,
     tertiary = LightTertiary,
-    onTertiary = Color.White,
-
+    onTertiary = LightOnTertiary,
     background = LightBackground,
     onBackground = LightOnBackground,
-
     surface = LightSurface,
     onSurface = LightOnSurface,
-
-    surfaceVariant = cardColor,
-    onSurfaceVariant = LightOnSurface,
-
+    surfaceVariant = LightSurfaceVariant,
+    onSurfaceVariant = LightOnSurfaceVariant,
+    outline = LightOutline,
+    outlineVariant = LightOutlineVariant,
+    inverseSurface = LightInverseSurface,
+    inverseOnSurface = LightInverseOnSurface,
+    inversePrimary = LightInversePrimary,
     error = LightError,
-    onError = LightOnError,
-
-    outline = lightGray,
-    outlineVariant = gray
+    onError = LightOnError
 )
 
 @Composable

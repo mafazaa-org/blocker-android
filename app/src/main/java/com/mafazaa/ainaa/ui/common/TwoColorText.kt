@@ -1,6 +1,7 @@
 package com.mafazaa.ainaa.ui.common
 
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,7 +20,7 @@ fun TwoColorText(modifier: Modifier = Modifier, black: String, red: String, onCl
             append("$black ")
             withStyle(
                 style = SpanStyle(
-                    color = com.mafazaa.ainaa.ui.theme.red,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     textDecoration = TextDecoration.Underline
                 )

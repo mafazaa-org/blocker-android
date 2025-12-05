@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,7 +34,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.ui.theme.AinaaTheme
-import com.mafazaa.ainaa.ui.theme.red
 
 /**
  * last dialog before enabling protection
@@ -69,7 +69,7 @@ fun EnableProtectionDialog(
                 }
 
                 // Timer state for enabling the OK button after 5 seconds
-                var timerSeconds by remember { mutableStateOf(5) }
+                var timerSeconds by remember { mutableIntStateOf(5) }
                 var timerActive by remember { mutableStateOf(true) }
                 val isOkEnabled = isEndReached && timerSeconds == 0
 
@@ -145,7 +145,7 @@ fun EnableProtectionDialog(
                     text = stringResource(R.string.enable_protection_confirm_text),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
-                    color = red,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
 
@@ -157,7 +157,7 @@ fun EnableProtectionDialog(
                 OutlinedButton(
                     onClick = onDismiss,
                     modifier = Modifier.padding(end = 8.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = red)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(stringResource(R.string.later_text))
                 }
@@ -165,7 +165,7 @@ fun EnableProtectionDialog(
                 Button(
                     onClick = onConfirm,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = red,
+                        containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = Color.White
                     )
                 ) {
@@ -178,7 +178,7 @@ fun EnableProtectionDialog(
     }
 
 
-@Preview(showBackground = false, showSystemUi = true)
+@Preview(showBackground = false, showSystemUi = true, locale = "ar")
 @Composable
 fun EnableProtectionDialogPreview() {
     AinaaTheme {

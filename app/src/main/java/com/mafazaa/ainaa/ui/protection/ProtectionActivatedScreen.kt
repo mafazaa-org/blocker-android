@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +29,6 @@ import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.domain.models.UpdateState
 import com.mafazaa.ainaa.ui.common.ReportLink
 import com.mafazaa.ainaa.ui.common.TwoColorText
-import com.mafazaa.ainaa.ui.theme.red
 
 @Composable
 fun ProtectionActivatedScreen(
@@ -60,7 +60,7 @@ fun ProtectionActivatedScreen(
             text = stringResource(R.string.how_check_activation_work_text),
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
-            color = red,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textDecoration = TextDecoration.Underline,
             modifier = Modifier
                 .padding(top = 8.dp, bottom = 24.dp)
@@ -76,8 +76,8 @@ fun ProtectionActivatedScreen(
         ) {
             OutlinedButton(
                 onClick = onSupportClick,
-                border = BorderStroke(1.dp, red),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = red),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .weight(1f)
@@ -89,8 +89,8 @@ fun ProtectionActivatedScreen(
             Button(
                 onClick = onBlockAppClick,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = red,
-                    contentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier

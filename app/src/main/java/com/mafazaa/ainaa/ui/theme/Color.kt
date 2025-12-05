@@ -3,33 +3,63 @@ package com.mafazaa.ainaa.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Shared Colors
-val red = Color(0xFFE74C3C)
+val red = Color(0xFFD43820)
 val gray = Color(0xFF555555)
 val lightGray = Color(0xFF7B7B7B)
 
 // Light Theme Colors
-val LightPrimary = Color(0xFFE74C3C) // Red
-val LightSecondary = Color(0xFF625b71) // Purple Grey
-val LightTertiary = Color(0xFF7D5260) // Pink
-val LightBackground = Color(0xFFFFFBFE) // Off-white
-val LightSurface = Color(0xFFFFFFFF) // White
-val LightOnPrimary = Color(0xFFFFFFFF) // White
-val LightOnSecondary = Color(0xFFFFFFFF) // White
-val LightOnBackground = Color(0xFF1C1B1F) // Dark text
-val LightOnSurface = Color(0xFF1C1B1F) // Dark text
-val LightError = Color(0xFFB3261E) // Material Red
-val LightOnError = Color(0xFFFFFFFF) // White
+val LightPrimary = Color(0xFFD43820)
+val LightOnPrimary = Color(0xFFFCF8F7)
+val LightPrimaryContainer = Color(0xFFFF7A66)
+val LightOnPrimaryContainer = Color(0xFFFCF8F7)
+val LightSecondary = Color(0xFFFAEFED)
+val LightOnSecondary = Color(0xFF7A706F)
+val LightSecondaryContainer = Color(0xFFFAE4E1)
+val LightOnSecondaryContainer = Color(0xFF262322)
+val LightTertiary = Color(0xFFFAEFED)
+val LightOnTertiary = Color(0xFF403A39)
+val LightBackground = Color(0xFFFCF8F7)
+val LightOnBackground = Color(0xFF1A1818)
+val LightSurface = Color(0xFFFCF8F7)
+val LightOnSurface = Color(0xFF1A1818)
+val LightSurfaceVariant = Color(0xFFFAEFED)
+val LightOnSurfaceVariant = Color(0xFF262322)
+val LightOutline = Color(0xFFFAEFED)
+val LightOutlineVariant = Color(0xFFE5D2CF)
+val LightShadow = Color(0xFF1A1818)
+val LightScrim = Color(0xFF403A39)
+val LightInverseSurface = Color(0xFF7A706F)
+val LightInverseOnSurface = Color(0xFFFAEFED)
+val LightInversePrimary = Color(0xFFFF7A66)
+val LightError = Color(0xFFB3261E)
+val LightOnError = Color(0xFFFFFFFF)
 val cardColor = Color(0xFFF8F8F8)
 
 // Dark Theme Colors
-val DarkPrimary = Color(0xFFE74C3C) // Red
-val DarkSecondary = Color(0xFFCCC2DC) // Light Purple Grey
-val DarkTertiary = Color(0xFFEFB8C8) // Light Pink
-val DarkBackground = Color(0xFF1B1B1F) // Softer dark gray with slight blue tint - easier on eyes
-val DarkSurface = Color(0xFF25252A) // Elevated surface with warmer tone
-val DarkOnPrimary = Color(0xFFFFFFFF) // White
-val DarkOnSecondary = Color(0xFF332D41) // Dark
-val DarkOnBackground = Color(0xFFE3E2E6) // Softer off-white for better contrast
-val DarkOnSurface = Color(0xFFE3E2E6) // Softer off-white for better contrast
-val DarkError = Color(0xFFCF6679) // Softer red
-val DarkOnError = Color(0xFF601410) // Dark red
+val DarkPrimary = Color(0xFFE56E56)
+val DarkOnPrimary = Color(0xFF410001)
+val DarkPrimaryContainer = Color(0xFF680003)
+val DarkOnPrimaryContainer = Color(0xFFFFB4A5)
+val DarkSecondary = Color(0xFF5D3F3D)
+val DarkOnSecondary = Color(0xFFFFDADB)
+val DarkSecondaryContainer = Color(0xFF5D3F3D)
+val DarkOnSecondaryContainer = Color(0xFFFFDADB)
+val DarkTertiary = Color(0xFF613B47)
+val DarkOnTertiary = Color(0xFFFFD8E2)
+val DarkTertiaryContainer = Color(0xFF613B47)
+val DarkOnTertiaryContainer = Color(0xFFFFD8E2)
+val DarkError = Color(0xFFFFB4AB)
+val DarkOnError = Color(0xFF690005)
+val DarkBackground = Color(0xFF201A19)
+val DarkOnBackground = Color(0xFFECE0DE)
+val DarkSurface = Color(0xFF201A19)
+val DarkOnSurface = Color(0xFFECE0DE)
+val DarkSurfaceVariant = Color(0xFF534341)
+val DarkOnSurfaceVariant = Color(0xFFD8C2BF)
+val DarkOutline = Color(0xFFA08C8A)
+val DarkOutlineVariant = Color(0xFF534341)
+val DarkInverseSurface = Color(0xFFECE0DE)
+val DarkInverseOnSurface = Color(0xFF362F2E)
+val DarkInversePrimary = Color(0xFFD43820)
+val DarkShadow = Color(0xFF000000)
+val DarkScrim = Color(0xFF000000)

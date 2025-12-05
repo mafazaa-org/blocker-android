@@ -89,6 +89,135 @@ for (h in ls) {
   }
 })();
         """.trimIndent()
+        ),ScriptCode(
+            "device admin screen xiaomi", """
+(function() {
+    try {
+        if (!screen.hasAppName || !screen.isSettingsScreen) {
+            return false;
+        }
+        
+        // Check for device admin related text
+        var deviceAdminKeywords = [
+            "Device admin",
+            "Device administrator", 
+            "Device admin apps",
+            "Deactivate",
+            "This device admin app has access to"
+        ];
+        
+        var hasDeviceAdminText = false;
+        for (var i = 0; i < deviceAdminKeywords.length; i++) {
+            if (containsText(screen.root, deviceAdminKeywords[i])) {
+                hasDeviceAdminText = true;
+                break;
+            }
+        }
+        
+        return hasDeviceAdminText;
+    } catch (e) {
+        return false;
+    }
+})();
+        """.trimIndent()
+        ),
+        ScriptCode(
+            "accessibility revoke screen xiaomi", """
+(function() {
+    try {
+        if (!screen.isSettingsScreen || !screen.hasAppName) {
+            return false;
+        }
+
+        // Accessibility context keywords
+        var accessibilityKeywords = [
+            "Accessibility",
+            "Accessibility service"
+        ];
+
+        // Revocation / disabling intent keywords
+        var revokeKeywords = [
+            "Disable",
+            "Turn off",
+            "Stop",
+            "Deactivate",
+            "Off",
+            "Use service"
+        ];
+
+        var hasAccessibilityContext = false;
+        for (var i = 0; i < accessibilityKeywords.length; i++) {
+            if (containsText(screen.root, accessibilityKeywords[i])) {
+                hasAccessibilityContext = true;
+                break;
+            }
+        }
+        if (!hasAccessibilityContext) return false;
+
+        var hasRevokeIntent = false;
+        for (var j = 0; j < revokeKeywords.length; j++) {
+            if (containsText(screen.root, revokeKeywords[j])) {
+                hasRevokeIntent = true;
+                break;
+            }
+        }
+
+        return hasRevokeIntent;
+    } catch (e) {
+        return false;
+    }
+})();
+    """.trimIndent()
+        ),
+        ScriptCode(
+            "developer options screen xiaomi", """
+(function() {
+    try {
+        if (!screen.isSettingsScreen) {
+            return false;
+        }
+
+        // Developer options titles commonly seen
+        var devTitles = [
+            "Developer options",
+            "Developer settings",
+            "Developer",
+            "Additional settings" // MIUI path
+        ];
+        var hasDevTitle = false;
+        for (var i = 0; i < devTitles.length; i++) {
+            if (containsText(screen.root, devTitles[i])) {
+                hasDevTitle = true;
+                break;
+            }
+        }
+        if (!hasDevTitle) return false;
+
+        // Risky toggles often used to bypass protection
+        var riskyToggles = [
+            "USB debugging",
+            "Install via USB",
+            "Revoke USB debugging authorizations",
+            "Allow mock locations",
+            "OEM unlocking",
+            "MIUI optimization",
+            "Stay awake"
+        ];
+        var hasRisky = false;
+        for (var j = 0; j < riskyToggles.length; j++) {
+            if (containsText(screen.root, riskyToggles[j])) {
+                hasRisky = true;
+                break;
+            }
+        }
+
+        // Flag when developer options with risky items is visible
+        return hasRisky;
+    } catch (e) {
+        return false;
+    }
+})();
+    """.trimIndent()
         )
     )
 }

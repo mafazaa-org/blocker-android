@@ -14,10 +14,8 @@ import com.mafazaa.ainaa.data.local.SharedPrefs
 import com.mafazaa.ainaa.domain.models.BlockReason
 import com.mafazaa.ainaa.domain.models.ScriptResult
 import com.mafazaa.ainaa.domain.repo.ScriptRepo
-import com.mafazaa.ainaa.helpers.DeviceUtils
 import com.mafazaa.ainaa.helpers.LockOverlayManager
 import com.mafazaa.ainaa.helpers.ScreenAnalyser
-import com.mafazaa.ainaa.receiver.RestartReceiver
 import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.utils.MyLog.logUiTree
 import com.mafazaa.ainaa.utils.block
@@ -28,7 +26,6 @@ import com.mafazaa.ainaa.utils.createNotification
 import com.mafazaa.ainaa.utils.scheduleRestart
 import com.mafazaa.ainaa.utils.scheduleWatchdog
 import com.mafazaa.ainaa.utils.shareFile
-import com.mafazaa.ainaa.utils.startVpnService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -103,8 +100,6 @@ class MyAccessibilityService : AccessibilityService() {
 
         const val TAG = "MyAccessibilityService"
 
-        private val SETTINGS_PACKAGE = DeviceUtils.settingsPackageName
-        private val ACCESSIBILITY_SETTINGS = "${SETTINGS_PACKAGE}.accessibility.AccessibilitySettings"
     }
 
     override fun onCreate() {
@@ -130,16 +125,6 @@ class MyAccessibilityService : AccessibilityService() {
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED &&
             event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
             return
-        }
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            val componentName = event.className?.toString()
-            if (event.packageName == SETTINGS_PACKAGE &&
-                (componentName == ACCESSIBILITY_SETTINGS ||
-                        componentName?.contains("accessibility", true) == true)) {
-
-                block(BlockReason.UsingBlockedApp(SETTINGS_PACKAGE))
-                return
-            }
         }
 
         rootInActiveWindow?.let { rootNode ->
