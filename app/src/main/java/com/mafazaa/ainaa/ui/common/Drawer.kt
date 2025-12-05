@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -124,22 +125,24 @@ fun DrawerItem(
 
 @Composable
 fun SocialMediaItem(
+    modifier: Modifier = Modifier,
     badge: Int = R.drawable.external_link_icon,
     label: Int = R.string.facebook_text,
     icon: Int = R.drawable.facebook_icon,
     selected: Boolean = false,
     onClick: () -> Unit = {},
-    modifier: Modifier = Modifier
 ) {
     NavigationDrawerItem(
+        modifier = modifier,
         badge = { Icon(
             painter = painterResource( badge),
             contentDescription = "item icon",
             modifier = Modifier.size(16.dp)
+                .scale(scaleX = -1f, scaleY = 1f) // Flip the icon horizontally
         )},
         icon = {Icon(
             painter = painterResource( icon),
-            contentDescription = "item icon"
+            contentDescription = "item icon",
         )},
         label = { Text(text = stringResource(label)) },
         selected = selected,

@@ -60,6 +60,7 @@ import com.mafazaa.ainaa.navigation.Screen
 import com.mafazaa.ainaa.receiver.AppDeviceAdminReceiver
 import com.mafazaa.ainaa.service.MyAccessibilityService
 import com.mafazaa.ainaa.service.MyAccessibilityService.Companion.startAccessibilityService
+import com.mafazaa.ainaa.ui.common.EnableProtectionBottomSheet
 import com.mafazaa.ainaa.ui.common.MainDrawer
 import com.mafazaa.ainaa.ui.common.OkDialog
 import com.mafazaa.ainaa.ui.common.SupportUsBottomSheet
@@ -197,6 +198,7 @@ class AppActivity : ComponentActivity() {
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val sheetState = rememberModalBottomSheetState()
         var showBottomSheet by remember { mutableStateOf(false) }
+        var showProtectionSheet by remember { mutableStateOf(false) }
 
 
         // Centralized dialogs rendering
@@ -393,6 +395,8 @@ class AppActivity : ComponentActivity() {
                                         EnableProtectionScreen(
                                             report = { dialogState = DialogState.ReportProblem },
                                             enableProtection = { level: DnsProtectionLevel ->
+                                                showProtectionSheet = true
+                                                return@EnableProtectionScreen
                                                 if (level == DnsProtectionLevel.NONE) {
                                                     uiScope.launch {
                                                         snackbarHostState
@@ -439,7 +443,14 @@ class AppActivity : ComponentActivity() {
                             SupportUsBottomSheet(
                                 onDismiss = { showBottomSheet = false },
                                 sheetState = sheetState
-                            )                        }
+                            )
+                        }
+                        if(showProtectionSheet){
+                            EnableProtectionBottomSheet(
+                                onDismiss = { showProtectionSheet = false },
+                                sheetState = sheetState
+                            )
+                        }
                     },
                 )
             }

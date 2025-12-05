@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.MoreVert
@@ -131,7 +132,7 @@ fun PaymentForm(
             ) {
                 Text(text = stringResource(getSelectedPaymentMethod(selectedIndex.value ?: 0)))
                 Spacer(Modifier.weight(1f))
-                Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "More options")
+                Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "More options")
             }
             DropdownMenu(
                 expanded = expanded,
