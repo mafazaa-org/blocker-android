@@ -92,7 +92,7 @@ class MyVpnService : VpnService() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()//todo
+        super.onDestroy()
         isRunning = false
         MyLog.d(TAG, "VPN service destroyed")
         serviceScope.launch {

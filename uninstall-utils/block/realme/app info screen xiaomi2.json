@@ -1,0 +1,137 @@
+{
+  "meta": {
+    "versionName": "v0.0.18",
+    "versionCode": 18,
+    "manufacturer": "realme",
+    "model": "RMX3938"
+  },
+  "time": "2025-11-27 10:07:02",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": true,
+    "nodesCount": 21,
+    "pkg": "com.android.settings",
+    "root": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "cls": "android.widget.ImageButton",
+              "desc": "التنقل إلى أعلى",
+              "id": "com.android.settings:id/coui_toolbar_back_view"
+            },
+            {
+              "children": [],
+              "cls": "android.widget.TextView",
+              "text": "عَيْنًا سَلْسَبِيلًا"
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/switch_text",
+                          "text": "استخدام ميزة \"عَيْنًا سَلْسَبِيلًا\""
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.Switch",
+                          "id": "android:id/switch_widget",
+                          "text": "تشغيل"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout",
+                      "id": "com.android.settings:id/coui_preference"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout",
+                  "id": "com.android.settings:id/main_switch_bar"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/title",
+                      "text": "الخيارات"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "اختصار \"عَيْنًا سَلْسَبِيلًا\""
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/summary",
+                          "text": "غير مفعَّل"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout",
+                      "id": "com.android.settings:id/main_layout"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.Switch",
+                      "desc": "إعدادات الاختصارات",
+                      "id": "android:id/switch_widget",
+                      "text": "إيقاف"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/title",
+                      "text": "‏معلومات التطبيق"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "com.android.settings:id/coui_statusText1"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "desc": "لمحة عامة عن عَيْنًا سَلْسَبِيلًا\n\nمفازا",
+                      "id": "android:id/title",
+                      "text": "مفازا"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                }
+              ],
+              "cls": "androidx.recyclerview.widget.RecyclerView",
+              "id": "com.android.settings:id/recycler_view"
+            }
+          ],
+          "cls": "android.view.ViewGroup",
+          "id": "com.android.settings:id/content_parent"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

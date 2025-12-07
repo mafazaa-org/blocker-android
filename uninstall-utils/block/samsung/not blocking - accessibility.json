@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "versionName": "v0.0.11",
+    "versionCode": 11,
+    "manufacturer": "samsung",
+    "model": "SM-A336E"
+  },
+  "time": "2025-10-29 20:27:22",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": true,
+    "nodesCount": 16,
+    "pkg": "com.android.settings",
+    "root": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "cls": "android.widget.TextView",
+              "id": "com.android.settings:id/collapsing_appbar_extended_title",
+              "text": "عَيْنًا سَلْسَبِيلًا"
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "cls": "android.widget.ImageButton",
+                  "desc": "التنقل إلى الأعلى"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.TextView",
+                  "text": "عَيْنًا سَلْسَبِيلًا"
+                }
+              ],
+              "cls": "android.view.ViewGroup",
+              "id": "com.android.settings:id/action_bar"
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "cls": "android.widget.Switch",
+                  "desc": "قيد التشغيل",
+                  "id": "com.android.settings:id/sesl_switchbar_switch"
+                }
+              ],
+              "cls": "android.widget.LinearLayout",
+              "id": "com.android.settings:id/sesl_switchbar_container",
+              "text": "عَيْنًا سَلْسَبِيلًا"
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/title",
+                      "text": "اختصار عَيْنًا سَلْسَبِيلًا"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.Switch",
+                      "desc": "اختصار عَيْنًا سَلْسَبِيلًا",
+                      "id": "android:id/switch_widget"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/title",
+                      "text": "معلومات التطبيق"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/title",
+                      "text": "مفازا"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                }
+              ],
+              "cls": "androidx.recyclerview.widget.RecyclerView",
+              "id": "com.android.settings:id/recycler_view"
+            }
+          ],
+          "cls": "android.view.ViewGroup",
+          "id": "com.android.settings:id/coordinator"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

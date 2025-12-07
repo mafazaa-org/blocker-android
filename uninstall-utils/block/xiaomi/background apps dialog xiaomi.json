@@ -1,0 +1,103 @@
+{
+  "meta": {
+    "versionName": "v0.0.11",
+    "versionCode": 11,
+    "manufacturer": "HONOR",
+    "model": "ALI-NX1"
+  },
+  "time": "2025-10-29 21:42:08",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": false,
+    "nodesCount": 15,
+    "pkg": "com.android.systemui",
+    "root": {
+      "children": [
+        {
+          "children": [],
+          "cls": "android.widget.TextView",
+          "id": "android:id/alertTitle",
+          "text": "Apps in use"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "com.android.systemui:id/promptInfoView",
+                      "text": "The following apps are running now. Stopping them can improve battery life."
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout",
+                  "id": "com.android.systemui:id/landscapeLxayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "com.android.systemui:id/fgs_manager_app_item_label",
+                      "text": "عَيْنًا سَلْسَبِيلًا"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "com.android.systemui:id/fgs_manager_app_item_duration",
+                      "text": "1 min"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.Button",
+                      "id": "com.android.systemui:id/fgs_manager_app_item_stop_button",
+                      "text": "Stop"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "com.android.systemui:id/fgs_manager_app_item_label",
+                      "text": "Telegram"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "com.android.systemui:id/fgs_manager_app_item_duration",
+                      "text": "13 hr"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.Button",
+                      "id": "com.android.systemui:id/fgs_manager_app_item_stop_button",
+                      "text": "Stop"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                }
+              ],
+              "cls": "androidx.recyclerview.widget.RecyclerView",
+              "id": "com.android.systemui:id/recyclerView"
+            },
+            {
+              "children": [],
+              "cls": "android.widget.TextView",
+              "id": "com.android.systemui:id/gotIt",
+              "text": "Got it"
+            }
+          ],
+          "cls": "android.widget.LinearLayout",
+          "id": "com.android.systemui:id/landscapeLayout"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

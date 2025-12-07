@@ -1,0 +1,234 @@
+{
+  "meta": {
+    "versionName": "v0.0.18",
+    "versionCode": 18,
+    "manufacturer": "realme",
+    "model": "RMX3938"
+  },
+  "time": "2025-11-27 10:04:33",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": true,
+    "nodesCount": 43,
+    "pkg": "com.android.settings",
+    "root": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "text": "عَيْنًا سَلْسَبِيلًا"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "text": "‏الإصدار ‎‏‪v0.0.18‬‏‎"
+                        }
+                      ],
+                      "cls": "android.view.View"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "text": "أرشفة"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.Button"
+                        }
+                      ],
+                      "cls": "android.view.View"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "text": "إلغاء التثبيت"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.Button"
+                        }
+                      ],
+                      "cls": "android.view.View"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "text": "‏فرض الإيقاف"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.Button"
+                        }
+                      ],
+                      "cls": "android.view.View"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "التنبيهات"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/summary",
+                          "text": "حوالي إشعارَين في اليوم"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/coui_statusText1"
+                        }
+                      ],
+                      "cls": "androidx.compose.ui.viewinterop.ViewFactoryHolder"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "‏الأذونات"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/summary",
+                          "text": "الإشعارات"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/coui_statusText1"
+                        }
+                      ],
+                      "cls": "androidx.compose.ui.viewinterop.ViewFactoryHolder"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "استخدام بيانات الجوّال"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/summary",
+                          "text": "لا يوجد استخدام للبيانات"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/coui_statusText1"
+                        }
+                      ],
+                      "cls": "androidx.compose.ui.viewinterop.ViewFactoryHolder"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "وقت الشاشة"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/coui_statusText1"
+                        }
+                      ],
+                      "cls": "androidx.compose.ui.viewinterop.ViewFactoryHolder"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "استخدام التطبيق للبطارية"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/summary",
+                          "text": " "
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/coui_statusText1"
+                        }
+                      ],
+                      "cls": "androidx.compose.ui.viewinterop.ViewFactoryHolder"
+                    }
+                  ],
+                  "cls": "android.widget.ScrollView"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.view.View",
+                          "desc": "التنقل إلى أعلى"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.Button"
+                        }
+                      ],
+                      "cls": "android.view.View"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.view.View"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.view.View",
+                          "desc": "فتح"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.Button"
+                        }
+                      ],
+                      "cls": "android.view.View"
+                    }
+                  ],
+                  "cls": "android.view.View"
+                }
+              ],
+              "cls": "android.view.View"
+            }
+          ],
+          "cls": "android.view.View"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

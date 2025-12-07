@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "versionName": "v0.0.16",
+    "versionCode": 16,
+    "manufacturer": "HONOR",
+    "model": "ALI-NX1"
+  },
+  "time": "2025-11-18 22:43:58",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": true,
+    "nodesCount": 13,
+    "pkg": "com.android.settings",
+    "root": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.ImageView",
+                      "desc": "Accounts",
+                      "id": "com.android.settings:id/admin_icon"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "com.android.settings:id/admin_name",
+                      "text": "عَيْنًا سَلْسَبِيلًا"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "com.android.settings:id/admin_warning",
+                      "text": "This device administrator is currently active and allows عَيْنًا سَلْسَبِيلًا to perform the following operations:"
+                    }
+                  ],
+                  "cls": "android.widget.ScrollView",
+                  "id": "com.android.settings:id/admin_scroll"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.Button",
+                  "id": "com.android.settings:id/action_button",
+                  "text": "Deactivate"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.Button",
+                  "id": "com.android.settings:id/cancel_button",
+                  "text": "Cancel"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.ImageButton",
+                      "desc": "Navigate up"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/action_bar_title",
+                      "text": "Device administrator"
+                    }
+                  ],
+                  "cls": "android.widget.FrameLayout",
+                  "id": "com.android.settings:id/content_header_container"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.FrameLayout",
+                  "id": "com.android.settings:id/content_bottom_container"
+                }
+              ],
+              "cls": "android.view.ViewGroup",
+              "id": "com.android.settings:id/content_parent"
+            }
+          ],
+          "cls": "androidx.drawerlayout.widget.DrawerLayout",
+          "id": "com.android.settings:id/drawer_layout"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

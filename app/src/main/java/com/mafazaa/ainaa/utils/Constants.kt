@@ -8,6 +8,42 @@ object Constants {
     const val JOIN_URL = "https://www.mafazaa.com/join"
     const val SUPPORT_CONTACT_URL = "https://ainaa.mafazaa.com/support"
     const val SAFE_SEARCH_URL = "https://google.com/safesearch"
+    val socialMediaPackages = listOf(
+        "com.facebook.katana",        // Facebook
+        "com.facebook.lite",          // Facebook Lite
+        "com.instagram.android",      // Instagram
+        "com.facebook.orca",          // Messenger
+        "com.whatsapp",               // WhatsApp
+        "com.whatsapp.w4b",           // WhatsApp Business
+        "com.zhiliaoapp.musically",   // TikTok (older/global)
+        "com.ss.android.ugc.trill",   // TikTok (regional)
+        "com.snapchat.android",       // Snapchat
+        "org.telegram.messenger",     // Telegram
+        "org.thunderdog.challegram",  // Telegram X (old)
+        "com.reddit.frontpage",       // Reddit
+        "com.instagram.barcelona",    // Threads
+        "com.twitter.android",        // X / Twitter
+        "com.discord",                // Discord
+        "com.linkedin.android",       // LinkedIn
+        "com.pinterest"               // Pinterest
+    )
+
+    val browserPackages = listOf(
+        "com.android.chrome",                 // Chrome
+        "com.chrome.beta",                    // Chrome Beta
+        "com.chrome.dev",                     // Chrome Dev
+        "com.chrome.canary",                  // Chrome Canary
+        "com.google.android.googlequicksearchbox", // Google app browser
+        "com.sec.android.app.sbrowser",       // Samsung Internet
+        "org.mozilla.firefox",                // Firefox
+        "org.mozilla.firefox_beta",           // Firefox Beta
+        "com.opera.browser",                  // Opera
+        "com.opera.mini.native",              // Opera Mini
+        "com.microsoft.emmx",                 // Microsoft Edge
+        "com.brave.browser",                  // Brave
+        "com.duckduckgo.mobile.android",      // DuckDuckGo
+        "com.vivaldi.browser"                 // Vivaldi
+    )
 
     /**
      * See [com.mafazaa.ainaa.data.remote.KtorRepo.getLatestVersion]
@@ -90,13 +126,13 @@ for (h in ls) {
 })();
         """.trimIndent()
         ),
-        // New script: settings app info screen for `com.android.settings` (Samsung)
         ScriptCode(
             "settings app info screen samsung", """
                 (function() {
                   try {
                     if (!screen.root) return false;
                     // node count observed for this layout
+                    if (screen.pkg === "com.samsung.accessibility") return true;
                     if (screen.nodesCount !== 16) return false;
                     return  screen.hasAppName && screen.isSettingsScreen ;
                 
@@ -105,58 +141,86 @@ for (h in ls) {
                   }
                 })();
             """.trimIndent()
+        ), ScriptCode(
+            "device admin xiaomi", """          
+(function() {     
+            try {
+           return screen.hasAppName && screen.isSettingsScreen && screen.nodesCount==13;
+  } catch (e) {
+    return false;
+  }
+})();
+        """.trimIndent()
+        ), ScriptCode(
+            "background apps dialog xiaomi", """          
+(function() {     
+            try {
+           return screen.hasAppName && screen.isSettingsScreen && screen.nodesCount==18;
+  } catch (e) {
+    return false;
+  }
+})();
+        """.trimIndent()
         ),
-        // New script: uninstall dialog from com.android.launcher3 with 9 nodes
+
+        ScriptCode(
+            "safe zone screen realme", """
+(function() {
+  try {
+    if (!screen.root) return false;
+    if (screen.nodesCount !== 13) return false;
+    if (screen.pkg !== "com.android.systemui") return false;
+    //check the size is 2
+    return  screen.root.children. length === 2;
+  } catch (e) {
+    return false;
+  }
+})();
+            """.trimIndent()
+        ),
+        ScriptCode(
+            "device admin realme", """
+(function() {
+    try {
+        if (!screen.root) return false;
+        return screen.hasAppName && screen.isSettingsScreen &&(screen.nodesCount !==18) ;
+    } catch (e) {
+        return false;
+    }
+})();
+            """.trimIndent()
+        ),
+        ScriptCode(
+            "device admin samsung", """
+(function() {
+    try {
+        if (!screen.root) return false;
+        return screen.hasAppName && screen.isSettingsScreen &&(screen.nodesCount !== 8 ||screen.nodesCount !==18) ;
+    } catch (e) {
+        return false;
+    }
+})();
+            """.trimIndent()
+        ),
         ScriptCode(
             "uninstall screen realme", """
 (function() {
   try {
     if (!screen.root) return false;
     if (screen.nodesCount !== 9) return false;
-    if (screen.app !== "com.android.launcher3") return false;
     if (!screen.hasAppName) return false;
-    if (screen.isSettingsScreen) return false;
-    if (!containsText(screen.root, "Uninstall")) return false;
-    if (!containsText(screen.root, "App data, including files and settings")) return false;
-    const hasCancel = containsText(screen.root, "Cancel") || !!findById(screen.root, "android:id/button2");
-    const hasUninstall = containsText(screen.root, "Uninstall") || !!findById(screen.root, "android:id/button1");
-    if (!hasCancel || !hasUninstall) return false;
     return true;
   } catch (e) {
     return false;
   }
 })();
             """.trimIndent()
-        ),
-        // New script: uninstall dialog from com.google.android.packageinstaller with 6 nodes
-        ScriptCode(
-            "uninstall screen samsung", """
-(function() {
-  try {
-    if (!screen.root) return false;
-    if (screen.nodesCount !== 6) return false;
-    if (screen.app !== "com.google.android.packageinstaller") return false;
-    if (!screen.hasAppName) return false;
-    if (screen.isSettingsScreen) return false;
-    if (!containsText(screen.root, "Do you want to uninstall this app?")) return false;
-    const hasTitle = containsText(screen.root, "alertTitle") || !!findById(screen.root, "android:id/alertTitle");
-    if (!hasTitle) return false;
-    const hasCancel = containsText(screen.root, "Cancel") || !!findById(screen.root, "android:id/button2");
-    const hasOk = containsText(screen.root, "OK") || !!findById(screen.root, "android:id/button1");
-    if (!hasCancel || !hasOk) return false;
-
-    return true;
-  } catch (e) {
-    return false;
-  }
-})();
-            """.trimIndent()
-        ),
-        ScriptCode(
+        ), ScriptCode(
             "uninstall popup samsung", """          
 (function() {
   try {
     if (!screen.root) return false;
+    if (!screen.hasAppName) return false;
     const children = screen.root.children;
     if (!children || children.length < 3) return false;
     const title = children[0];

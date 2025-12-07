@@ -1,0 +1,114 @@
+{
+  "meta": {
+    "versionName": "v0.0.16",
+    "versionCode": 16,
+    "manufacturer": "samsung",
+    "model": "SM-A065F"
+  },
+  "time": "2025-11-18 08:10:00",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": true,
+    "nodesCount": 18,
+    "pkg": "com.android.settings",
+    "root": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "cls": "android.widget.TextView",
+              "id": "com.android.settings:id/collapsing_appbar_extended_title",
+              "text": "تطبيقات مسؤول الجهاز"
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "cls": "android.widget.ImageButton",
+                  "desc": "التنقل إلى الأعلى"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.TextView",
+                  "text": "تطبيقات مسؤول الجهاز"
+                }
+              ],
+              "cls": "android.view.ViewGroup",
+              "id": "com.android.settings:id/action_bar"
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "com.android.settings:id/title",
+                      "text": "تستطيع تطبيقات مسؤول الجهاز فرض متطلبات كلمة المرور أو سياسات حماية أخرى على هاتفك. وتستطيع إلغاء تفعيل الكاميرا وميزات أخرى وقفل هاتفك عن بعد أو إعادة ضبطه.\n\nيستخدم أصحاب العمل عادةً تطبيقات مسؤول الجهاز لحماية البيانات المتعلقة بالعمل. يجب عليك السماح بوصول مسؤول الجهاز إلى التطبيقات التي تعرفها وتثق بها فقط."
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/title",
+                      "text": "Authenticator"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.Switch",
+                      "id": "android:id/switch_widget"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/title",
+                      "text": "عَيْنًا سَلْسَبِيلًا"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.Switch",
+                      "id": "android:id/switch_widget"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/title",
+                      "text": "مركز العثور"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.Switch",
+                      "id": "android:id/switch_widget"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                }
+              ],
+              "cls": "androidx.recyclerview.widget.RecyclerView",
+              "id": "com.android.settings:id/recycler_view"
+            }
+          ],
+          "cls": "android.view.ViewGroup",
+          "id": "com.android.settings:id/coordinator"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

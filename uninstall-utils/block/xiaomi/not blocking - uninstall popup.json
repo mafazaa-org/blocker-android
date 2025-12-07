@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "versionName": "v0.0.11",
+    "versionCode": 11,
+    "manufacturer": "HONOR",
+    "model": "ALI-NX1"
+  },
+  "time": "2025-10-28 22:19:15",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": false,
+    "nodesCount": 6,
+    "pkg": "com.google.android.packageinstaller",
+    "root": {
+      "children": [
+        {
+          "children": [],
+          "cls": "android.widget.TextView",
+          "id": "android:id/alertTitle",
+          "text": "عَيْنًا سَلْسَبِيلًا"
+        },
+        {
+          "children": [],
+          "cls": "android.widget.TextView",
+          "id": "android:id/message",
+          "text": "Do you want to uninstall this app?"
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "cls": "android.widget.Button",
+              "id": "android:id/button2",
+              "text": "Cancel"
+            },
+            {
+              "children": [],
+              "cls": "android.widget.Button",
+              "id": "android:id/button1",
+              "text": "OK"
+            }
+          ],
+          "cls": "android.widget.ScrollView",
+          "id": "android:id/buttonPanel"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

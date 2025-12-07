@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "versionName": "v0.0.11",
+    "versionCode": 11,
+    "manufacturer": "samsung",
+    "model": "SM-A336E"
+  },
+  "time": "2025-10-29 20:27:01",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": false,
+    "nodesCount": 10,
+    "pkg": "com.android.systemui",
+    "root": {
+      "children": [
+        {
+          "children": [],
+          "cls": "android.widget.TextView",
+          "id": "android:id/alertTitle",
+          "text": "التحقق من النشاط في الخلفية"
+        },
+        {
+          "children": [],
+          "cls": "android.widget.TextView",
+          "id": "android:id/message",
+          "text": "تكون هذه التطبيقات والخدمات مفعلة أثناء تشغيلها في الخلفية."
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "cls": "android.widget.TextView",
+                  "id": "com.android.systemui:id/fgs_manager_app_item_label",
+                  "text": "عَيْنًا سَلْسَبِيلًا"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.TextView",
+                  "id": "com.android.systemui:id/fgs_manager_app_item_duration",
+                  "text": "٣ دقائق"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.Button",
+                  "desc": "عَيْنًا سَلْسَبِيلًا, إيقاف",
+                  "id": "com.android.systemui:id/fgs_manager_app_item_stop_button",
+                  "text": "إيقاف"
+                }
+              ],
+              "cls": "android.widget.LinearLayout"
+            }
+          ],
+          "cls": "androidx.recyclerview.widget.RecyclerView",
+          "id": "com.android.systemui:id/sec_fgs_manager_recycler_view"
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "cls": "android.widget.Button",
+              "id": "android:id/button3",
+              "text": "تم"
+            }
+          ],
+          "cls": "android.widget.ScrollView",
+          "id": "android:id/buttonPanel"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

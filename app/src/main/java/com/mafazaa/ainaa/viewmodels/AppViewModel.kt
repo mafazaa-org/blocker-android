@@ -1,24 +1,23 @@
 package com.mafazaa.ainaa.viewmodels
 
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mafazaa.ainaa.BuildConfig
-import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.data.local.SharedPrefs
 import com.mafazaa.ainaa.data.local.add
 import com.mafazaa.ainaa.data.local.remove
 import com.mafazaa.ainaa.data.models.NetworkResult
-import com.mafazaa.ainaa.domain.models.DnsProtectionLevel
-import com.mafazaa.ainaa.domain.FileRepo
 import com.mafazaa.ainaa.data.models.ReportModel
+import com.mafazaa.ainaa.domain.FileRepo
+import com.mafazaa.ainaa.domain.models.AppInfo
+import com.mafazaa.ainaa.domain.models.DnsProtectionLevel
 import com.mafazaa.ainaa.domain.models.UpdateState
 import com.mafazaa.ainaa.domain.repo.RemoteRepo
 import com.mafazaa.ainaa.domain.repo.UpdateRepo
 import com.mafazaa.ainaa.helpers.ScreenshotOverlayManager
-import com.mafazaa.ainaa.domain.models.AppInfo
+import com.mafazaa.ainaa.utils.MyLog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,9 +34,12 @@ class AppViewModel(
 
     private val TAG = "MainViewModel"
     private val _apps = MutableStateFlow<List<AppInfo>>(emptyList())
+    private val _blockedWords = MutableStateFlow<List<String>>(emptyList())
     val apps: StateFlow<List<AppInfo>> = _apps.asStateFlow()
+    val blockedWords: StateFlow<List<String>> = _blockedWords.asStateFlow()
 
     var updateState = mutableStateOf<UpdateState>(UpdateState.NoUpdate)
+
     fun loadInstalledApps(appList: List<AppInfo>) {
         val appList = appList.toMutableList()
         val selectedApps = sharedPrefs.blockedApps
@@ -49,6 +51,24 @@ class AppViewModel(
         }
         _apps.value = appList
     }
+
+    fun loadBlockedWords() {
+        _blockedWords.value = sharedPrefs.blockedWords.toList()
+    }
+
+    fun addBlockedWord(word: String) {
+        if (word.isBlank()) return
+        if (_blockedWords.value.contains(word)) return
+        sharedPrefs.blockedWords = sharedPrefs.blockedWords.add(word)
+        _blockedWords.value += word
+    }
+
+    fun removeBlockedWord(word: String) {
+        if (!_blockedWords.value.contains(word)) return
+        sharedPrefs.blockedWords = sharedPrefs.blockedWords.remove(word)
+        _blockedWords.value -= word
+    }
+
     fun showScreenshotOverlay(show: Boolean) {
         if (show) {
             screenshotOverlayManager.showOverlay()

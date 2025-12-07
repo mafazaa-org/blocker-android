@@ -1,7 +1,6 @@
 package com.mafazaa.ainaa.ui.overlay
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -29,7 +29,6 @@ import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.domain.models.BlockReason
 import com.mafazaa.ainaa.ui.common.TwoColorText
 import java.util.Locale
-import androidx.compose.ui.platform.LocalConfiguration
 
 @Composable
 fun LockScreenOverlay(
@@ -106,6 +105,29 @@ fun LockScreenOverlay(
                                     text = reason.packageName,
                                     color = MaterialTheme.colorScheme.onSurface,
                                     style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.padding(bottom = 16.dp)
+                                )
+                            }
+
+                            is BlockReason.BlockedWordDetected -> {
+                                Text(
+                                    text = stringResource(R.string.blocked_word_detected_text),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(bottom = 16.dp)
+                                )
+                                Text(
+                                    text = reason.keyword,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                                Text(
+                                    text = reason.sentence,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    textAlign = TextAlign.Center,
                                     modifier = Modifier.padding(bottom = 16.dp)
                                 )
                             }
