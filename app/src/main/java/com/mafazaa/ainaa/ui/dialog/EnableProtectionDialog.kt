@@ -58,8 +58,17 @@ fun EnableProtectionDialog(
                     .padding(20.dp)
 
             ) {
-                // Make the textual content scrollable and pin the action row to the bottom
                 val scrollState = rememberScrollState()
+                var isEndReached by remember {
+                    mutableStateOf(false)
+                }
+                isEndReached = scrollState.value == scrollState.maxValue || isEndReached
+
+                val isScrollAtEnd by remember {
+                    derivedStateOf {
+                        scrollState.value == scrollState.maxValue
+                    }
+                }
 
                 // Timer state for enabling the OK button after 5 seconds
                 // Restore 3-second delay before accept as requested

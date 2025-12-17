@@ -15,43 +15,55 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 
 private val DarkColorScheme = darkColorScheme(
-    primary = DarkPrimary, // Red
-    onPrimary = Color.White, // White text on Red buttons
+    primary = DarkPrimary,
+    onPrimary = DarkOnPrimary,
 
-    secondary = lightGray, // Neutral gray for secondary elements
-    onSecondary = Color.Black,
+    secondary = DarkSecondary,
+    onSecondary = DarkOnSecondary,
 
-    tertiary = gray, // Another neutral gray
+    tertiary = DarkTertiary,
     onTertiary = Color.White,
 
-    background = DarkBackground, // Pure Black
-    onBackground = DarkOnBackground, // White text on Black background
+    background = DarkBackground,
+    onBackground = DarkOnBackground,
 
-    surface = DarkSurface, // Very dark gray for surfaces like cards
-    onSurface = DarkOnSurface, // White text on surfaces
+    surface = DarkSurface,
+    onSurface = DarkOnSurface,
 
     surfaceVariant = gray,
-    onSurfaceVariant = Color.White,
+    onSurfaceVariant = DarkOnSurface,
 
-    error = DarkError, // A specific, softer red for errors
-    onError = Color.Black, // Black text on the error color for good contrast
+    error = DarkError,
+    onError = DarkOnError,
 
-    outline = gray
+    outline = lightGray,
+    outlineVariant = gray
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = red,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
+    primary = LightPrimary,
+    onPrimary = LightOnPrimary,
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
+    secondary = LightSecondary,
+    onSecondary = LightOnSecondary,
+
+    tertiary = LightTertiary,
     onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+
+    background = LightBackground,
+    onBackground = LightOnBackground,
+
+    surface = LightSurface,
+    onSurface = LightOnSurface,
+
+    surfaceVariant = cardColor,
+    onSurfaceVariant = LightOnSurface,
+
+    error = LightError,
+    onError = LightOnError,
+
+    outline = lightGray,
+    outlineVariant = gray
 )
 
 @Composable
@@ -64,13 +76,12 @@ fun AinaaTheme(
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-   //         if (darkTheme) dynamicDarkColorScheme(context) else
-                dynamicLightColorScheme(context)
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
-        //darkTheme -> DarkColorScheme
+        darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,

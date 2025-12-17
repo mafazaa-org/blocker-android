@@ -1,6 +1,5 @@
 package com.mafazaa.ainaa.ui.support
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,11 +13,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -45,7 +44,6 @@ fun SupportScreen(
             .fillMaxSize()
             .padding(8.dp)
             .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colorScheme.surface)
             .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -83,11 +81,13 @@ fun SupportScreen(
                 )
                 Button(
                     onClick = onSupportClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = red)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = red,
+                        contentColor = Color.White
+                    )
                 ) {
                     Text(
-                        text= stringResource(R.string.support_us_text),
-                        color = MaterialTheme.colorScheme.surface
+                        text= stringResource(R.string.support_us_text)
                     )
                 }
             }
@@ -118,12 +118,13 @@ fun SupportScreen(
                 )
                 Button(
                     onClick = onJoinClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = red)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = red,
+                        contentColor = Color.White
+                    )
                 ) {
                     Text(
-                        text= stringResource(R.string.join_text),
-                        color = MaterialTheme.colorScheme.surface
-
+                        text= stringResource(R.string.join_text)
                     )
                 }
             }

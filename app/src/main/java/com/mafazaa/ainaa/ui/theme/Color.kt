@@ -2,29 +2,34 @@ package com.mafazaa.ainaa.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Light Theme Colors
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
-val cardColor = Color(0xFFF8F8F8)
+// Shared Colors
+val red = Color(0xFFE74C3C)
 val gray = Color(0xFF555555)
 val lightGray = Color(0xFF7B7B7B)
-val lightGreen = Color(0xFF9CCC65)
-val lightGreenDark = Color(0xFF689F38)
-val lightError = Color(0xFFCF6679)
-val yellow = Color(0xFFFFA726)
-val blue300 = Color(0xFF64B5F6)
-val red = Color(0xFFE74C3C)
-val black100 = Color(0xFF414141)
+
+// Light Theme Colors
+val LightPrimary = Color(0xFFE74C3C) // Red
+val LightSecondary = Color(0xFF625b71) // Purple Grey
+val LightTertiary = Color(0xFF7D5260) // Pink
+val LightBackground = Color(0xFFFFFBFE) // Off-white
+val LightSurface = Color(0xFFFFFFFF) // White
+val LightOnPrimary = Color(0xFFFFFFFF) // White
+val LightOnSecondary = Color(0xFFFFFFFF) // White
+val LightOnBackground = Color(0xFF1C1B1F) // Dark text
+val LightOnSurface = Color(0xFF1C1B1F) // Dark text
+val LightError = Color(0xFFB3261E) // Material Red
+val LightOnError = Color(0xFFFFFFFF) // White
+val cardColor = Color(0xFFF8F8F8)
 
 // Dark Theme Colors
 val DarkPrimary = Color(0xFFE74C3C) // Red
-val DarkBackground = Color(0xFF121212) // A very dark gray, not pure black
-val DarkOnBackground = Color(0xFFE0E0E0) // An off-white, not pure white
-val DarkSurface = Color(0xFF1C1C1E) // Slightly lighter black for surfaces
-val DarkOnSurface = Color(0xFFE0E0E0) // An off-white, not pure white
-val DarkError = Color(0xFFCF6679) // A slightly softer red for errors
+val DarkSecondary = Color(0xFFCCC2DC) // Light Purple Grey
+val DarkTertiary = Color(0xFFEFB8C8) // Light Pink
+val DarkBackground = Color(0xFF1B1B1F) // Softer dark gray with slight blue tint - easier on eyes
+val DarkSurface = Color(0xFF25252A) // Elevated surface with warmer tone
+val DarkOnPrimary = Color(0xFFFFFFFF) // White
+val DarkOnSecondary = Color(0xFF332D41) // Dark
+val DarkOnBackground = Color(0xFFE3E2E6) // Softer off-white for better contrast
+val DarkOnSurface = Color(0xFFE3E2E6) // Softer off-white for better contrast
+val DarkError = Color(0xFFCF6679) // Softer red
+val DarkOnError = Color(0xFF601410) // Dark red

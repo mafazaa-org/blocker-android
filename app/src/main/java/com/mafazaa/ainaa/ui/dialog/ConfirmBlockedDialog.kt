@@ -91,9 +91,12 @@ fun ConfirmBlockedDialog(
 
                     Button(
                         onClick = { onConfirm(app) },
-                        colors = ButtonDefaults.buttonColors(containerColor = red)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = red,
+                            contentColor = Color.White
+                        )
                     ) {
-                        Text(stringResource(R.string.confirm_text), color = Color.White)
+                        Text(stringResource(R.string.confirm_text))
                     }
                 }
             }
