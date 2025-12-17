@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "versionName": "v0.0.11",
+    "versionCode": 11,
+    "manufacturer": "HONOR",
+    "model": "ALI-NX1"
+  },
+  "time": "2025-10-29 21:44:34",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": true,
+    "nodesCount": 5,
+    "pkg": "com.android.settings",
+    "root": {
+      "children": [
+        {
+          "children": [],
+          "cls": "android.widget.TextView",
+          "id": "android:id/alertTitle",
+          "text": "عَيْنًا سَلْسَبِيلًا"
+        },
+        {
+          "children": [],
+          "cls": "android.widget.TextView",
+          "id": "android:id/message",
+          "text": "Disconnect this VPN."
+        },
+        {
+          "children": [],
+          "cls": "android.widget.Button",
+          "id": "android:id/button2",
+          "text": "Cancel"
+        },
+        {
+          "children": [],
+          "cls": "android.widget.Button",
+          "id": "android:id/button1",
+          "text": "Disconnect"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

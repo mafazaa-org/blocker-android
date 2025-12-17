@@ -134,5 +134,14 @@
     <string name="app_notification_description">الإشعار المستمر لتفعيل الحماية</string>
     <string name="protection_active_text">الحماية مفعلة.</string>
     <string name="click_return_app_text">اضغط للعودة إلى التطبيق.</string>
-
+    <string name="delete_keyword_text">حذف الكلمة المفتاحية</string>
+    <string name="confirm_delete_keyword">تأكيد الحذف</string>
+    <string name="manage_keywords_text">إدارة الكلمات المفتاحية</string>
+    <string name="add_keyword_hint">أضف كلمة مفتاحية</string>
+    <string name="no_keywords_text">لا توجد كلمات مفتاحية</string>
+    <string name="add_keyword">إضافة كلمة مفتاحية</string>
+    <string name="block_word">حجب كلمة</string>
+    <string name="blocked_word_detected_text">تم اكتشاف كلمة محجوبة</string>
+    <string name="stop_blocking">إيقاف الحجب</string>
+    <string name="start_blocking">استئناف الحجب</string>
 </resources>

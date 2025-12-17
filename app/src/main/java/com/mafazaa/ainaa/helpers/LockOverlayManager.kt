@@ -9,11 +9,11 @@ import android.view.WindowManager
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
-import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.domain.models.BlockReason
-import com.mafazaa.ainaa.utils.shareFile
 import com.mafazaa.ainaa.ui.overlay.LockScreenOverlay
 import com.mafazaa.ainaa.ui.theme.AinaaTheme
+import com.mafazaa.ainaa.utils.MyLog
+import com.mafazaa.ainaa.utils.shareFile
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class LockOverlayManager(val context: Context) {
@@ -63,6 +63,15 @@ class LockOverlayManager(val context: Context) {
 
                             is BlockReason.UsingBlockedApp -> {
                                 context.shareFile(MyLog.logFalseBlockedApp(reason.packageName))
+                            }
+
+                            is BlockReason.BlockedWordDetected -> {
+                                context.shareFile(
+                                    MyLog.logBlockedWordDetected(
+                                        reason.keyword,
+                                        reason.sentence
+                                    )
+                                )
                             }
                         }
                     })

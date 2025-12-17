@@ -1,0 +1,90 @@
+{
+  "meta": {
+    "versionName": "v0.0.18",
+    "versionCode": 18,
+    "manufacturer": "samsung",
+    "model": "SM-A127F"
+  },
+  "time": "2025-11-28 14:48:12",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": false,
+    "nodesCount": 13,
+    "pkg": "com.samsung.accessibility",
+    "root": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "cls": "android.widget.TextView",
+              "id": "com.samsung.accessibility:id/collapsing_appbar_extended_title",
+              "text": "عَيْنًا سَلْسَبِيلًا"
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "cls": "android.widget.ImageButton",
+                  "desc": "Navigate up"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.TextView",
+                  "text": "عَيْنًا سَلْسَبِيلًا"
+                }
+              ],
+              "cls": "android.view.ViewGroup",
+              "id": "com.samsung.accessibility:id/action_bar"
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "cls": "android.widget.Switch",
+                  "desc": "On",
+                  "id": "com.samsung.accessibility:id/sesl_switchbar_switch"
+                }
+              ],
+              "cls": "android.widget.LinearLayout",
+              "id": "com.samsung.accessibility:id/sesl_switchbar_container",
+              "text": "عَيْنًا سَلْسَبِيلًا"
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/title",
+                      "text": "عَيْنًا سَلْسَبِيلًا shortcut"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.Switch",
+                      "desc": "عَيْنًا سَلْسَبِيلًا shortcut",
+                      "id": "android:id/switch_widget"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.TextView",
+                  "id": "android:id/title",
+                  "text": "Mafaza"
+                }
+              ],
+              "cls": "androidx.recyclerview.widget.RecyclerView",
+              "id": "com.samsung.accessibility:id/recycler_view"
+            }
+          ],
+          "cls": "android.view.ViewGroup"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

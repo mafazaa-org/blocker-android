@@ -28,7 +28,6 @@ object ScreenAnalyser {
         withContext(Dispatchers.Default) {
             var hasAppName = false
             var nodesCount = 0
-            val allTexts = mutableListOf<String>()
 
 
             /**
@@ -43,12 +42,6 @@ object ScreenAnalyser {
                     if (nodeText?.contains(appName, true) == true || nodeDesc?.contains(appName, true) == true) {
                         hasAppName = true
                     }
-                }
-                if (!nodeText.isNullOrBlank()) {
-                    allTexts.add(nodeText)
-                }
-                if (!nodeDesc.isNullOrBlank()) {
-                    allTexts.add(nodeDesc)
                 }
                 val children = mutableListOf<ScreenNode>()
                 for (i in 0 until node.childCount) {
@@ -72,9 +65,7 @@ object ScreenAnalyser {
                 nodesCount = nodesCount,
                 hasAppName = hasAppName,
                 isSettingsScreen = isLikelySettingsPackage(root.packageName?.toString()),
-
                 root = screenNode,
-                allTexts = allTexts
             )
         }
 

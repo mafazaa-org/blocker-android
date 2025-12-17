@@ -108,6 +108,29 @@ fun LockScreenOverlay(
                                     modifier = Modifier.padding(bottom = 16.dp)
                                 )
                             }
+
+                            is BlockReason.BlockedWordDetected -> {
+                                Text(
+                                    text = stringResource(R.string.blocked_word_detected_text),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(bottom = 16.dp)
+                                )
+                                Text(
+                                    text = reason.keyword,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                                Text(
+                                    text = reason.sentence,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(bottom = 16.dp)
+                                )
+                            }
                         }
                         Text(
                             text = stringResource(R.string.share_logs_message),
