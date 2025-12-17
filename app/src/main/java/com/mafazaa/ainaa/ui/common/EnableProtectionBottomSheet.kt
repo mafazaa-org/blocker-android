@@ -25,9 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
-import com.mafazaa.ainaa.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +33,6 @@ fun EnableProtectionBottomSheet(
     modifier: Modifier = Modifier,
     title: String = "",
     onDismiss: () -> Unit = {},
-
     onConfirm: () -> Unit = {},
     sheetState: SheetState
 ) {
@@ -64,10 +61,10 @@ fun EnableProtectionBottomSheet(
                 onBack = if (sheetContentState == SheetContentState.ConfirmProtection) {
                     { sheetContentState = SheetContentState.EnableProtection }
                 } else onDismiss,
-                primaryText = if(sheetContentState == SheetContentState.ConfirmProtection) "start"
-                else "next",
-                tertiaryText =  if(sheetContentState == SheetContentState.ConfirmProtection) "back"
-                else "dismiss"
+                primaryText = if(sheetContentState == SheetContentState.ConfirmProtection) "ترقية الحماية"
+                else "التالي",
+                tertiaryText =  if(sheetContentState == SheetContentState.ConfirmProtection) "السابق"
+                else "تراجع"
 
             )
         }

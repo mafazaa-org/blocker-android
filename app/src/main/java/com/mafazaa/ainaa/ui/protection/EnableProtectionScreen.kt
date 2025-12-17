@@ -37,7 +37,8 @@ fun EnableProtectionScreen(
     report: () -> Unit,
     enableProtection: (DnsProtectionLevel) -> Unit,
     selectedLevel: DnsProtectionLevel,
-    supportUs: () -> Unit = {}
+    supportUs: () -> Unit = {},
+    onEnableProtection: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -64,7 +65,7 @@ fun EnableProtectionScreen(
 }
 @Composable
 fun ProtectYourDevice(
-    enableProtection: () -> Unit,
+    enableProtection:  () -> Unit,
     report: () -> Unit = {},
     isLevelSelected: Boolean
 ) {

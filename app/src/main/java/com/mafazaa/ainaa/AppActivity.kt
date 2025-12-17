@@ -11,74 +11,28 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.ViewCompat.setLayoutDirection
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation3.runtime.NavEntry
-import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
-import androidx.navigation3.ui.NavDisplay
-import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.mafazaa.ainaa.data.local.SharedPrefs
-import com.mafazaa.ainaa.data.models.NetworkResult
 import com.mafazaa.ainaa.domain.models.AppInfo
 import com.mafazaa.ainaa.domain.models.DnsProtectionLevel
 import com.mafazaa.ainaa.domain.models.PermissionState
-import com.mafazaa.ainaa.domain.models.UpdateState
 import com.mafazaa.ainaa.helpers.LocaleHelper
 import com.mafazaa.ainaa.navigation.Screen
 import com.mafazaa.ainaa.receiver.AppDeviceAdminReceiver
 import com.mafazaa.ainaa.service.MyAccessibilityService
 import com.mafazaa.ainaa.service.MyAccessibilityService.Companion.startAccessibilityService
-import com.mafazaa.ainaa.ui.common.EnableProtectionBottomSheet
-import com.mafazaa.ainaa.ui.common.MainDrawer
-import com.mafazaa.ainaa.ui.common.OkDialog
-import com.mafazaa.ainaa.ui.common.SupportUsBottomSheet
-import com.mafazaa.ainaa.ui.common.TopBar
-import com.mafazaa.ainaa.ui.dialog.BlockAppDialog
-import com.mafazaa.ainaa.ui.dialog.ConfirmBlockedDialog
-import com.mafazaa.ainaa.ui.dialog.EnableProtectionDialog
-import com.mafazaa.ainaa.ui.dialog.HowItWorksDialog
-import com.mafazaa.ainaa.ui.dialog.PermissionDialog
-import com.mafazaa.ainaa.ui.dialog.ReportProblemDialog
-import com.mafazaa.ainaa.ui.protection.EnableProtectionScreen
-import com.mafazaa.ainaa.ui.protection.ProtectionActivatedScreen
-import com.mafazaa.ainaa.ui.support.SupportScreen
 import com.mafazaa.ainaa.ui.theme.AinaaTheme
-import com.mafazaa.ainaa.utils.Constants.JOIN_URL
-import com.mafazaa.ainaa.utils.Constants.SAFE_SEARCH_URL
-import com.mafazaa.ainaa.utils.Constants.SUPPORT_CONTACT_URL
-import com.mafazaa.ainaa.utils.Constants.SUPPORT_URL
 import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.utils.getAllApps
 import com.mafazaa.ainaa.utils.hasAccessibilityPermission
@@ -87,14 +41,11 @@ import com.mafazaa.ainaa.utils.hasNotificationPermission
 import com.mafazaa.ainaa.utils.hasOverlayPermission
 import com.mafazaa.ainaa.utils.hasUsageStatsPermission
 import com.mafazaa.ainaa.utils.hasVpnPermission
-import com.mafazaa.ainaa.utils.installApk
 import com.mafazaa.ainaa.utils.isServiceRunning
-import com.mafazaa.ainaa.utils.openUrl
 import com.mafazaa.ainaa.utils.requestAccessibilityPermission
 import com.mafazaa.ainaa.utils.requestAdminPermission
 import com.mafazaa.ainaa.utils.requestDrawOverlaysPermission
 import com.mafazaa.ainaa.utils.requestVpnPermission
-import com.mafazaa.ainaa.utils.shareFile
 import com.mafazaa.ainaa.utils.startVpnService
 import com.mafazaa.ainaa.viewmodels.AppViewModel
 import kotlinx.coroutines.delay
@@ -118,7 +69,7 @@ sealed interface DialogState {
 
 class AppActivity : ComponentActivity() {
     var dialogState by mutableStateOf<DialogState?>(if (MyApp.isFirstTime) DialogState.FirstTime else null)
-
+    var selectedLevel by mutableStateOf(DnsProtectionLevel.NONE)
     val backStack by lazy {
         mutableStateListOf(
             if (!isServiceRunning(this, MyAccessibilityService::class.java)) Screen.EnableProtection
@@ -177,285 +128,23 @@ class AppActivity : ComponentActivity() {
                     MainRoot(
                         viewModel = viewModel,
                         sharedPrefs = sharedPrefs,
+                        backStack = backStack,
+                        dialogState = dialogState,
+                        onDialogStateChange = { dialogState = it },
+                        grantPermission = { permissionState ->
+                            grantPermission(permissionState)
+                        },
+                        findNextMissingPermission =  ::findNextMissingPermission,
+                        permissionDialogChecker = { PermissionDialogChecker(
+                            selectedLevel = selectedLevel,
+                            )
+                        },
+                        selectedLevel = selectedLevel,
+                        onSelectedLevelChange = { selectedLevel = it }
                     )
                 }
             }
         }
-
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    private fun MainRoot(
-        context: Context = LocalContext.current,
-        viewModel: AppViewModel,
-        sharedPrefs: SharedPrefs,
-    ) {
-        val snackbarHostState = remember { SnackbarHostState() }
-        val uiScope = rememberCoroutineScope()
-        val apps = viewModel.apps.collectAsState().value
-        val currentScreen = backStack.lastOrNull()
-        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val sheetState = rememberModalBottomSheetState()
-        var showBottomSheet by remember { mutableStateOf(false) }
-        var showProtectionSheet by remember { mutableStateOf(false) }
-
-
-        // Centralized dialogs rendering
-        when (val d = dialogState) {
-            is DialogState.ReportProblem -> {
-                ReportProblemDialog(
-                    onClose = { dialogState = null },
-                    onSubmit = { report ->
-                        viewModel.submitReport(report) {
-                            when (it) {
-                                NetworkResult.Success -> {
-                                    Toast.makeText(
-                                        context,
-                                        context.getString(R.string.report_sent_message),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-
-                                is NetworkResult.Error -> {
-                                    Toast.makeText(
-                                        context,
-                                        getString(R.string.report_send__faild_message, '$'),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-
-                                else -> {}
-                            }
-                        }
-                        dialogState = null
-                    }
-                )
-            }
-
-            is DialogState.FirstTime -> {
-                OkDialog(
-                    title = stringResource(R.string.test_version_text),
-                    message = stringResource(R.string.test_version_message).trimIndent(),
-                    onDismiss = {
-                        dialogState = null
-                        MyApp.isFirstTime = false
-                    }
-                )
-            }
-
-            is DialogState.Permission -> {
-                PermissionDialog(
-                    permissionState = d.permission,
-                    onDismiss = { dialogState = null },
-                    onClick = {
-                        grantPermission(d.permission)
-                        dialogState = null
-                    }
-                )
-            }
-
-            is DialogState.BlockApps -> {
-                BlockAppDialog(
-                    onDismiss = { dialogState = null },
-                    appStates = apps,
-                    onBlockClick = { app ->
-                        dialogState = DialogState.BlockApps(confirmApp = app)
-                    }
-                )
-                if (d.confirmApp != null) {
-                    ConfirmBlockedDialog(
-                        app = d.confirmApp,
-                        onDismiss = { dialogState = DialogState.BlockApps() },
-                        onConfirm = {
-                            viewModel.toggleAppSelection(it.packageName)
-                            dialogState = DialogState.BlockApps()
-                        }
-                    )
-                }
-            }
-
-            is DialogState.HowItWorks -> {
-                HowItWorksDialog(
-                    onDismiss = { dialogState = null },
-                    onContactClicked = { context.openUrl(SUPPORT_CONTACT_URL) },
-                    onSafeSearchClicked = { context.openUrl(SAFE_SEARCH_URL) },
-                    image = stringResource(R.string.howtoknow_asset).toUri()
-                )
-            }
-
-            is DialogState.EnableProtectionConfirm -> {
-                EnableProtectionDialog(
-                    onConfirm = {
-                        dialogState = null // Close the confirmation dialog
-                        viewModel.saveLevel(d.level)
-
-                        val nextPermission = findNextMissingPermission()
-                        if (nextPermission == null) {
-                            // All permissions are already granted! Activate protection.
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.protection_activated_text),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            startAccessibilityService(MyAccessibilityService.ACTION_START_FOREGROUND)
-                            startVpnService( MyAccessibilityService.ACTION_START_FOREGROUND)
-                            backStack.add(Screen.ProtectionActivated)
-                            backStack.remove(Screen.EnableProtection)
-                        } else {
-                            dialogState = DialogState.Permission(nextPermission)
-                        }
-                    },
-                    onDismiss = { dialogState = null }
-                )
-            }
-
-            null -> {}
-        }
-
-        // Current Screen
-        MainDrawer(
-            drawerState = drawerState,
-            content = {
-                Scaffold(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.background)
-                        .windowInsetsPadding(WindowInsets.systemBars),
-                    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-                    topBar = {
-                        TopBar(
-                            onBack = { backStack.removeLastOrNull() },
-                            currentScreen = currentScreen,
-                            supportUs = { backStack.add(Screen.Support) },
-                            openMenu = {
-                                uiScope.launch {
-                                    drawerState.apply {
-                                        if (isClosed) open() else close()
-                                    }
-                                }
-                            }
-                        )
-                    },
-                    content = { innerPadding ->
-                        NavDisplay(
-                            modifier = Modifier.padding(innerPadding),
-                            backStack = backStack,
-                            onBack = { backStack.removeLastOrNull() },
-                            entryDecorators = listOf(
-                                rememberSceneSetupNavEntryDecorator(),
-                                rememberSavedStateNavEntryDecorator()
-                            ),
-                            entryProvider = { key ->
-                                when (key) {
-                                    Screen.ProtectionActivated -> NavEntry(key) {
-                                        ProtectionActivatedScreen(
-                                            onSupportClick = {
-                                                //
-                                            },
-                                            onBlockAppClick = { dialogState = DialogState.BlockApps() },
-                                            onReportClick = { dialogState = DialogState.ReportProblem },
-                                            onConfirmProtectionClick = { dialogState = DialogState.HowItWorks },
-                                            onUpdateClick = { updateStatus ->
-                                                when (updateStatus) {
-                                                    UpdateState.Downloaded -> {
-                                                        context.installApk(viewModel.updateFile())
-                                                    }
-
-                                                    is UpdateState.Failed,
-                                                    UpdateState.NoUpdate,
-                                                        -> {
-                                                        viewModel.handleUpdateStatus()
-                                                    }
-
-                                                    else -> {
-                                                    }
-                                                }
-
-                                            },
-                                            updateState = viewModel.updateState.value,
-                                        )
-                                    }
-
-                                    Screen.Support -> NavEntry(key) {
-                                        SupportScreen(
-                                            onSupportClick = { openUrl(SUPPORT_URL) },
-                                            onJoinClick = { openUrl(JOIN_URL) },
-                                            onShareLogFile = { this@AppActivity.shareFile(viewModel.getLogFile()) },
-                                            onStopBlocking = { startAccessibilityService(MyAccessibilityService.ACTION_STOP) },
-                                            onOpenScreenShotWindow = {
-                                                viewModel.showScreenshotOverlay(true)
-
-                                            }
-                                        )
-                                    }
-
-                                    Screen.EnableProtection -> NavEntry(key) {
-                                        var selectedLevel by remember { mutableStateOf(DnsProtectionLevel.NONE) }
-
-                                        EnableProtectionScreen(
-                                            report = { dialogState = DialogState.ReportProblem },
-                                            enableProtection = { level: DnsProtectionLevel ->
-                                                showProtectionSheet = true
-                                                return@EnableProtectionScreen
-                                                if (level == DnsProtectionLevel.NONE) {
-                                                    uiScope.launch {
-                                                        snackbarHostState
-                                                            .currentSnackbarData ?: snackbarHostState // Clear previous snackbar
-                                                            .showSnackbar(
-                                                                message = context.getString(R.string.pick_protect_level_text),
-                                                                duration = SnackbarDuration.Short,
-                                                            )
-                                                    }
-                                                    return@EnableProtectionScreen
-                                                }
-                                                selectedLevel = level
-                                                when {
-                                                    !vpnPermission -> dialogState =
-                                                        DialogState.Permission(PermissionState.Vpn)
-
-                                                    !notificationPermission -> dialogState =
-                                                        DialogState.Permission(PermissionState.Notification)
-
-                                                    !overlayPermission -> dialogState =
-                                                        DialogState.Permission(PermissionState.Overlay)
-
-                                                    !accessibilityPermission -> dialogState =
-                                                        DialogState.Permission(PermissionState.Accessibility)
-
-                                                    else -> dialogState = DialogState.EnableProtectionConfirm(
-                                                        level = selectedLevel,
-                                                    )
-                                                }
-                                            },
-                                            selectedLevel = selectedLevel,
-                                            supportUs = {
-                                                uiScope.launch {
-                                                    showBottomSheet = true
-                                                }
-                                            },
-
-                                        )
-                                    }
-                                }
-                            }
-                        )
-                        if (showBottomSheet) {
-                            SupportUsBottomSheet(
-                                onDismiss = { showBottomSheet = false },
-                                sheetState = sheetState
-                            )
-                        }
-                        if(showProtectionSheet){
-                            EnableProtectionBottomSheet(
-                                onDismiss = { showProtectionSheet = false },
-                                sheetState = sheetState
-                            )
-                        }
-                    },
-                )
-            }
-        )
-
 
     }
 
@@ -555,5 +244,27 @@ class AppActivity : ComponentActivity() {
     override fun attachBaseContext(newBase: Context) {
         val context = LocaleHelper.forceArabicLocale(newBase)
         super.attachBaseContext(context)
+    }
+    @Composable
+    fun PermissionDialogChecker(
+        selectedLevel: DnsProtectionLevel,
+    ) {
+        when {
+            !vpnPermission -> dialogState =
+                DialogState.Permission(PermissionState.Vpn)
+
+            !notificationPermission -> dialogState =
+                DialogState.Permission(PermissionState.Notification)
+
+            !overlayPermission -> dialogState =
+                DialogState.Permission(PermissionState.Overlay)
+
+            !accessibilityPermission -> dialogState =
+                DialogState.Permission(PermissionState.Accessibility)
+
+            else -> dialogState = DialogState.EnableProtectionConfirm(
+                level = selectedLevel,
+            )
+        }
     }
 }

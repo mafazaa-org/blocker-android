@@ -1,5 +1,6 @@
 package com.mafazaa.ainaa.ui.common
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,11 +20,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.mafazaa.ainaa.R
+import com.mafazaa.ainaa.utils.ExternalAppsAndLink
 
 
 val navigationItem = mapOf(
@@ -41,7 +44,8 @@ val socialMedia = mapOf(
 fun MainDrawer(
     modifier: Modifier = Modifier,
     drawerState : DrawerState,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+
 ) {
     ModalNavigationDrawer(
         drawerContent = {DrawerContent()},
@@ -56,7 +60,10 @@ fun MainDrawer(
 
 
 @Composable
-fun DrawerContent(modifier: Modifier = Modifier) {
+fun DrawerContent(
+    modifier: Modifier = Modifier,
+    context: Context = LocalContext.current
+) {
     ModalDrawerSheet(
         modifier = Modifier.fillMaxWidth(0.8f),
         drawerContainerColor = MaterialTheme.colorScheme.background,
@@ -68,6 +75,13 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 DrawerItem(
                     label = item.key,
                     icon = item.value,
+                    onClick = {
+                        when (item.key) {
+                            R.string.support_us_text -> {}
+                            R.string.customer_service_text -> {}
+                            R.string.join_us_label -> {}
+                        }
+                    }
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -75,6 +89,19 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 SocialMediaItem(
                     label = item.key,
                     icon = item.value,
+                    onClick = {
+                        when (item.key) {
+                            R.string.facebook_text -> {
+                                ExternalAppsAndLink.openFacebook(context)
+                            }
+                            R.string.whatsapp_text -> {
+                                ExternalAppsAndLink.openWhatsApp(context)
+                            }
+                            R.string.youtube_text -> {
+                                ExternalAppsAndLink.openYouTube(context)
+                            }
+                        }
+                    }
                 )
             }
         }

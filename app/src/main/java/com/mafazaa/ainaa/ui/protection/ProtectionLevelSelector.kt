@@ -153,7 +153,7 @@ fun ProtectionCard(
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier
                             .background(MaterialTheme.colorScheme.secondary,
-                                RoundedCornerShape(16.dp))
+                                RoundedCornerShape(8.dp))
                             .padding(horizontal = 12.dp, vertical = 6.dp),
                         color = MaterialTheme.colorScheme.onSecondary
                     )

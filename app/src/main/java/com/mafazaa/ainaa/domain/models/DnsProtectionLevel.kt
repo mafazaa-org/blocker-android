@@ -1,7 +1,7 @@
 package com.mafazaa.ainaa.domain.models
 
 enum class DnsProtectionLevel(val primaryDns: String, val secondaryDns: String) {
-    HIGH("15.184.147.40", "15.184.182.221"),
+    HIGH("185.228.168.168", "185.228.169.168"),
     LOW("16.24.111.209", "16.24.202.94"),
 
     NONE("", "")
