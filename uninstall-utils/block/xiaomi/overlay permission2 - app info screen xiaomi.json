@@ -1,0 +1,312 @@
+{
+  "meta": {
+    "versionName": "v0.0.11",
+    "versionCode": 11,
+    "manufacturer": "HONOR",
+    "model": "ALI-NX1"
+  },
+  "time": "2025-10-29 21:43:51",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": true,
+    "nodesCount": 52,
+    "pkg": "com.android.settings",
+    "root": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "Telegram"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "No"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "Threads"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "No"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "TikTok"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "No"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "Translate"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "No"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "Truecaller"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "No"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "Voice Access"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "No"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "voice Recorder"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "Yes"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "Waffarha"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "No"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "Word"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "No"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "WPS Office"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "No"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "YouTube"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "No"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "Zoom"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "No"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "عَيْنًا سَلْسَبِيلًا"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "com.android.settings:id/widget_text1",
+                          "text": "Yes"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    }
+                  ],
+                  "cls": "android.widget.ListView",
+                  "id": "com.android.settings:id/list"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.FrameLayout",
+                  "id": "com.android.settings:id/pinned_header"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.ImageView",
+                      "desc": "Search",
+                      "id": "androidhnext:id/search_src_icon"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.AutoCompleteTextView",
+                      "desc": "Search query",
+                      "id": "android:id/search_src_text",
+                      "text": "Search apps"
+                    }
+                  ],
+                  "cls": "android.widget.SearchView",
+                  "id": "com.android.settings:id/search_result_view"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.ImageButton",
+                      "desc": "Navigate up"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/action_bar_title",
+                      "text": "Display over other apps"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.Button",
+                      "desc": "More options",
+                      "id": "androidhnext:id/action_menu_more_button"
+                    }
+                  ],
+                  "cls": "android.widget.FrameLayout",
+                  "id": "com.android.settings:id/content_header_container"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.FrameLayout",
+                  "id": "com.android.settings:id/content_bottom_container"
+                }
+              ],
+              "cls": "android.view.ViewGroup",
+              "id": "com.android.settings:id/content_parent"
+            }
+          ],
+          "cls": "androidx.drawerlayout.widget.DrawerLayout",
+          "id": "com.android.settings:id/drawer_layout"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "versionName": "v0.0.17",
+    "versionCode": 17,
+    "manufacturer": "samsung",
+    "model": "SM-A065F"
+  },
+  "time": "2025-11-19 03:30:37",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": false,
+    "isSettingsScreen": false,
+    "nodesCount": 13,
+    "pkg": "com.android.systemui",
+    "root": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.ImageView",
+                      "desc": "إيقاف التشغيل,",
+                      "id": "com.android.systemui:id/sec_global_actions_icon"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.ImageView",
+                      "desc": "إعادة تشغيل,",
+                      "id": "com.android.systemui:id/sec_global_actions_icon"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.ImageView",
+                      "desc": "مكالمة طوارئ,",
+                      "id": "com.android.systemui:id/sec_global_actions_icon"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.ImageView",
+                      "desc": "معلومات طبية,",
+                      "id": "com.android.systemui:id/sec_global_actions_icon"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                }
+              ],
+              "cls": "android.widget.GridView"
+            }
+          ],
+          "cls": "android.widget.FrameLayout",
+          "id": "com.android.systemui:id/sec_global_actions_item_list"
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "cls": "android.widget.TextView",
+              "id": "com.android.systemui:id/sec_global_actions_state",
+              "text": "إعدادات الزر الجانبي"
+            }
+          ],
+          "cls": "android.widget.FrameLayout",
+          "id": "com.android.systemui:id/sec_global_actions_key_settings"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

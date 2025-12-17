@@ -37,6 +37,7 @@ fun SupportScreen(
     onShareLogFile: () -> Unit = {},
     onStopBlocking: () -> Unit = {},
     onOpenScreenShotWindow: () -> Unit = {},
+    isBlocking: Boolean = false
 ) {
     Column(
         modifier = modifier
@@ -137,7 +138,12 @@ fun SupportScreen(
         }
         if (BuildConfig.DEBUG) {
             Spacer(modifier = Modifier.height(16.dp))
-            TwoColorText(black = stringResource(R.string.stop_blocktemp_text), red = stringResource(R.string.click_here_text)) {
+            val blockingText = if (isBlocking) {
+                stringResource(R.string.stop_blocking)
+            } else {
+                stringResource(R.string.start_blocking)
+            }
+            TwoColorText(black = blockingText, red = stringResource(R.string.click_here_text)) {
                 onStopBlocking()
             }
         }

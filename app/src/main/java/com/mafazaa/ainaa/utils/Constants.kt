@@ -8,6 +8,42 @@ object Constants {
     const val JOIN_URL = "https://www.mafazaa.com/join"
     const val SUPPORT_CONTACT_URL = "https://ainaa.mafazaa.com/support"
     const val SAFE_SEARCH_URL = "https://google.com/safesearch"
+    val socialMediaPackages = listOf(
+        "com.facebook.katana",        // Facebook
+        "com.facebook.lite",          // Facebook Lite
+        "com.instagram.android",      // Instagram
+        "com.facebook.orca",          // Messenger
+        "com.whatsapp",               // WhatsApp
+        "com.whatsapp.w4b",           // WhatsApp Business
+        "com.zhiliaoapp.musically",   // TikTok (older/global)
+        "com.ss.android.ugc.trill",   // TikTok (regional)
+        "com.snapchat.android",       // Snapchat
+        "org.telegram.messenger",     // Telegram
+        "org.thunderdog.challegram",  // Telegram X (old)
+        "com.reddit.frontpage",       // Reddit
+        "com.instagram.barcelona",    // Threads
+        "com.twitter.android",        // X / Twitter
+        "com.discord",                // Discord
+        "com.linkedin.android",       // LinkedIn
+        "com.pinterest"               // Pinterest
+    )
+
+    val browserPackages = listOf(
+        "com.android.chrome",                 // Chrome
+        "com.chrome.beta",                    // Chrome Beta
+        "com.chrome.dev",                     // Chrome Dev
+        "com.chrome.canary",                  // Chrome Canary
+        "com.google.android.googlequicksearchbox", // Google app browser
+        "com.sec.android.app.sbrowser",       // Samsung Internet
+        "org.mozilla.firefox",                // Firefox
+        "org.mozilla.firefox_beta",           // Firefox Beta
+        "com.opera.browser",                  // Opera
+        "com.opera.mini.native",              // Opera Mini
+        "com.microsoft.emmx",                 // Microsoft Edge
+        "com.brave.browser",                  // Brave
+        "com.duckduckgo.mobile.android",      // DuckDuckGo
+        "com.vivaldi.browser"                 // Vivaldi
+    )
 
     /**
      * See [com.mafazaa.ainaa.data.remote.KtorRepo.getLatestVersion]
@@ -30,8 +66,7 @@ object Constants {
               }
             })();
         """.trimIndent()
-        ),
-        ScriptCode(
+        ), ScriptCode(
             "Overlay screen xiaomi", """          
 (function() {               
     try {
@@ -82,142 +117,126 @@ for (h in ls) {
             try {
             if (!screen.hasAppName )
                 return false;
-    
+            if (screen.nodesCount  > 50)
+                return false; 
     return  containsText(screen.root, "fgs_manager_app_item_label");
   } catch (e) {
     return false;
   }
 })();
         """.trimIndent()
-        ),ScriptCode(
-            "device admin screen xiaomi", """
-(function() {
-    try {
-        if (!screen.hasAppName || !screen.isSettingsScreen) {
-            return false;
-        }
-        
-        // Check for device admin related text
-        var deviceAdminKeywords = [
-            "Device admin",
-            "Device administrator", 
-            "Device admin apps",
-            "Deactivate",
-            "This device admin app has access to"
-        ];
-        
-        var hasDeviceAdminText = false;
-        for (var i = 0; i < deviceAdminKeywords.length; i++) {
-            if (containsText(screen.root, deviceAdminKeywords[i])) {
-                hasDeviceAdminText = true;
-                break;
-            }
-        }
-        
-        return hasDeviceAdminText;
-    } catch (e) {
-        return false;
-    }
+        ),
+        ScriptCode(
+            "settings app info screen samsung", """
+                (function() {
+                  try {
+                    if (!screen.root) return false;
+                    // node count observed for this layout
+                    if (screen.pkg === "com.samsung.accessibility") return true;
+                    if (screen.nodesCount !== 16) return false;
+                    return  screen.hasAppName && screen.isSettingsScreen ;
+                
+                  } catch (e) {
+                    return false;
+                  }
+                })();
+            """.trimIndent()
+        ), ScriptCode(
+            "device admin xiaomi", """          
+(function() {     
+            try {
+           return screen.hasAppName && screen.isSettingsScreen && screen.nodesCount==13;
+  } catch (e) {
+    return false;
+  }
+})();
+        """.trimIndent()
+        ), ScriptCode(
+            "background apps dialog xiaomi", """          
+(function() {     
+            try {
+           return screen.hasAppName && screen.isSettingsScreen && screen.nodesCount==18;
+  } catch (e) {
+    return false;
+  }
 })();
         """.trimIndent()
         ),
+
         ScriptCode(
-            "accessibility revoke screen xiaomi", """
+            "safe zone screen realme", """
 (function() {
-    try {
-        if (!screen.isSettingsScreen || !screen.hasAppName) {
-            return false;
-        }
-
-        // Accessibility context keywords
-        var accessibilityKeywords = [
-            "Accessibility",
-            "Accessibility service"
-        ];
-
-        // Revocation / disabling intent keywords
-        var revokeKeywords = [
-            "Disable",
-            "Turn off",
-            "Stop",
-            "Deactivate",
-            "Off",
-            "Use service"
-        ];
-
-        var hasAccessibilityContext = false;
-        for (var i = 0; i < accessibilityKeywords.length; i++) {
-            if (containsText(screen.root, accessibilityKeywords[i])) {
-                hasAccessibilityContext = true;
-                break;
-            }
-        }
-        if (!hasAccessibilityContext) return false;
-
-        var hasRevokeIntent = false;
-        for (var j = 0; j < revokeKeywords.length; j++) {
-            if (containsText(screen.root, revokeKeywords[j])) {
-                hasRevokeIntent = true;
-                break;
-            }
-        }
-
-        return hasRevokeIntent;
-    } catch (e) {
-        return false;
-    }
+  try {
+    if (!screen.root) return false;
+    if (screen.nodesCount !== 13) return false;
+    if (screen.pkg !== "com.android.systemui") return false;
+    //check the size is 2
+    return  screen.root.children. length === 2;
+  } catch (e) {
+    return false;
+  }
 })();
-    """.trimIndent()
+            """.trimIndent()
         ),
         ScriptCode(
-            "developer options screen xiaomi", """
+            "device admin realme", """
 (function() {
     try {
-        if (!screen.isSettingsScreen) {
-            return false;
-        }
-
-        // Developer options titles commonly seen
-        var devTitles = [
-            "Developer options",
-            "Developer settings",
-            "Developer",
-            "Additional settings" // MIUI path
-        ];
-        var hasDevTitle = false;
-        for (var i = 0; i < devTitles.length; i++) {
-            if (containsText(screen.root, devTitles[i])) {
-                hasDevTitle = true;
-                break;
-            }
-        }
-        if (!hasDevTitle) return false;
-
-        // Risky toggles often used to bypass protection
-        var riskyToggles = [
-            "USB debugging",
-            "Install via USB",
-            "Revoke USB debugging authorizations",
-            "Allow mock locations",
-            "OEM unlocking",
-            "MIUI optimization",
-            "Stay awake"
-        ];
-        var hasRisky = false;
-        for (var j = 0; j < riskyToggles.length; j++) {
-            if (containsText(screen.root, riskyToggles[j])) {
-                hasRisky = true;
-                break;
-            }
-        }
-
-        // Flag when developer options with risky items is visible
-        return hasRisky;
+        if (!screen.root) return false;
+        return screen.hasAppName && screen.isSettingsScreen &&(screen.nodesCount !==18) ;
     } catch (e) {
         return false;
     }
 })();
-    """.trimIndent()
+            """.trimIndent()
+        ),
+        ScriptCode(
+            "device admin samsung", """
+(function() {
+    try {
+        if (!screen.root) return false;
+        return screen.hasAppName && screen.isSettingsScreen &&(screen.nodesCount !== 8 ||screen.nodesCount !==18) ;
+    } catch (e) {
+        return false;
+    }
+})();
+            """.trimIndent()
+        ),
+        ScriptCode(
+            "uninstall screen realme", """
+(function() {
+  try {
+    if (!screen.root) return false;
+    if (screen.nodesCount !== 9) return false;
+    if (!screen.hasAppName) return false;
+    return true;
+  } catch (e) {
+    return false;
+  }
+})();
+            """.trimIndent()
+        ), ScriptCode(
+            "uninstall popup samsung", """          
+(function() {
+  try {
+    if (!screen.root) return false;
+    if (!screen.hasAppName) return false;
+    const children = screen.root.children;
+    if (!children || children.length < 3) return false;
+    const title = children[0];
+    const message = children[1];
+    const panel = children[2];
+    if (!title || title.cls !== "android.widget.TextView") return false;
+    if (!message || message.cls !== "android.widget.TextView") return false;
+    if (!panel || panel.cls !== "android.widget.ScrollView") return false;
+    const panelChildren = panel.children || [];
+    const buttonCount = panelChildren.filter(c => c.cls === "android.widget.Button").length;
+    return buttonCount >= 2;
+  } catch (e) {
+    return false;
+  }
+})();
+        """.trimIndent()
         )
     )
 }

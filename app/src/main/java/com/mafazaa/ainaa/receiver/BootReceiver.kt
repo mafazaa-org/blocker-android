@@ -3,13 +3,13 @@ package com.mafazaa.ainaa.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.data.local.FakeFileRepo
 import com.mafazaa.ainaa.service.MyAccessibilityService
+import com.mafazaa.ainaa.service.MyAccessibilityService.Companion.startAccessibilityService
+import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.utils.hasAccessibilityPermission
 import com.mafazaa.ainaa.utils.hasVpnPermission
 import com.mafazaa.ainaa.utils.isKeyguardSecure
-import com.mafazaa.ainaa.service.MyAccessibilityService.Companion.startAccessibilityService
 import com.mafazaa.ainaa.utils.startVpnService
 
 /**
@@ -25,16 +25,16 @@ class BootReceiver : BroadcastReceiver() {
         ) {
             MyLog.d("BootReceiver", "Device rebooted. Attempting to start accessibility service.")
             val serviceIntent = Intent(context, MyAccessibilityService::class.java).apply {
-                action = MyAccessibilityService.ACTION_START
+                action = MyAccessibilityService.ACTION_START_FOREGROUND
             }
             context.startForegroundService(serviceIntent)
         }
 
         if (!context.isKeyguardSecure()) {
             MyLog.fileRepo = FakeFileRepo
-            MyLog.w(TAG, "Device is not encrypted, logging disabled")
+        } else {
+            MyLog.i(TAG, "Device :${intent.action}")
         }
-        MyLog.i(TAG, "Device :${intent.action}")
         if (context.hasAccessibilityPermission()) {
             context.startAccessibilityService()
         }

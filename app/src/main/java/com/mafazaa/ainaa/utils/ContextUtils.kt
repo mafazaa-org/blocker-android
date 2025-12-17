@@ -29,10 +29,10 @@ import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import com.mafazaa.ainaa.AppActivity
 import com.mafazaa.ainaa.R
-import com.mafazaa.ainaa.service.MyAccessibilityService
-import com.mafazaa.ainaa.service.MyVpnService
 import com.mafazaa.ainaa.domain.models.AppInfo
+import com.mafazaa.ainaa.service.MyAccessibilityService
 import com.mafazaa.ainaa.service.MyAccessibilityService.Companion.NOTIFICATION_CHANNEL_ID
+import com.mafazaa.ainaa.service.MyVpnService
 import java.io.File
 
 /*
@@ -76,9 +76,9 @@ fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
 fun Context.startVpnService( action: String = MyVpnService.ACTION_START) {
     val intent = Intent(this, MyVpnService::class.java).apply {
         this.action = if (
-            action == MyVpnService.ACTION_START_FOREGROUND
+            action == MyVpnService.ACTION_START
         ) {
-            MyVpnService.ACTION_START_FOREGROUND
+            MyVpnService.ACTION_START
         } else {
             MyVpnService.ACTION_START
         }
@@ -110,7 +110,7 @@ fun Context.hasUsageStatsPermission(): Boolean {
 }
 
 fun Context.hasNotificationPermission(): Boolean {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+    return Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
             ContextCompat.checkSelfPermission(
                 this,
                 POST_NOTIFICATIONS

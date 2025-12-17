@@ -1,5 +1,7 @@
 package com.mafazaa.ainaa.domain.models
 
+import com.google.gson.Gson
+
 data class ScreenAnalysis(
     /**
      * the package name of the app currently in foreground
@@ -22,8 +24,11 @@ data class ScreenAnalysis(
      */
     val isSettingsScreen: Boolean,
     val root: ScreenNode,
-    val allTexts: List<String>
 ) {
+    fun toJson():String {
+        val gson = Gson()
+        return gson.toJson(this)
+    }
     override fun toString(): String {
         return "nodes:$nodesCount, app:$pkg, has our app name:$hasAppName,is a settings screen:$isSettingsScreen" +
                 "\n" + root.toString()

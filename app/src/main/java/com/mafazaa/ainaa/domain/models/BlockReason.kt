@@ -16,4 +16,9 @@ sealed class BlockReason {
             return "محاولة تعطيل التطبيق:  \n$codeName"
         }
     }
+    data class BlockedWordDetected(val keyword: String, val sentence: String) : BlockReason() {
+        override fun getName(): String {
+            return "كلمة محظورة مكتشفة:  \n$keyword"
+        }
+    }
 }

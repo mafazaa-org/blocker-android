@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "versionName": "v0.0.18",
+    "versionCode": 18,
+    "manufacturer": "realme",
+    "model": "RMX3938"
+  },
+  "time": "2025-11-27 10:05:48",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": true,
+    "nodesCount": 9,
+    "pkg": "com.android.settings",
+    "root": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "cls": "android.widget.ImageButton",
+              "desc": "التنقل إلى أعلى",
+              "id": "com.android.settings:id/coui_toolbar_back_view"
+            },
+            {
+              "children": [],
+              "cls": "android.widget.TextView",
+              "text": "‏VPN"
+            },
+            {
+              "children": [],
+              "cls": "android.widget.ImageView",
+              "desc": "خيارات أكثر"
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/title",
+                      "text": "عَيْنًا سَلْسَبِيلًا"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.ImageView",
+                      "desc": "‏الإعدادات",
+                      "id": "com.android.settings:id/settings_button"
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                }
+              ],
+              "cls": "androidx.recyclerview.widget.RecyclerView",
+              "id": "com.android.settings:id/recycler_view"
+            }
+          ],
+          "cls": "android.view.ViewGroup",
+          "id": "com.android.settings:id/content_parent"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}
