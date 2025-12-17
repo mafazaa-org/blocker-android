@@ -14,7 +14,7 @@ class RestartReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         MyLog.d(TAG, "Received restart broadcast")
         val serviceIntent = Intent(context, MyAccessibilityService::class.java).apply {
-            this.action = MyAccessibilityService.ACTION_START
+            this.action = MyAccessibilityService.ACTION_START_FOREGROUND
         }
         context.let {
             it?.startForegroundService(serviceIntent)

@@ -1,0 +1,98 @@
+{
+  "meta": {
+    "versionName": "v0.0.11",
+    "versionCode": 11,
+    "manufacturer": "HONOR",
+    "model": "ALI-NX1"
+  },
+  "time": "2025-10-29 21:43:12",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": true,
+    "nodesCount": 15,
+    "pkg": "com.android.settings",
+    "root": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "عَيْنًا سَلْسَبِيلًا"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.Switch",
+                          "id": "android:id/switch_widget"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    },
+                    {
+                      "children": [
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/title",
+                          "text": "About"
+                        },
+                        {
+                          "children": [],
+                          "cls": "android.widget.TextView",
+                          "id": "android:id/summary",
+                          "text": "Mafaza"
+                        }
+                      ],
+                      "cls": "android.widget.LinearLayout"
+                    }
+                  ],
+                  "cls": "androidx.recyclerview.widget.RecyclerView",
+                  "id": "com.android.settings:id/list"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.ImageButton",
+                      "desc": "Navigate up"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "android:id/action_bar_title",
+                      "text": "عَيْنًا سَلْسَبِيلًا"
+                    }
+                  ],
+                  "cls": "android.widget.FrameLayout",
+                  "id": "com.android.settings:id/content_header_container"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.FrameLayout",
+                  "id": "com.android.settings:id/content_bottom_container"
+                }
+              ],
+              "cls": "android.view.ViewGroup",
+              "id": "com.android.settings:id/content_parent"
+            }
+          ],
+          "cls": "androidx.drawerlayout.widget.DrawerLayout",
+          "id": "com.android.settings:id/drawer_layout"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

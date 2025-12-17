@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +36,7 @@ fun ProtectionActivatedScreen(
     onSupportClick: () -> Unit,
     onBlockAppClick: () -> Unit,
     onReportClick: () -> Unit,
+    onBlockWordClicked: () -> Unit,
     onConfirmProtectionClick: () -> Unit,
     onUpdateClick: (updateState: UpdateState) -> Unit = { /* Default no-op */ },
     updateState: UpdateState = UpdateState.NoUpdate,
@@ -100,6 +102,23 @@ fun ProtectionActivatedScreen(
                 Text(text = stringResource(R.string.block_app_text))
             }
         }
+        if (false) {//draft
+            OutlinedButton(
+                onClick = onBlockWordClicked,
+                border = BorderStroke(1.dp, red),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = red),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.block_word),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
         ReportLink(onReportClick = onReportClick)
         Spacer(modifier = Modifier.height(16.dp))
         val (black, red) = when (updateState) {
@@ -107,18 +126,22 @@ fun ProtectionActivatedScreen(
                 stringResource(R.string.no_update_found_text),
                 stringResource(R.string.click_to_check_text)
             )
+
             UpdateState.Checking -> Pair(
                 stringResource(R.string.check_update_text),
                 stringResource(R.string.empty_string)
             )
+
             is UpdateState.Downloading -> Pair(
                 stringResource(R.string.downloading_update_text),
                 stringResource(R.string.empty_string)
             )
+
             is UpdateState.Failed -> Pair(
                 stringResource(R.string.update_failed_text),
                 stringResource(R.string.try_again)
             )
+
             UpdateState.Downloaded -> Pair(
                 stringResource(R.string.update_done),
                 stringResource(R.string.confirmation_text)

@@ -136,4 +136,14 @@
     <string name="app_notification_description">الإشعار المستمر لتفعيل الحماية</string>
     <string name="protection_active_text">الحماية مفعلة.</string>
     <string name="click_return_app_text">اضغط للعودة إلى التطبيق.</string>
+    <string name="delete_keyword_text">delete keyword</string>
+    <string name="confirm_delete_keyword">confirm delete</string>
+    <string name="manage_keywords_text">manage keywords</string>
+    <string name="add_keyword_hint">add keyword</string>
+    <string name="no_keywords_text">no keywords</string>
+    <string name="add_keyword">add keyword</string>
+    <string name="block_word">block word</string>
+    <string name="blocked_word_detected_text">Blocked word detected</string>
+    <string name="stop_blocking">stop blocking</string>
+    <string name="start_blocking">continue blocking</string>
 </resources>

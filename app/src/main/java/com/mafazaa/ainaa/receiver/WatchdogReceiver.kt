@@ -27,7 +27,7 @@ class WatchdogReceiver: BroadcastReceiver() {
         )) {
             MyLog.w(TAG, "Watchdog detects service is NOT running. Attempting to restart...")
             val restartIntent = Intent(context, MyAccessibilityService::class.java).apply {
-                this.action = MyAccessibilityService.ACTION_START
+                this.action = MyAccessibilityService.ACTION_START_FOREGROUND
             }
             context.startForegroundService(restartIntent)
         } else {

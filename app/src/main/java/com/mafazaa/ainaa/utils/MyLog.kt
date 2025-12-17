@@ -3,10 +3,14 @@ package com.mafazaa.ainaa.utils
 import android.os.Build
 import android.text.format.DateFormat
 import android.util.Log
+import com.mafazaa.ainaa.BuildConfig
 import com.mafazaa.ainaa.data.local.FakeFileRepo
 import com.mafazaa.ainaa.domain.FileRepo
 import com.mafazaa.ainaa.domain.models.ScreenAnalysis
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * Lg is a logging utility object that provides logging to both Logcat and a file.
@@ -86,10 +90,29 @@ object MyLog {
      * @return The file where the log was written
      */
     fun logUiTree(codeName: String, screenAnalysis: ScreenAnalysis): File {
-        val fileName = "$codeName.txt"
-        val logFile = fileRepo.getLogFile(fileName)
-        fileRepo.wipeLog(fileName)
-        fileRepo.saveToLog("${Build.MANUFACTURER}\n"+(screenAnalysis).toString(), fileName)
+        val jsonFileName = "$codeName.json"
+        val logFile = fileRepo.getLogFile(jsonFileName)
+        fileRepo.wipeLog(jsonFileName)
+        val jsonPayload = buildString {
+            append("{")
+            append("\"meta\":{")
+            append("\"versionName\":\"${BuildConfig.VERSION_NAME}\",")
+            append("\"versionCode\":${BuildConfig.VERSION_CODE},")
+            append("\"manufacturer\":\"${Build.MANUFACTURER}\",")
+            append("\"model\":\"${Build.MODEL}\"},")
+            append(
+                "\"time\":\"${
+                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+                        .format(Date(System.currentTimeMillis()))
+                }\""
+            )
+            append(",")
+            append("\"screenAnalysis\":")
+            append(screenAnalysis.toJson())
+            append("}")
+        }
+
+        fileRepo.saveToLog(jsonPayload, jsonFileName)
         return logFile
     }
 
@@ -111,6 +134,26 @@ object MyLog {
                     )
                 }\n"
             )
+        }
+        fileRepo.saveToLog(info, fileName)
+        return logFile
+    }
+
+    fun logBlockedWordDetected(keyword: String, sentence: String): File {
+        val fileName = "${keyword}_blocked.txt"
+        val logFile = fileRepo.getLogFile(fileName)
+        fileRepo.wipeLog(fileName)
+        val info = buildString {
+            append("Blocked keyword: $keyword\n")
+            append("Sentence: $sentence\n")
+            append("Log file size: ${fileRepo.getLogSize()} bytes\n")
+            append(
+                "Time: ${
+                    DateFormat.format("yyyy-MM-dd HH:mm:ss", System.currentTimeMillis())
+                }\n"
+            )
+            append("Device: ${Build.MANUFACTURER} ${Build.MODEL}\n")
+            append("App: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})\n")
         }
         fileRepo.saveToLog(info, fileName)
         return logFile

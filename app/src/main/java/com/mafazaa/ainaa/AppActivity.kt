@@ -42,6 +42,7 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
+import com.mafazaa.ainaa.DialogState.BlockApps
 import com.mafazaa.ainaa.data.local.SharedPrefs
 import com.mafazaa.ainaa.data.models.NetworkResult
 import com.mafazaa.ainaa.domain.models.AppInfo
@@ -61,6 +62,7 @@ import com.mafazaa.ainaa.ui.dialog.BlockAppDialog
 import com.mafazaa.ainaa.ui.dialog.ConfirmBlockedDialog
 import com.mafazaa.ainaa.ui.dialog.EnableProtectionDialog
 import com.mafazaa.ainaa.ui.dialog.HowItWorksDialog
+import com.mafazaa.ainaa.ui.dialog.ManageKeywordsDialog
 import com.mafazaa.ainaa.ui.dialog.PermissionDialog
 import com.mafazaa.ainaa.ui.dialog.ReportProblemDialog
 import com.mafazaa.ainaa.ui.protection.EnableProtectionScreen
@@ -74,7 +76,6 @@ import com.mafazaa.ainaa.utils.Constants.SUPPORT_URL
 import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.utils.getAllApps
 import com.mafazaa.ainaa.utils.hasAccessibilityPermission
-import com.mafazaa.ainaa.utils.hasAdminPermission
 import com.mafazaa.ainaa.utils.hasNotificationPermission
 import com.mafazaa.ainaa.utils.hasOverlayPermission
 import com.mafazaa.ainaa.utils.hasUsageStatsPermission
@@ -103,6 +104,7 @@ sealed interface DialogState {
     // Keeps Block Apps dialog open, and optionally shows a nested confirm dialog for a selected app
     data class BlockApps(val confirmApp: AppInfo? = null) : DialogState
     data object HowItWorks : DialogState
+    data object BlockWords : DialogState
     data class EnableProtectionConfirm(val level: DnsProtectionLevel) :
         DialogState
 }
@@ -121,6 +123,7 @@ class AppActivity : ComponentActivity() {
     private var overlayPermission by mutableStateOf(false)
     private var usageStatsPermission by mutableStateOf(false)
     private var accessibilityPermission by mutableStateOf(false)
+    private var permissionState by mutableStateOf<PermissionState?>(null)
     private var notificationPermission by mutableStateOf(
         Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
     )
@@ -136,13 +139,6 @@ class AppActivity : ComponentActivity() {
     {
         // Handle result if needed
     }
-    private val permissionChain = listOf(
-        PermissionState.Accessibility,
-        PermissionState.Overlay,
-        PermissionState.Administrative,
-        PermissionState.Vpn,
-        PermissionState.Notification,
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setLayoutDirection(window.decorView, ViewCompat.LAYOUT_DIRECTION_RTL)
@@ -157,6 +153,7 @@ class AppActivity : ComponentActivity() {
         val viewModel: AppViewModel = getViewModel()
         val sharedPrefs: SharedPrefs by inject(SharedPrefs::class.java)
         viewModel.loadInstalledApps(getAllApps())
+        viewModel.loadBlockedWords()
         MyLog.i(TAG, "Opening app")
         //viewModel.handleUpdateStatus(this)
         refreshPermissionState()
@@ -184,6 +181,7 @@ class AppActivity : ComponentActivity() {
     ) {
         val snackbarHostState = remember { SnackbarHostState() }
         val apps = viewModel.apps.collectAsState().value
+        val blockedWords = viewModel.blockedWords.collectAsState().value
 
         // Centralized dialogs rendering
         when (val d = dialogState) {
@@ -244,16 +242,16 @@ class AppActivity : ComponentActivity() {
                     onDismiss = { dialogState = null },
                     appStates = apps,
                     onBlockClick = { app ->
-                        dialogState = DialogState.BlockApps(confirmApp = app)
+                        dialogState = BlockApps(confirmApp = app)
                     }
                 )
                 if (d.confirmApp != null) {
                     ConfirmBlockedDialog(
                         app = d.confirmApp,
-                        onDismiss = { dialogState = DialogState.BlockApps() },
+                        onDismiss = { dialogState = BlockApps() },
                         onConfirm = {
                             viewModel.toggleAppSelection(it.packageName)
-                            dialogState = DialogState.BlockApps()
+                            dialogState = BlockApps()
                         }
                     )
                 }
@@ -273,9 +271,8 @@ class AppActivity : ComponentActivity() {
                     onConfirm = {
                         dialogState = null // Close the confirmation dialog
                         viewModel.saveLevel(d.level)
-
-                        val nextPermission = findNextMissingPermission()
-                        if (nextPermission == null) {
+                        refreshPermissionState()
+                        if (permissionState == null) {
                             // All permissions are already granted! Activate protection.
                             Toast.makeText(
                                 context,
@@ -283,15 +280,24 @@ class AppActivity : ComponentActivity() {
                                 Toast.LENGTH_LONG
                             ).show()
                             startAccessibilityService(MyAccessibilityService.ACTION_START_FOREGROUND)
-                            startVpnService( MyAccessibilityService.ACTION_START_FOREGROUND)
+                            startVpnService(MyVpnService.ACTION_START)
                             backStack.add(Screen.ProtectionActivated)
                             backStack.remove(Screen.EnableProtection)
                         } else {
-                            dialogState = DialogState.Permission(nextPermission)
+                            dialogState = DialogState.Permission(permissionState!!)
                         }
                     },
                     onDismiss = { dialogState = null }
                 )
+            }
+
+            DialogState.BlockWords -> {
+                ManageKeywordsDialog(
+                    keywords = blockedWords.toSet(),
+                    onDismiss = { dialogState = null },
+                    onAddKeyword = { viewModel.addBlockedWord(it) },
+                    onRemoveKeyword = {})
+
             }
 
             null -> {}
@@ -356,6 +362,7 @@ class AppActivity : ComponentActivity() {
                                 onBlockAppClick = { dialogState = DialogState.BlockApps() },
                                 onReportClick = { dialogState = DialogState.ReportProblem },
                                 onConfirmProtectionClick = { dialogState = DialogState.HowItWorks },
+                                onBlockWordClicked = { dialogState = DialogState.BlockWords },
                                 onUpdateClick = { updateStatus ->
                                     when (updateStatus) {
                                         UpdateState.Downloaded -> {
@@ -378,15 +385,22 @@ class AppActivity : ComponentActivity() {
                         }
 
                         Screen.Support -> NavEntry(key) {
+                            var isBlocking by remember {
+                                mutableStateOf(MyAccessibilityService.isRunning)
+                            }
                             SupportScreen(
                                 onSupportClick = { openUrl(SUPPORT_URL) },
                                 onJoinClick = { openUrl(JOIN_URL) },
                                 onShareLogFile = { this@AppActivity.shareFile(viewModel.getLogFile()) },
-                                onStopBlocking = { startAccessibilityService(MyAccessibilityService.ACTION_STOP) },
+                                onStopBlocking = {
+                                    MyAccessibilityService.isRunning =
+                                        !MyAccessibilityService.isRunning
+                                },
                                 onOpenScreenShotWindow = {
                                     viewModel.showScreenshotOverlay(true)
 
-                                }
+                                },
+                                isBlocking = isBlocking
                             )
                         }
 
@@ -440,54 +454,22 @@ class AppActivity : ComponentActivity() {
         if (!accessibilityPermission) {
             accessibilityPermission = hasAccessibilityPermission()
         }
-
-    }
-
-    private fun findNextMissingPermission(): PermissionState? {
-        // Check permissions in the defined order
-        return permissionChain.firstOrNull { permission ->
-            !when (permission) {
-                PermissionState.Overlay -> hasOverlayPermission()
-                PermissionState.Accessibility -> hasAccessibilityPermission()
-                PermissionState.Administrative -> hasAdminPermission(adminReceiver)
-                PermissionState.Vpn -> hasVpnPermission()
-                PermissionState.Notification -> hasNotificationPermission()
-                PermissionState.Granted -> true
-            }
+        permissionState = when {
+            !notificationPermission -> PermissionState.Notification
+            !vpnPermission -> PermissionState.Vpn
+            !overlayPermission -> PermissionState.Overlay
+            !accessibilityPermission -> PermissionState.Accessibility
+            else -> null
         }
+
     }
 
-    private fun checkAndContinuePermissionLoop() {
-        val nextPermission = findNextMissingPermission()
-        if (nextPermission != null) {
-            // If the user is still in the process and another permission is needed, show the next dialog.
-            // We only show it if a permission dialog isn't already showing.
-            if (dialogState == null) {
-                dialogState = DialogState.Permission(nextPermission)
-            }
-        } else {
-            // No more missing permissions!
-            // Check if the service isn't running yet, then activate.
-            if (!isServiceRunning(this, MyAccessibilityService::class.java)) {
-                Toast.makeText(
-                    this,
-                    getString(R.string.protection_activated_message)
-                        .trimIndent(),
-                    Toast.LENGTH_SHORT
-                ).show()
-                startAccessibilityService(MyAccessibilityService.ACTION_START_FOREGROUND)
-                startVpnService(MyAccessibilityService.ACTION_START_FOREGROUND)
-                backStack.add(Screen.ProtectionActivated)
-                backStack.remove(Screen.EnableProtection)
-            }
-        }
-    }
+
 
 
     override fun onResume() {
         super.onResume()
         refreshPermissionState()
-        checkAndContinuePermissionLoop()
     }
 
 

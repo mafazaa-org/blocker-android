@@ -19,7 +19,6 @@
 
 [![Build & Upload Debug to Firebase App Distribution](https://github.com/mafazaa-org/Ainaa-android/actions/workflows/firebase-dist.yml/badge.svg?branch=feature%2Fgh-action)](https://github.com/mafazaa-org/Ainaa-android/actions/workflows/firebase-dist.yml)
 
-
 </div>
 
 Ainaa is an Android application built with Kotlin, following MVVM architecture and using dependency injection. It provides advanced features such as VPN, accessibility services, overlays, and integrates with Firebase via Google Services.

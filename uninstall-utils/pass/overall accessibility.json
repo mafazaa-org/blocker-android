@@ -1,0 +1,265 @@
+{
+  "meta": {
+    "versionName": "v0.0.9",
+    "versionCode": 9,
+    "manufacturer": null,
+    "model": null
+  },
+  "time": "2025-11-03 00:00:00",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": true,
+    "nodesCount": 33,
+    "pkg": "com.android.settings",
+    "root": {
+      "cls": "android.widget.FrameLayout",
+      "text": null,
+      "id": null,
+      "desc": null,
+      "children": [
+        {
+          "cls": "android.view.ViewGroup",
+          "text": null,
+          "id": "com.android.settings:id/content_parent",
+          "desc": null,
+          "children": [
+            {
+              "cls": "android.widget.ImageButton",
+              "text": null,
+              "id": null,
+              "desc": "Navigate up",
+              "children": []
+            },
+            {
+              "cls": "android.widget.TextView",
+              "text": "Accessibility",
+              "id": null,
+              "desc": null,
+              "children": []
+            },
+            {
+              "cls": "androidx.recyclerview.widget.RecyclerView",
+              "text": null,
+              "id": "com.android.settings:id/recycler_view",
+              "desc": null,
+              "children": [
+                {
+                  "cls": "android.widget.LinearLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "Downloaded apps",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.FrameLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "Alarmy",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.FrameLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "AnyDesk Control Service AD1",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.FrameLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "AppLock",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.FrameLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "Bulldog Blocker",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.FrameLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "Edge Gestures",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.FrameLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "Forest",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.FrameLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "Lock Screen Protector",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.FrameLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "Navigate the screen by using LG TV remote control",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.FrameLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "RustDesk Input",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.FrameLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "Screen Master",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.FrameLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "عَيْنًا سَلْسَبِيلًا",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.LinearLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "Screen reader",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "cls": "android.widget.FrameLayout",
+                  "text": null,
+                  "id": null,
+                  "desc": null,
+                  "children": [
+                    {
+                      "cls": "android.widget.TextView",
+                      "text": "TalkBack",
+                      "id": "android:id/title",
+                      "desc": null,
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+

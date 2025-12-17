@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "versionName": "v0.0.18",
+    "versionCode": 18,
+    "manufacturer": "realme",
+    "model": "RMX3938"
+  },
+  "time": "2025-11-27 10:03:31",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": false,
+    "nodesCount": 9,
+    "pkg": "com.android.launcher3",
+    "root": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "cls": "android.widget.TextView",
+                  "id": "com.android.launcher3:id/alertTitle",
+                  "text": "هل تريد إزالة تثبيت \"عَيْنًا سَلْسَبِيلًا\"؟"
+                }
+              ],
+              "cls": "android.widget.ScrollView",
+              "id": "com.android.launcher3:id/alert_title_scroll_view"
+            }
+          ],
+          "cls": "android.widget.LinearLayout",
+          "id": "com.android.launcher3:id/topPanel"
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "cls": "android.widget.TextView",
+              "id": "android:id/message",
+              "text": "سيتم مسح بيانات التطبيق نهائيًا، بما في ذلك الملفات والإعدادات، من هذا الجهاز."
+            }
+          ],
+          "cls": "android.widget.ScrollView",
+          "id": "com.android.launcher3:id/scrollView"
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "cls": "android.widget.Button",
+              "id": "android:id/button2",
+              "text": "إلغاء"
+            },
+            {
+              "children": [],
+              "cls": "android.widget.Button",
+              "id": "android:id/button1",
+              "text": "‏إلغاء التثبيت"
+            }
+          ],
+          "cls": "android.widget.ScrollView"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}

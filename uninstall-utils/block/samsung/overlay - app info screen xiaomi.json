@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "versionName": "v0.0.11",
+    "versionCode": 11,
+    "manufacturer": "samsung",
+    "model": "SM-A336E"
+  },
+  "time": "2025-10-29 20:25:07",
+  "screenAnalysis": {
+    "appName": "عَيْنًا سَلْسَبِيلًا",
+    "hasAppName": true,
+    "isSettingsScreen": true,
+    "nodesCount": 12,
+    "pkg": "com.android.settings",
+    "root": {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "cls": "android.widget.TextView",
+              "id": "com.android.settings:id/collapsing_appbar_extended_title",
+              "text": "الظهور في الأعلى"
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "cls": "android.widget.ImageButton",
+                  "desc": "التنقل إلى الأعلى"
+                },
+                {
+                  "children": [],
+                  "cls": "android.widget.TextView",
+                  "text": "الظهور في الأعلى"
+                }
+              ],
+              "cls": "android.view.ViewGroup",
+              "id": "com.android.settings:id/action_bar"
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "com.android.settings:id/entity_header_title",
+                      "text": "عَيْنًا سَلْسَبِيلًا"
+                    },
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "com.android.settings:id/entity_header_summary",
+                      "text": "إصدار ‏‪v0.0.11‬‏"
+                    }
+                  ],
+                  "cls": "android.widget.RelativeLayout",
+                  "id": "com.android.settings:id/entity_header"
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "cls": "android.widget.TextView",
+                      "id": "com.android.settings:id/title",
+                      "text": "يتيح هذا الإذن لتطبيق ما عرض المحتويات فوق تطبيقات أخرى تستخدمها. قد يتداخل هذا الأمر مع استخدامك لتطبيقات أخرى."
+                    }
+                  ],
+                  "cls": "android.widget.LinearLayout"
+                }
+              ],
+              "cls": "androidx.recyclerview.widget.RecyclerView",
+              "id": "com.android.settings:id/recycler_view"
+            }
+          ],
+          "cls": "android.view.ViewGroup",
+          "id": "com.android.settings:id/coordinator"
+        }
+      ],
+      "cls": "android.widget.FrameLayout"
+    }
+  }
+}
