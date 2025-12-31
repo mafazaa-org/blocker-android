@@ -53,7 +53,7 @@ fun EnableProtectionScreen(
         })
         ProtectYourDevice(
             enableProtection = { enableProtection(selectedLevel) },
-            report = report,
+            report = onEnableProtection,
             isLevelSelected = selectedLevel != DnsProtectionLevel.NONE
         )
         Spacer(modifier = Modifier.weight(1f))

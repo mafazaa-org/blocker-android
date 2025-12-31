@@ -16,7 +16,6 @@ import com.mafazaa.ainaa.domain.models.ScreenAnalysis
 import com.mafazaa.ainaa.domain.models.ScreenNode
 import com.mafazaa.ainaa.domain.models.ScriptResult
 import com.mafazaa.ainaa.domain.repo.ScriptRepo
-import com.mafazaa.ainaa.helpers.DeviceUtils
 import com.mafazaa.ainaa.helpers.LockOverlayManager
 import com.mafazaa.ainaa.helpers.ScreenAnalyser
 import com.mafazaa.ainaa.utils.Constants.browserPackages
@@ -105,13 +104,9 @@ class MyAccessibilityService : AccessibilityService() {
         const val ACTION_SHARE_CURRENT_SCREEN = "SHARE_CURRENT_SCREEN"
         internal const val NOTIFICATION_ID = 101 // Unique ID for the notification
         internal const val NOTIFICATION_CHANNEL_ID = "AINAA_PROTECTION_CHANNEL"
-        internal const val WATCHDOG_INTERVAL_MS = 15 * 60 * 1000L
 
         const val TAG = "MyAccessibilityService"
 
-        private val SETTINGS_PACKAGE = DeviceUtils.settingsPackageName
-        private val ACCESSIBILITY_SETTINGS =
-            "${SETTINGS_PACKAGE}.accessibility.AccessibilitySettings"
     }
 
     override fun onCreate() {
@@ -222,7 +217,7 @@ class MyAccessibilityService : AccessibilityService() {
         }
         return withContext(Dispatchers.Default) {
             for (word in sharedPrefs.blockedWords) {
-                var stack = emptyList<ScreenNode>().toMutableList()
+                val stack = emptyList<ScreenNode>().toMutableList()
                 stack.add(screenAnalysis.root)
                 var nodesChecked = 0
                 while (stack.isNotEmpty()) {

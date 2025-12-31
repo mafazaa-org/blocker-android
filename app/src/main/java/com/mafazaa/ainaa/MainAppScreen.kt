@@ -18,11 +18,8 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -72,7 +69,6 @@ fun MainRoot(
     context: Context = LocalContext.current,
     viewModel: AppViewModel,
     sharedPrefs: SharedPrefs,
-    backStack: MutableList<Screen>,
     dialogState: DialogState?,
     onDialogStateChange: (DialogState?) -> Unit,
     grantPermission: (PermissionState) -> Unit,
@@ -85,17 +81,11 @@ fun MainRoot(
     val snackBarHostState = remember { SnackbarHostState() }
     val uiScope = rememberCoroutineScope()
     val apps = viewModel.apps.collectAsState().value
+    val backStack = viewModel.backStack
     val currentScreen = backStack.lastOrNull()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val sheetState = rememberModalBottomSheetState()
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var showProtectionSheet by remember { mutableStateOf(false) }
-    permissionDialogChecker() // Check for permissions dialog
-    fun ondissmiss(value : Boolean) {
-        showBottomSheet = value
-    }
-
-
+    permissionDialogChecker()
 
     // Current Screen
     MainDrawer(
@@ -135,9 +125,7 @@ fun MainRoot(
                             when (key) {
                                 Screen.ProtectionActivated -> NavEntry(key) {
                                     ProtectionActivatedScreen(
-                                        onSupportClick = {
-                                            //
-                                        },
+                                        onSupportClick = {},
                                         onBlockAppClick = { onDialogStateChange(DialogState.BlockApps()) },
                                         onReportClick = { onDialogStateChange(DialogState.ReportProblem) },
                                         onConfirmProtectionClick = { onDialogStateChange(DialogState.HowItWorks) },
@@ -152,6 +140,7 @@ fun MainRoot(
                                             }
                                         },
                                         updateState = viewModel.updateState.value,
+                                        onBlockWordClicked =  { onDialogStateChange(DialogState.HowItWorks) }
                                     )
                                 }
 
@@ -169,7 +158,6 @@ fun MainRoot(
                                 }
 
                                 Screen.EnableProtection -> NavEntry(key) {
-
                                     EnableProtectionScreen(
                                         report = { onDialogStateChange(DialogState.ReportProblem) },
                                         enableProtection = { level: DnsProtectionLevel ->
@@ -185,12 +173,12 @@ fun MainRoot(
                                                 return@EnableProtectionScreen
                                             }
                                             onSelectedLevelChange(level)
-                                            showProtectionSheet = true
+                                            viewModel.setProtectionSheet(true)
                                         },
                                         selectedLevel = selectedLevel,
                                         supportUs = {
                                             uiScope.launch {
-                                                showBottomSheet = true
+                                                viewModel.setSupportSheet(true)
                                             }
                                         }
                                     )
@@ -198,21 +186,22 @@ fun MainRoot(
                             }
                         }
                     )
-                    if (showBottomSheet) {
+                    if (viewModel.showSupportSheet) {
                         SupportUsBottomSheet(
-                            onDismiss = { },
+                            onDismiss = {
+                                viewModel.setSupportSheet(false)
+                            },
                             sheetState = sheetState
                         )
                     }
-                    if(showProtectionSheet){
+                    if(viewModel.showProtectionSheet){
                         EnableProtectionBottomSheet(
-                            onDismiss = { ondissmiss(false) },
+                            onDismiss = { viewModel.setProtectionSheet(false) },
                             sheetState = sheetState,
                             onConfirm = {
                                 onDialogStateChange(DialogState.EnableProtectionConfirm(selectedLevel))
-                                backStack.add(Screen.EnableProtection)
-                                backStack.remove(Screen.ProtectionActivated)
-                                ondissmiss(false)
+                                backStack.add(Screen.ProtectionActivated)
+                                viewModel.setProtectionSheet(false)
                             }
                         )
                     }
@@ -329,8 +318,7 @@ fun MainRoot(
                 onDismiss = { onDialogStateChange(null)}
             )
         }
-
-        null -> {}
+        else -> {}
     }
 
 
