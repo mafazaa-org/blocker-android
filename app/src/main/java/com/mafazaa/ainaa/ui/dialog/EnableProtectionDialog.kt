@@ -35,6 +35,8 @@ import com.mafazaa.ainaa.ui.theme.AinaaTheme
 import com.mafazaa.ainaa.ui.theme.red
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.platform.LocalConfiguration
 
 /**
@@ -72,7 +74,7 @@ fun EnableProtectionDialog(
 
                 // Timer state for enabling the OK button after 5 seconds
                 // Restore 3-second delay before accept as requested
-                var timerSeconds by remember { mutableStateOf(3) }
+                var timerSeconds by remember { mutableIntStateOf(3) }
                 var timerActive by remember { mutableStateOf(true) }
                 val isOkEnabled = (scrollState.value == scrollState.maxValue) && timerSeconds == 0
 

@@ -1,9 +1,13 @@
 package com.mafazaa.ainaa.service
 
+import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.net.VpnService
+import android.os.Build
 import android.os.ParcelFileDescriptor
+import android.os.SystemClock
 import android.util.Log
 import com.mafazaa.ainaa.AppActivity
 import com.mafazaa.ainaa.data.local.SharedPrefs
@@ -23,91 +27,185 @@ class MyVpnService : VpnService() {
      var vpnInterface: ParcelFileDescriptor? = null
     private val sharedPrefs: SharedPrefs by inject(SharedPrefs::class.java)
     private val serviceScope = CoroutineScope(Dispatchers.Default + Job())
+    private var alarmManager: AlarmManager? = null
+    private var watchdogPendingIntent: PendingIntent? = null
 
     companion object {
         internal const val TAG = "MyVpnService"
         const val ACTION_START = "START_VPN"
         const val ACTION_STOP = "STOP_VPN"
         var isRunning = false//todo remove
+        private const val WATCHDOG_REQUEST_CODE = 2002
+        private const val WATCHDOG_INTERVAL = 5 * 60 * 1000L // 5 minutes
     }
 
     override fun onCreate() {
-        super.onCreate()
-        MyNotificationManager.startForegroundService(this)
+        try {
+            super.onCreate()
+            MyNotificationManager.startForegroundService(this)
+            VpnMonitorJobService.scheduleJob(this)
+            scheduleWatchdog()
+            MyLog.i(TAG, "VPN service created, monitor job and watchdog scheduled")
+        } catch (e: Exception) {
+            MyLog.e(TAG, "Error in onCreate: ${e.message}", e)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            ACTION_STOP -> {
-                stopVpn()
-                return START_NOT_STICKY
-            }
+        return try {
+            when (intent?.action) {
+                ACTION_STOP -> {
+                    stopVpn()
+                    START_NOT_STICKY
+                }
 
-            else -> {
-                val level = sharedPrefs.dnsProtectionLevel
-                startVpn(level)
-                return START_STICKY
+                else -> {
+                    val level = sharedPrefs.dnsProtectionLevel
+                    startVpn(level)
+                    START_STICKY
+                }
             }
+        } catch (e: Exception) {
+            MyLog.e(TAG, "Error in onStartCommand: ${e.message}", e)
+            START_STICKY
         }
     }
 
 
     private fun startVpn(dnsProtectionLevel: DnsProtectionLevel) {
-        val emptyIntent = PendingIntent.getActivity(
-            this,
-            0,
-            Intent(this, AppActivity::class.java),
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        try {
+            val emptyIntent = PendingIntent.getActivity(
+                this,
+                0,
+                Intent(this, AppActivity::class.java),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
 
-        val builder = Builder().apply {
-            addAddress(Constants.VPN_ADDRESS, 32)
-            addDnsServer(dnsProtectionLevel.primaryDns)
-            addDnsServer(dnsProtectionLevel.secondaryDns)
-            setSession("SafeDNS")
-            setBlocking(true)
-            setConfigureIntent(emptyIntent) // منع إيقاف الخدمة من الإشعار
-            setMtu(1500)
-        }
+            val builder = Builder().apply {
+                addAddress(Constants.VPN_ADDRESS, 32)
+                addDnsServer(dnsProtectionLevel.primaryDns)
+                addDnsServer(dnsProtectionLevel.secondaryDns)
+                setSession("SafeDNS")
+                setBlocking(true)
+                setConfigureIntent(emptyIntent) // منع إيقاف الخدمة من الإشعار
+                setMtu(1500)
+            }
 
-        MyLog.d(TAG, "Starting VPN service with protection level: $dnsProtectionLevel")
+            MyLog.d(TAG, "Starting VPN service with protection level: $dnsProtectionLevel")
 
-        vpnInterface?.close()
-        vpnInterface = builder.establish()
-        if (vpnInterface == null) {
-            MyLog.e(TAG, "Failed to establish VPN interface")
+            vpnInterface?.close()
+            vpnInterface = builder.establish()
+            if (vpnInterface == null) {
+                MyLog.e(TAG, "Failed to establish VPN interface")
+                stopSelf()
+                return
+            }
+            isRunning = true
+        } catch (e: Exception) {
+            MyLog.e(TAG, "Error in startVpn: ${e.message}", e)
             stopSelf()
-            return
         }
-        isRunning = true
     }
 
     private fun stopVpn() {
-        MyLog.d(TAG, "Stopping VPN service")
-        vpnInterface?.close()
-        vpnInterface = null
-        isRunning = false
-        stopForeground(true)
-        stopSelf()
+        try {
+            MyLog.d(TAG, "Stopping VPN service")
+            vpnInterface?.close()
+            vpnInterface = null
+            isRunning = false
+            stopForeground(true)
+            stopSelf()
+        } catch (e: Exception) {
+            MyLog.e(TAG, "Error in stopVpn: ${e.message}", e)
+        }
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        isRunning = false
-        MyLog.d(TAG, "VPN service destroyed")
-        serviceScope.launch {
-            delay(5000)
-            if (MyAccessibilityService.isRunning&&this@MyVpnService.hasVpnPermission()) {
-                Log.d(TAG, "Restarting VPN service after revocation")
-                this@MyVpnService.startVpn(sharedPrefs.dnsProtectionLevel)
+        try {
+            MyLog.w(TAG, "VPN service being destroyed, scheduling restart")
+            isRunning = false
+
+            // Send broadcast to restart VPN service if needed
+            if (hasVpnPermission()) {
+                val restartIntent = Intent(this, VpnRestartReceiver::class.java)
+                restartIntent.action = VpnRestartReceiver.ACTION_RESTART_VPN
+                sendBroadcast(restartIntent)
+                MyLog.d(TAG, "VPN restart broadcast sent")
+
+                // Reschedule watchdog
+                scheduleWatchdog()
             }
 
+            super.onDestroy()
+        } catch (e: Exception) {
+            MyLog.e(TAG, "Error in onDestroy: ${e.message}", e)
+        }
+    }
+
+    private fun scheduleWatchdog() {
+        try {
+            if (alarmManager == null) {
+                alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            }
+
+            val intent = Intent(this, com.mafazaa.ainaa.receiver.VpnWatchdogReceiver::class.java)
+
+            watchdogPendingIntent = PendingIntent.getBroadcast(
+                this,
+                WATCHDOG_REQUEST_CODE,
+                intent,
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                }
+            )
+
+            val triggerTime = SystemClock.elapsedRealtime() + WATCHDOG_INTERVAL
+
+            // Use setExactAndAllowWhileIdle for better reliability
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager?.setExactAndAllowWhileIdle(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    triggerTime,
+                    watchdogPendingIntent!!
+                )
+            } else {
+                alarmManager?.setExact(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    triggerTime,
+                    watchdogPendingIntent!!
+                )
+            }
+
+            MyLog.d(TAG, "VPN watchdog alarm scheduled for ${WATCHDOG_INTERVAL / 1000} seconds")
+        } catch (e: Exception) {
+            MyLog.e(TAG, "Error scheduling VPN watchdog: ${e.message}", e)
         }
     }
 
     override fun onRevoke() {
-        super.onRevoke()
-        MyLog.d(TAG, "VPN revoked")
-        stopVpn()
+        try {
+            super.onRevoke()
+            MyLog.w(TAG, "VPN permission revoked")
+            stopVpn()
+
+            // Schedule restart attempt after delay
+            serviceScope.launch {
+                try {
+                    delay(5000) // Wait 5 seconds before attempting restart
+                    if (hasVpnPermission()) {
+                        MyLog.d(TAG, "VPN permission restored, attempting restart")
+                        val restartIntent = Intent(this@MyVpnService, VpnRestartReceiver::class.java)
+                        restartIntent.action = VpnRestartReceiver.ACTION_RESTART_VPN
+                        sendBroadcast(restartIntent)
+                    }
+                } catch (e: Exception) {
+                    MyLog.e(TAG, "Error attempting VPN restart after revoke: ${e.message}", e)
+                }
+            }
+        } catch (e: Exception) {
+            MyLog.e(TAG, "Error in onRevoke: ${e.message}", e)
+        }
     }
 }

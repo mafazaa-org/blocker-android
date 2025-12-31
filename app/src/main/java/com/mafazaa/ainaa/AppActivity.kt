@@ -237,7 +237,7 @@ class AppActivity : ComponentActivity() {
                 )
             }
 
-            is DialogState.BlockApps -> {
+            is BlockApps -> {
                 BlockAppDialog(
                     onDismiss = { dialogState = null },
                     appStates = apps,
