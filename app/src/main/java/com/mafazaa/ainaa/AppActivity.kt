@@ -117,6 +117,132 @@ class AppActivity : ComponentActivity() {
 
     }
 
+    @Composable
+    private fun MainRoot(
+        context: Context = LocalContext.current,
+        viewModel: AppViewModel,
+        sharedPrefs: SharedPrefs,
+    ) {
+        val snackbarHostState = remember { SnackbarHostState() }
+        val apps = viewModel.apps.collectAsState().value
+        val blockedWords = viewModel.blockedWords.collectAsState().value
+
+        // Centralized dialogs rendering
+        when (val d = dialogState) {
+            is DialogState.ReportProblem -> {
+                ReportProblemDialog(
+                    onClose = { dialogState = null },
+                    onSubmit = { report ->
+                        viewModel.submitReport(report) {
+                            when (it) {
+                                NetworkResult.Success -> {
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.report_sent_message),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
+                                is NetworkResult.Error -> {
+                                    Toast.makeText(
+                                        context,
+                                        getString(R.string.report_send__faild_message, '$'),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
+                                else -> {}
+                            }
+                        }
+                        dialogState = null
+                    }
+                )
+            }
+
+            is DialogState.FirstTime -> {
+                OkDialog(
+                    title = stringResource(R.string.test_version_text),
+                    message = stringResource(R.string.test_version_message).trimIndent(),
+                    onDismiss = {
+                        dialogState = null
+                        MyApp.isFirstTime = false
+                    }
+                )
+            }
+
+            is DialogState.Permission -> {
+                PermissionDialog(
+                    permissionState = d.permission,
+                    onDismiss = { dialogState = null },
+                    onClick = {
+                        grantPermission(d.permission)
+                        dialogState = null
+                    }
+                )
+            }
+
+            is BlockApps -> {
+                BlockAppDialog(
+                    onDismiss = { dialogState = null },
+                    appStates = apps,
+                    onBlockClick = { app ->
+                        dialogState = BlockApps(confirmApp = app)
+                    }
+                )
+                if (d.confirmApp != null) {
+                    ConfirmBlockedDialog(
+                        app = d.confirmApp,
+                        onDismiss = { dialogState = BlockApps() },
+                        onConfirm = {
+                            viewModel.toggleAppSelection(it.packageName)
+                            dialogState = BlockApps()
+                        }
+                    )
+                }
+            }
+
+            is DialogState.HowItWorks -> {
+                HowItWorksDialog(
+                    onDismiss = { dialogState = null },
+                    onContactClicked = { context.openUrl(SUPPORT_CONTACT_URL) },
+                    onSafeSearchClicked = { context.openUrl(SAFE_SEARCH_URL) },
+                    image = stringResource(R.string.howtoknow_asset).toUri()
+                )
+            }
+
+            is DialogState.EnableProtectionConfirm -> {
+                EnableProtectionDialog(
+                    onConfirm = {
+                        dialogState = null // Close the confirmation dialog
+                        viewModel.saveLevel(d.level)
+                        refreshPermissionState()
+                        if (permissionState == null) {
+                            // All permissions are already granted! Activate protection.
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.protection_activated_text),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            startAccessibilityService(MyAccessibilityService.ACTION_START_FOREGROUND)
+                            startVpnService(MyVpnService.ACTION_START)
+                            backStack.add(Screen.ProtectionActivated)
+                            backStack.remove(Screen.EnableProtection)
+                        } else {
+                            dialogState = DialogState.Permission(permissionState!!)
+                        }
+                    },
+                    onDismiss = { dialogState = null }
+                )
+            }
+
+            DialogState.BlockWords -> {
+                ManageKeywordsDialog(
+                    keywords = blockedWords.toSet(),
+                    onDismiss = { dialogState = null },
+                    onAddKeyword = { viewModel.addBlockedWord(it) },
+                    onRemoveKeyword = {})
+
+            }
 
 
 

@@ -34,6 +34,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.ui.theme.AinaaTheme
+import com.mafazaa.ainaa.ui.theme.red
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.platform.LocalConfiguration
 
 /**
  * last dialog before enabling protection
@@ -69,7 +75,8 @@ fun EnableProtectionDialog(
                 }
 
                 // Timer state for enabling the OK button after 5 seconds
-                var timerSeconds by remember { mutableIntStateOf(5) }
+                // Restore 3-second delay before accept as requested
+                var timerSeconds by remember { mutableIntStateOf(3) }
                 var timerActive by remember { mutableStateOf(true) }
                 val isOkEnabled = isEndReached && timerSeconds == 0
 

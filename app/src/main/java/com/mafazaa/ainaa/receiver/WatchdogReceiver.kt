@@ -17,21 +17,25 @@ import com.mafazaa.ainaa.utils.isServiceRunning
  */
 class WatchdogReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (context == null) return
-        val action = intent?.action
-        MyLog.d(TAG, "WatchdogReceiver triggered by action: $action")
+        try {
+            if (context == null) return
+            val action = intent?.action
+            MyLog.d(TAG, "WatchdogReceiver triggered by action: $action")
 
-        if (!isServiceRunning(
-            context,
-            MyAccessibilityService::class.java
-        )) {
-            MyLog.w(TAG, "Watchdog detects service is NOT running. Attempting to restart...")
-            val restartIntent = Intent(context, MyAccessibilityService::class.java).apply {
-                this.action = MyAccessibilityService.ACTION_START_FOREGROUND
+            if (!isServiceRunning(
+                context,
+                MyAccessibilityService::class.java
+            )) {
+                MyLog.w(TAG, "Watchdog detects service is NOT running. Attempting to restart...")
+                val restartIntent = Intent(context, MyAccessibilityService::class.java).apply {
+                    this.action = MyAccessibilityService.ACTION_START_FOREGROUND
+                }
+                context.startForegroundService(restartIntent)
+            } else {
+                MyLog.d(TAG, "Watchdog confirms service is already running. No action needed.")
             }
-            context.startForegroundService(restartIntent)
-        } else {
-            MyLog.d(TAG, "Watchdog confirms service is already running. No action needed.")
+        } catch (e: Exception) {
+            MyLog.e(TAG, "Error in WatchdogReceiver: ${e.message}", e)
         }
     }
 
