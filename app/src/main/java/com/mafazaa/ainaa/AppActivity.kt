@@ -1,27 +1,37 @@
 package com.mafazaa.ainaa
 
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.R.attr.data
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.ViewCompat.setLayoutDirection
 import androidx.lifecycle.lifecycleScope
 import com.mafazaa.ainaa.data.local.SharedPrefs
+import com.mafazaa.ainaa.data.models.NetworkResult
 import com.mafazaa.ainaa.domain.models.AppInfo
 import com.mafazaa.ainaa.domain.models.DnsProtectionLevel
 import com.mafazaa.ainaa.domain.models.PermissionState
@@ -29,14 +39,28 @@ import com.mafazaa.ainaa.helpers.LocaleHelper
 import com.mafazaa.ainaa.navigation.Screen
 import com.mafazaa.ainaa.receiver.AppDeviceAdminReceiver
 import com.mafazaa.ainaa.service.MyAccessibilityService
+import com.mafazaa.ainaa.service.MyAccessibilityService.Companion.startAccessibilityService
+import com.mafazaa.ainaa.service.MyVpnService
+import com.mafazaa.ainaa.ui.common.OkDialog
+import com.mafazaa.ainaa.ui.dialog.BlockAppDialog
+import com.mafazaa.ainaa.ui.dialog.ConfirmBlockedDialog
+import com.mafazaa.ainaa.ui.dialog.EnableProtectionDialog
+import com.mafazaa.ainaa.ui.dialog.HowItWorksDialog
+import com.mafazaa.ainaa.ui.dialog.ManageKeywordsDialog
+import com.mafazaa.ainaa.ui.dialog.PermissionDialog
+import com.mafazaa.ainaa.ui.dialog.ReportProblemDialog
 import com.mafazaa.ainaa.ui.theme.AinaaTheme
+import com.mafazaa.ainaa.utils.Constants.SAFE_SEARCH_URL
+import com.mafazaa.ainaa.utils.Constants.SUPPORT_CONTACT_URL
 import com.mafazaa.ainaa.utils.MyLog
 import com.mafazaa.ainaa.utils.getAllApps
 import com.mafazaa.ainaa.utils.isServiceRunning
+import com.mafazaa.ainaa.utils.openUrl
 import com.mafazaa.ainaa.utils.requestAccessibilityPermission
 import com.mafazaa.ainaa.utils.requestAdminPermission
 import com.mafazaa.ainaa.utils.requestDrawOverlaysPermission
 import com.mafazaa.ainaa.utils.requestVpnPermission
+import com.mafazaa.ainaa.utils.startVpnService
 import com.mafazaa.ainaa.viewmodels.AppViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -57,7 +81,6 @@ sealed interface DialogState {
         DialogState
 }
 
-
 class AppActivity : ComponentActivity() {
     var dialogState by mutableStateOf<DialogState?>(if (MyApp.isFirstTime) DialogState.FirstTime else null)
 
@@ -70,10 +93,7 @@ class AppActivity : ComponentActivity() {
     }
     private val requestAdmin = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    )
-    {
-        // Handle result if needed
-    }
+    ) {}
     val viewModel: AppViewModel by lazy {
         getViewModel<AppViewModel>()
     }
@@ -94,7 +114,6 @@ class AppActivity : ComponentActivity() {
         viewModel.loadInstalledApps(getAllApps())
         viewModel.loadBlockedWords()
         MyLog.i(TAG, "Opening app")
-        //viewModel.handleUpdateStatus()
         viewModel.refreshPermissionState()
 
         requestAdminPermission(adminReceiver, requestAdmin)
@@ -108,7 +127,7 @@ class AppActivity : ComponentActivity() {
                         dialogState = dialogState,
                         onDialogStateChange = { dialogState = it },
                         grantPermission = { permissionState -> grantPermission(permissionState) },
-                        findNextMissingPermission = { viewModel.permissionState },
+                        findNextMissingPermission = { viewModel.permissionState?: PermissionState.Granted },
                         permissionDialogChecker = {}
                     )
                 }
@@ -116,137 +135,6 @@ class AppActivity : ComponentActivity() {
         }
 
     }
-
-    @Composable
-    private fun MainRoot(
-        context: Context = LocalContext.current,
-        viewModel: AppViewModel,
-        sharedPrefs: SharedPrefs,
-    ) {
-        val snackbarHostState = remember { SnackbarHostState() }
-        val apps = viewModel.apps.collectAsState().value
-        val blockedWords = viewModel.blockedWords.collectAsState().value
-
-        // Centralized dialogs rendering
-        when (val d = dialogState) {
-            is DialogState.ReportProblem -> {
-                ReportProblemDialog(
-                    onClose = { dialogState = null },
-                    onSubmit = { report ->
-                        viewModel.submitReport(report) {
-                            when (it) {
-                                NetworkResult.Success -> {
-                                    Toast.makeText(
-                                        context,
-                                        context.getString(R.string.report_sent_message),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-
-                                is NetworkResult.Error -> {
-                                    Toast.makeText(
-                                        context,
-                                        getString(R.string.report_send__faild_message, '$'),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-
-                                else -> {}
-                            }
-                        }
-                        dialogState = null
-                    }
-                )
-            }
-
-            is DialogState.FirstTime -> {
-                OkDialog(
-                    title = stringResource(R.string.test_version_text),
-                    message = stringResource(R.string.test_version_message).trimIndent(),
-                    onDismiss = {
-                        dialogState = null
-                        MyApp.isFirstTime = false
-                    }
-                )
-            }
-
-            is DialogState.Permission -> {
-                PermissionDialog(
-                    permissionState = d.permission,
-                    onDismiss = { dialogState = null },
-                    onClick = {
-                        grantPermission(d.permission)
-                        dialogState = null
-                    }
-                )
-            }
-
-            is BlockApps -> {
-                BlockAppDialog(
-                    onDismiss = { dialogState = null },
-                    appStates = apps,
-                    onBlockClick = { app ->
-                        dialogState = BlockApps(confirmApp = app)
-                    }
-                )
-                if (d.confirmApp != null) {
-                    ConfirmBlockedDialog(
-                        app = d.confirmApp,
-                        onDismiss = { dialogState = BlockApps() },
-                        onConfirm = {
-                            viewModel.toggleAppSelection(it.packageName)
-                            dialogState = BlockApps()
-                        }
-                    )
-                }
-            }
-
-            is DialogState.HowItWorks -> {
-                HowItWorksDialog(
-                    onDismiss = { dialogState = null },
-                    onContactClicked = { context.openUrl(SUPPORT_CONTACT_URL) },
-                    onSafeSearchClicked = { context.openUrl(SAFE_SEARCH_URL) },
-                    image = stringResource(R.string.howtoknow_asset).toUri()
-                )
-            }
-
-            is DialogState.EnableProtectionConfirm -> {
-                EnableProtectionDialog(
-                    onConfirm = {
-                        dialogState = null // Close the confirmation dialog
-                        viewModel.saveLevel(d.level)
-                        refreshPermissionState()
-                        if (permissionState == null) {
-                            // All permissions are already granted! Activate protection.
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.protection_activated_text),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            startAccessibilityService(MyAccessibilityService.ACTION_START_FOREGROUND)
-                            startVpnService(MyVpnService.ACTION_START)
-                            backStack.add(Screen.ProtectionActivated)
-                            backStack.remove(Screen.EnableProtection)
-                        } else {
-                            dialogState = DialogState.Permission(permissionState!!)
-                        }
-                    },
-                    onDismiss = { dialogState = null }
-                )
-            }
-
-            DialogState.BlockWords -> {
-                ManageKeywordsDialog(
-                    keywords = blockedWords.toSet(),
-                    onDismiss = { dialogState = null },
-                    onAddKeyword = { viewModel.addBlockedWord(it) },
-                    onRemoveKeyword = {})
-
-            }
-
-
-
-
 
     override fun onResume() {
         super.onResume()

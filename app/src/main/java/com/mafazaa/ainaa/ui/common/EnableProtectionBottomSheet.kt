@@ -26,6 +26,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.mafazaa.ainaa.viewmodels.AppViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,6 +96,7 @@ private fun BottomSheetHeader(modifier: Modifier = Modifier) {
 
 @Composable
 private fun EnableUninstallSheet(modifier: Modifier = Modifier) {
+    val viewModel : AppViewModel = koinViewModel()
     Column {
         Row(
             modifier = modifier.fillMaxWidth(),
@@ -101,8 +104,10 @@ private fun EnableUninstallSheet(modifier: Modifier = Modifier) {
         ) {
             Checkbox(
                 enabled = true,
-                checked = false,
-                onCheckedChange = {},
+                checked = viewModel.uninstallAppCheck,
+                onCheckedChange = {
+                    viewModel.uninstallAppCheck = it
+                },
                 colors = CheckboxDefaults.colors(
                     checkedColor = MaterialTheme.colorScheme.primary,
                     uncheckedColor = MaterialTheme.colorScheme.primary

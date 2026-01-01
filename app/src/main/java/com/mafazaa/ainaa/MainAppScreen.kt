@@ -37,6 +37,7 @@ import com.mafazaa.ainaa.domain.models.UpdateState
 import com.mafazaa.ainaa.navigation.Screen
 import com.mafazaa.ainaa.service.MyAccessibilityService
 import com.mafazaa.ainaa.service.MyAccessibilityService.Companion.startAccessibilityService
+import com.mafazaa.ainaa.service.MyVpnService
 import com.mafazaa.ainaa.ui.common.EnableProtectionBottomSheet
 import com.mafazaa.ainaa.ui.common.MainDrawer
 import com.mafazaa.ainaa.ui.common.OkDialog
@@ -57,11 +58,112 @@ import com.mafazaa.ainaa.utils.Constants.SUPPORT_CONTACT_URL
 import com.mafazaa.ainaa.utils.Constants.SUPPORT_URL
 import com.mafazaa.ainaa.utils.ExternalAppsAndLink
 import com.mafazaa.ainaa.utils.installApk
+import com.mafazaa.ainaa.utils.isServiceRunning
 import com.mafazaa.ainaa.utils.openUrl
 import com.mafazaa.ainaa.utils.shareFile
 import com.mafazaa.ainaa.utils.startVpnService
 import com.mafazaa.ainaa.viewmodels.AppViewModel
 import kotlinx.coroutines.launch
+
+/**
+ * Checks if all required permissions are granted and activates protection accordingly.
+ *
+ * @param context The application context
+ * @param viewModel The app view model
+ * @param backStack The navigation back stack
+ * @param findNextMissingPermission Function to find the next missing permission
+ * @param onDialogStateChange Callback to change dialog state
+ * @return True if all permissions are granted and services started successfully, false otherwise
+ */
+fun checkPermissionsAndActivateProtection(
+    context: Context,
+    viewModel: AppViewModel,
+    backStack: MutableList<Screen>,
+    findNextMissingPermission: () -> PermissionState,
+    onDialogStateChange: (DialogState?) -> Unit
+): Boolean {
+    try {
+        // Check if all permissions are granted
+        val nextPermission = findNextMissingPermission()
+
+        if (nextPermission == PermissionState.Granted) {
+            // All permissions are granted, try to start services
+            val accessibilityServiceRunning = isServiceRunning(context, MyAccessibilityService::class.java)
+            val vpnServiceRunning = isServiceRunning(context, MyVpnService::class.java)
+
+            // Start services if not running
+            if (!accessibilityServiceRunning) {
+                context.startAccessibilityService(MyAccessibilityService.ACTION_START_FOREGROUND)
+            }
+
+            if (!vpnServiceRunning) {
+                context.startVpnService(MyAccessibilityService.ACTION_START_FOREGROUND)
+            }
+
+            // Wait briefly and check if services started successfully
+            Thread.sleep(500)
+
+            val servicesStarted = isServiceRunning(context, MyAccessibilityService::class.java) &&
+                                 isServiceRunning(context, MyVpnService::class.java)
+
+            if (servicesStarted) {
+                // Services started successfully, navigate to ProtectionActivated screen
+                if (!backStack.contains(Screen.ProtectionActivated)) {
+                    backStack.add(Screen.ProtectionActivated)
+                }
+                backStack.remove(Screen.EnableProtection)
+
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.protection_activated_text),
+                    Toast.LENGTH_LONG
+                ).show()
+
+                return true
+            } else {
+                // Services failed to start, revert to EnableProtection screen
+                if (!backStack.contains(Screen.EnableProtection)) {
+                    backStack.add(Screen.EnableProtection)
+                }
+                backStack.remove(Screen.ProtectionActivated)
+
+                Toast.makeText(
+                    context,
+                    "Failed to start protection services",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                return false
+            }
+        } else {
+            // Not all permissions are granted, show permission dialog
+            onDialogStateChange(DialogState.Permission(nextPermission))
+
+            // Ensure we're on EnableProtection screen
+            if (!backStack.contains(Screen.EnableProtection)) {
+                backStack.add(Screen.EnableProtection)
+            }
+            backStack.remove(Screen.ProtectionActivated)
+
+            return false
+        }
+    } catch (e: Exception) {
+        // Handle any errors
+        Toast.makeText(
+            context,
+            "Error activating protection: ${e.message}",
+            Toast.LENGTH_LONG
+        ).show()
+
+        // Revert to EnableProtection screen on error
+        if (!backStack.contains(Screen.EnableProtection)) {
+            backStack.add(Screen.EnableProtection)
+        }
+        backStack.remove(Screen.ProtectionActivated)
+
+        return false
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,7 +174,7 @@ fun MainRoot(
     dialogState: DialogState?,
     onDialogStateChange: (DialogState?) -> Unit,
     grantPermission: (PermissionState) -> Unit,
-    findNextMissingPermission: () -> PermissionState?,
+    findNextMissingPermission: () -> PermissionState,
     permissionDialogChecker: @Composable () -> Unit,
     selectedLevel: DnsProtectionLevel = DnsProtectionLevel.NONE,
     onSelectedLevelChange: (DnsProtectionLevel) -> Unit = {}
@@ -136,7 +238,9 @@ fun MainRoot(
                                                 is UpdateState.Failed, UpdateState.NoUpdate -> {
                                                     viewModel.handleUpdateStatus()
                                                 }
-                                                else -> {}
+                                                else -> {
+
+                                                }
                                             }
                                         },
                                         updateState = viewModel.updateState.value,
@@ -144,18 +248,7 @@ fun MainRoot(
                                     )
                                 }
 
-                                Screen.Support -> NavEntry(key) {
-                                    SupportScreen(
-                                        onSupportClick = { ExternalAppsAndLink.openLinkInBrowser(context,SUPPORT_URL) },
-                                        onJoinClick = { ExternalAppsAndLink.openLinkInBrowser(context,JOIN_URL) },
-                                        onShareLogFile = { context.shareFile(viewModel.getLogFile()) },
-                                        onStopBlocking = { context.startAccessibilityService(MyAccessibilityService.ACTION_STOP) },
-                                        onOpenScreenShotWindow = {
-                                            viewModel.showScreenshotOverlay(true)
-
-                                        }
-                                    )
-                                }
+                                Screen.Support -> NavEntry(key) {}
 
                                 Screen.EnableProtection -> NavEntry(key) {
                                     EnableProtectionScreen(
@@ -172,6 +265,7 @@ fun MainRoot(
                                                 }
                                                 return@EnableProtectionScreen
                                             }
+
                                             onSelectedLevelChange(level)
                                             viewModel.setProtectionSheet(true)
                                         },
@@ -296,26 +390,18 @@ fun MainRoot(
         is DialogState.EnableProtectionConfirm -> {
             EnableProtectionDialog(
                 onConfirm = {
-                    onDialogStateChange(null)// Close the confirmation dialog
+                    onDialogStateChange(null) // Close the confirmation dialog
                     viewModel.saveLevel(dialogState.level)
 
-                    val nextPermission = findNextMissingPermission()
-                    if (nextPermission == null) {
-                        // All permissions are already granted! Activate protection.
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.protection_activated_text),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        context.startAccessibilityService(MyAccessibilityService.ACTION_START_FOREGROUND)
-                        context.startVpnService( MyAccessibilityService.ACTION_START_FOREGROUND)
-                        backStack.add(Screen.ProtectionActivated)
-                        backStack.remove(Screen.EnableProtection)
-                    } else {
-                        onDialogStateChange(DialogState.Permission(nextPermission))
-                    }
+                    checkPermissionsAndActivateProtection(
+                        context = context,
+                        viewModel = viewModel,
+                        backStack = backStack,
+                        findNextMissingPermission = findNextMissingPermission,
+                        onDialogStateChange = onDialogStateChange
+                    )
                 },
-                onDismiss = { onDialogStateChange(null)}
+                onDismiss = { onDialogStateChange(null) }
             )
         }
         else -> {}

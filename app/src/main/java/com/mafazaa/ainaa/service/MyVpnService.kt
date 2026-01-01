@@ -2,13 +2,11 @@ package com.mafazaa.ainaa.service
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.net.VpnService
 import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.os.SystemClock
-import android.util.Log
 import com.mafazaa.ainaa.AppActivity
 import com.mafazaa.ainaa.data.local.SharedPrefs
 import com.mafazaa.ainaa.domain.models.DnsProtectionLevel

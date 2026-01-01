@@ -7,4 +7,5 @@ enum class PermissionState {
     Accessibility,
     Administrative,
     Granted,
+
 }

@@ -48,6 +48,7 @@ fun SupportUsBottomSheet(
     onDismiss: () -> Unit = {},
     sheetState: SheetState = rememberModalBottomSheetState(),
 ) {
+    var amount by remember { mutableStateOf("") }
     ModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismiss,
@@ -69,7 +70,10 @@ fun SupportUsBottomSheet(
                 color = MaterialTheme.colorScheme.onTertiary
             )
             Spacer(Modifier.height(16.dp))
-            PaymentForm()
+            PaymentForm(
+                amount = amount,
+                onAmountChange = { amount = it }
+            )
             Spacer(Modifier.height(16.dp))
             CustomFilledButton(
                 isEnabled = false,

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -66,12 +67,18 @@ class AppViewModel(
     var showSupportSheet by  mutableStateOf(false)
     var showProtectionSheet by   mutableStateOf(false)
 
+    var uninstallAppCheck by mutableStateOf(false)
+
     val backStack by lazy {
         mutableStateListOf(
             if (!isServiceRunning(context, MyAccessibilityService::class.java)) Screen.EnableProtection
             else Screen.ProtectionActivated
         )
     }
+    var supportAmount by mutableDoubleStateOf(0.0)
+    var paymentMethod by mutableStateOf("")
+
+
     fun setSupportSheet(value : Boolean) {
         showSupportSheet =  value
     }
@@ -100,9 +107,13 @@ class AppViewModel(
             !vpnPermission -> PermissionState.Vpn
             !overlayPermission -> PermissionState.Overlay
             !accessibilityPermission -> PermissionState.Accessibility
-            else -> null
+            else -> PermissionState.Granted
         }
 
+    }
+
+    fun getPermissionStatus(): PermissionState {
+        return permissionState ?: PermissionState.Granted
     }
 
     fun loadInstalledApps(appList: List<AppInfo>) {
