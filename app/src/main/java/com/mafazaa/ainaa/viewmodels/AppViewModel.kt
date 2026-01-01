@@ -1,7 +1,12 @@
 package com.mafazaa.ainaa.viewmodels
 
+import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mafazaa.ainaa.BuildConfig
@@ -13,11 +18,20 @@ import com.mafazaa.ainaa.data.models.ReportModel
 import com.mafazaa.ainaa.domain.FileRepo
 import com.mafazaa.ainaa.domain.models.AppInfo
 import com.mafazaa.ainaa.domain.models.DnsProtectionLevel
+import com.mafazaa.ainaa.domain.models.PermissionState
 import com.mafazaa.ainaa.domain.models.UpdateState
 import com.mafazaa.ainaa.domain.repo.RemoteRepo
 import com.mafazaa.ainaa.domain.repo.UpdateRepo
 import com.mafazaa.ainaa.helpers.ScreenshotOverlayManager
+import com.mafazaa.ainaa.navigation.Screen
+import com.mafazaa.ainaa.service.MyAccessibilityService
 import com.mafazaa.ainaa.utils.MyLog
+import com.mafazaa.ainaa.utils.hasAccessibilityPermission
+import com.mafazaa.ainaa.utils.hasNotificationPermission
+import com.mafazaa.ainaa.utils.hasOverlayPermission
+import com.mafazaa.ainaa.utils.hasUsageStatsPermission
+import com.mafazaa.ainaa.utils.hasVpnPermission
+import com.mafazaa.ainaa.utils.isServiceRunning
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,6 +39,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class AppViewModel(
+    private val context : Context,
     private val remoteRepo: RemoteRepo,
     private val sharedPrefs: SharedPrefs,
     private val fileRepo: FileRepo,
@@ -39,6 +54,56 @@ class AppViewModel(
     val blockedWords: StateFlow<List<String>> = _blockedWords.asStateFlow()
 
     var updateState = mutableStateOf<UpdateState>(UpdateState.NoUpdate)
+
+     var vpnPermission by mutableStateOf(false)
+     var overlayPermission by mutableStateOf(false)
+     var usageStatsPermission by mutableStateOf(false)
+     var accessibilityPermission by mutableStateOf(false)
+    var permissionState by mutableStateOf<PermissionState?>(null)
+    private var notificationPermission by mutableStateOf(
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+    )
+    var showSupportSheet by  mutableStateOf(false)
+    var showProtectionSheet by   mutableStateOf(false)
+
+    val backStack by lazy {
+        mutableStateListOf(
+            if (!isServiceRunning(context, MyAccessibilityService::class.java)) Screen.EnableProtection
+            else Screen.ProtectionActivated
+        )
+    }
+    fun setSupportSheet(value : Boolean) {
+        showSupportSheet =  value
+    }
+    fun setProtectionSheet(value : Boolean) {
+        showProtectionSheet = value
+    }
+
+    fun refreshPermissionState() {
+        if (!notificationPermission) {
+            notificationPermission = context.hasNotificationPermission()
+        }
+        if (vpnPermission) {
+            vpnPermission = context.hasVpnPermission()
+        }
+        if (!overlayPermission) {
+            overlayPermission = context.hasOverlayPermission()
+        }
+        if (!usageStatsPermission) {
+            usageStatsPermission = context.hasUsageStatsPermission()
+        }
+        if (!accessibilityPermission) {
+            accessibilityPermission = context.hasAccessibilityPermission()
+        }
+        permissionState = when {
+            !notificationPermission -> PermissionState.Notification
+            !vpnPermission -> PermissionState.Vpn
+            !overlayPermission -> PermissionState.Overlay
+            !accessibilityPermission -> PermissionState.Accessibility
+            else -> null
+        }
+
+    }
 
     fun loadInstalledApps(appList: List<AppInfo>) {
         val appList = appList.toMutableList()

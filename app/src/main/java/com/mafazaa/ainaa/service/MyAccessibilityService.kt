@@ -18,7 +18,6 @@ import com.mafazaa.ainaa.domain.models.ScreenAnalysis
 import com.mafazaa.ainaa.domain.models.ScreenNode
 import com.mafazaa.ainaa.domain.models.ScriptResult
 import com.mafazaa.ainaa.domain.repo.ScriptRepo
-import com.mafazaa.ainaa.helpers.DeviceUtils
 import com.mafazaa.ainaa.helpers.LockOverlayManager
 import com.mafazaa.ainaa.helpers.MyNotificationManager
 import com.mafazaa.ainaa.helpers.ScreenAnalyser

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
@@ -26,16 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.domain.models.DnsProtectionLevel
-import com.mafazaa.ainaa.ui.theme.red
+import com.mafazaa.ainaa.ui.theme.Typography
 
 
 @Composable
@@ -45,29 +42,16 @@ fun ProtectionLevelSelector(
 ) {
     Column(
         modifier = Modifier.padding(16.dp),
-        horizontalAlignment = Alignment.Start
-    ) {
+        horizontalAlignment = Alignment.Start,
 
+    ) {
+        Text(
+            text = stringResource(R.string.pick_protection_lvl_title),
+            style = MaterialTheme.typography.titleSmall,
+        )
         Text(
             text = stringResource(R.string.pick_protection_lvl_text),
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            modifier = Modifier.padding(bottom = 8.dp),
-            textAlign = TextAlign.Right
-        )
-
-        // High Protection Card
-        ProtectionCard(
-            title = stringResource(R.string.protection_high_lvl_text),
-            description = stringResource(R.string.protection_high_lvl_message),
-            examples = listOf(
-                stringResource(R.string.all_in_low_lvl_label_text),
-                stringResource(R.string.music_label_text),
-                stringResource(R.string.movies_label_text),
-                stringResource(R.string.tiktok_label_text)
-            ),
-            selected = selectedLevel == DnsProtectionLevel.HIGH,
-            onClick = { onLevelSelected(DnsProtectionLevel.HIGH) }
+            style = Typography.headlineMedium
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -87,6 +71,22 @@ fun ProtectionLevelSelector(
             selected = selectedLevel == DnsProtectionLevel.LOW,
             onClick = { onLevelSelected(DnsProtectionLevel.LOW) }
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // High Protection Card
+        ProtectionCard(
+            title = stringResource(R.string.protection_high_lvl_text),
+            description = stringResource(R.string.protection_high_lvl_message),
+            examples = listOf(
+                stringResource(R.string.all_in_low_lvl_label_text),
+                stringResource(R.string.music_label_text),
+                stringResource(R.string.movies_label_text),
+                stringResource(R.string.tiktok_label_text)
+            ),
+            selected = selectedLevel == DnsProtectionLevel.HIGH,
+            onClick = { onLevelSelected(DnsProtectionLevel.HIGH) }
+        )
     }
 }
 
@@ -98,8 +98,10 @@ fun ProtectionCard(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
-    val borderColor = if (selected) red else Color.LightGray
-
+    val borderColor = if (selected)
+            MaterialTheme.colorScheme.primary
+        else
+            MaterialTheme.colorScheme.outline
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -123,22 +125,19 @@ fun ProtectionCard(
                     selected = selected,
                     onClick = onClick,
                     colors = RadioButtonDefaults.colors(
-                        selectedColor = red
+                        selectedColor = MaterialTheme.colorScheme.primary
                     )
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.titleSmall
                 )
             }
 
             Text(
                 text = description,
-                fontSize = 15.sp,
-                modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
-                textAlign = TextAlign.Right
+                style = MaterialTheme.typography.bodySmall
             )
 
             FlowRow(
@@ -146,16 +145,17 @@ fun ProtectionCard(
                     .fillMaxWidth()
                     .padding(4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 examples.forEach { label ->
                     Text(
                         text = label,
-                        color = red,
-                        fontSize = 15.sp,
+                        style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier
-                            .background(Color(0xFFFFEBEE), RoundedCornerShape(16.dp))
-                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                            .background(MaterialTheme.colorScheme.secondary,
+                                RoundedCornerShape(8.dp))
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
                 }
             }

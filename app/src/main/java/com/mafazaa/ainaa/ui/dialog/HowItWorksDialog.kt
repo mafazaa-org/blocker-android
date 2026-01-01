@@ -30,8 +30,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.rememberAsyncImagePainter
 import com.mafazaa.ainaa.R
-import com.mafazaa.ainaa.ui.theme.lightGray
-import com.mafazaa.ainaa.ui.theme.red
+
 
 @Composable
 fun HowItWorksDialog(
@@ -62,7 +61,7 @@ fun HowItWorksDialog(
         ) { innerPadding ->
             Surface(
                 shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surface,
+//                color = MaterialTheme.colorScheme.surface,
                 modifier = Modifier
                     .fillMaxWidth(.9f)
                     .padding(innerPadding),
@@ -100,7 +99,7 @@ fun HowItWorksDialog(
                     // First clickable link
                     Text(
                         text = stringResource(R.string.click_link_text),
-                        color = red,
+                        color = MaterialTheme.colorScheme.primary,
                         textDecoration = TextDecoration.Underline,
                         modifier = Modifier.clickable {
                             // open browser
@@ -113,7 +112,7 @@ fun HowItWorksDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
-                            .border(1.dp, lightGray, RoundedCornerShape(8.dp))
+                            .border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp))
                             .clip(RoundedCornerShape(8.dp))
                     )
 
@@ -125,7 +124,7 @@ fun HowItWorksDialog(
                     // Second clickable link
                     Text(
                         text = stringResource(R.string.contact_customer_service_text),
-                        color = red,
+                        color = MaterialTheme.colorScheme.primary,
                         textDecoration = TextDecoration.Underline,
                         modifier = Modifier.clickable {
                             onContactClicked()
