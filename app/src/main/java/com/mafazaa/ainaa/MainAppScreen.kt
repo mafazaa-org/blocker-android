@@ -51,16 +51,11 @@ import com.mafazaa.ainaa.ui.dialog.PermissionDialog
 import com.mafazaa.ainaa.ui.dialog.ReportProblemDialog
 import com.mafazaa.ainaa.ui.protection.EnableProtectionScreen
 import com.mafazaa.ainaa.ui.protection.ProtectionActivatedScreen
-import com.mafazaa.ainaa.ui.support.SupportScreen
-import com.mafazaa.ainaa.utils.Constants.JOIN_URL
 import com.mafazaa.ainaa.utils.Constants.SAFE_SEARCH_URL
 import com.mafazaa.ainaa.utils.Constants.SUPPORT_CONTACT_URL
-import com.mafazaa.ainaa.utils.Constants.SUPPORT_URL
-import com.mafazaa.ainaa.utils.ExternalAppsAndLink
 import com.mafazaa.ainaa.utils.installApk
 import com.mafazaa.ainaa.utils.isServiceRunning
 import com.mafazaa.ainaa.utils.openUrl
-import com.mafazaa.ainaa.utils.shareFile
 import com.mafazaa.ainaa.utils.startVpnService
 import com.mafazaa.ainaa.viewmodels.AppViewModel
 import kotlinx.coroutines.launch
@@ -83,59 +78,22 @@ fun checkPermissionsAndActivateProtection(
     onDialogStateChange: (DialogState?) -> Unit
 ): Boolean {
     try {
+        android.util.Log.d("PermissionCheck", "=== Starting Permission Check ===")
+
+        // IMPORTANT: Refresh permission state before checking to get current status
+        viewModel.refreshPermissionState()
+
         // Check if all permissions are granted
         val nextPermission = findNextMissingPermission()
 
-        if (nextPermission == PermissionState.Granted) {
-            // All permissions are granted, try to start services
-            val accessibilityServiceRunning = isServiceRunning(context, MyAccessibilityService::class.java)
-            val vpnServiceRunning = isServiceRunning(context, MyVpnService::class.java)
+        android.util.Log.d("PermissionCheck", "Next missing permission: $nextPermission")
+        android.util.Log.d("PermissionCheck", "Accessibility: ${viewModel.accessibilityPermission}")
+        android.util.Log.d("PermissionCheck", "VPN: ${viewModel.vpnPermission}")
+        android.util.Log.d("PermissionCheck", "Overlay: ${viewModel.overlayPermission}")
+        android.util.Log.d("PermissionCheck", "Permission State: ${viewModel.permissionState}")
 
-            // Start services if not running
-            if (!accessibilityServiceRunning) {
-                context.startAccessibilityService(MyAccessibilityService.ACTION_START_FOREGROUND)
-            }
-
-            if (!vpnServiceRunning) {
-                context.startVpnService(MyAccessibilityService.ACTION_START_FOREGROUND)
-            }
-
-            // Wait briefly and check if services started successfully
-            Thread.sleep(500)
-
-            val servicesStarted = isServiceRunning(context, MyAccessibilityService::class.java) &&
-                                 isServiceRunning(context, MyVpnService::class.java)
-
-            if (servicesStarted) {
-                // Services started successfully, navigate to ProtectionActivated screen
-                if (!backStack.contains(Screen.ProtectionActivated)) {
-                    backStack.add(Screen.ProtectionActivated)
-                }
-                backStack.remove(Screen.EnableProtection)
-
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.protection_activated_text),
-                    Toast.LENGTH_LONG
-                ).show()
-
-                return true
-            } else {
-                // Services failed to start, revert to EnableProtection screen
-                if (!backStack.contains(Screen.EnableProtection)) {
-                    backStack.add(Screen.EnableProtection)
-                }
-                backStack.remove(Screen.ProtectionActivated)
-
-                Toast.makeText(
-                    context,
-                    "Failed to start protection services",
-                    Toast.LENGTH_LONG
-                ).show()
-
-                return false
-            }
-        } else {
+        if (nextPermission != PermissionState.Granted) {
+            android.util.Log.w("PermissionCheck", "Missing permission detected: $nextPermission - showing dialog")
             // Not all permissions are granted, show permission dialog
             onDialogStateChange(DialogState.Permission(nextPermission))
 
@@ -147,7 +105,70 @@ fun checkPermissionsAndActivateProtection(
 
             return false
         }
+
+        // All permissions are granted, try to start services
+        android.util.Log.i("PermissionCheck", "All permissions granted! Starting services...")
+
+        val accessibilityServiceRunning = isServiceRunning(context, MyAccessibilityService::class.java)
+        val vpnServiceRunning = isServiceRunning(context, MyVpnService::class.java)
+
+        android.util.Log.d("PermissionCheck", "Accessibility Service Running: $accessibilityServiceRunning")
+        android.util.Log.d("PermissionCheck", "VPN Service Running: $vpnServiceRunning")
+
+        // Start services if not running
+        if (!accessibilityServiceRunning) {
+            android.util.Log.i("PermissionCheck", "Starting Accessibility Service...")
+            context.startAccessibilityService(MyAccessibilityService.ACTION_START_FOREGROUND)
+        }
+
+        if (!vpnServiceRunning) {
+            android.util.Log.i("PermissionCheck", "Starting VPN Service...")
+            context.startVpnService(MyAccessibilityService.ACTION_START_FOREGROUND)
+        }
+
+        // Wait briefly and check if services started successfully
+        Thread.sleep(500)
+
+        val accessibilityAfterStart = isServiceRunning(context, MyAccessibilityService::class.java)
+        val vpnAfterStart = isServiceRunning(context, MyVpnService::class.java)
+
+        android.util.Log.d("PermissionCheck", "After start - Accessibility: $accessibilityAfterStart, VPN: $vpnAfterStart")
+
+        val servicesStarted = accessibilityAfterStart && vpnAfterStart
+
+        if (servicesStarted) {
+            android.util.Log.i("PermissionCheck", "Services started successfully!")
+            // Services started successfully, navigate to ProtectionActivated screen
+            if (!backStack.contains(Screen.ProtectionActivated)) {
+                backStack.add(Screen.ProtectionActivated)
+            }
+            backStack.remove(Screen.EnableProtection)
+
+            Toast.makeText(
+                context,
+                context.getString(R.string.protection_activated_text),
+                Toast.LENGTH_LONG
+            ).show()
+
+            return true
+        } else {
+            android.util.Log.e("PermissionCheck", "Services failed to start!")
+            // Services failed to start, revert to EnableProtection screen
+            if (!backStack.contains(Screen.EnableProtection)) {
+                backStack.add(Screen.EnableProtection)
+            }
+            backStack.remove(Screen.ProtectionActivated)
+
+            Toast.makeText(
+                context,
+                "Failed to start protection services",
+                Toast.LENGTH_LONG
+            ).show()
+
+            return false
+        }
     } catch (e: Exception) {
+        android.util.Log.e("PermissionCheck", "Error in checkPermissionsAndActivateProtection", e)
         // Handle any errors
         Toast.makeText(
             context,
@@ -267,12 +288,12 @@ fun MainRoot(
                                             }
 
                                             onSelectedLevelChange(level)
-                                            viewModel.setProtectionSheet(true)
+                                            viewModel.showProtectionSheet = true
                                         },
                                         selectedLevel = selectedLevel,
                                         supportUs = {
                                             uiScope.launch {
-                                                viewModel.setSupportSheet(true)
+                                                viewModel.showSupportSheet = true
                                             }
                                         }
                                     )
@@ -283,19 +304,21 @@ fun MainRoot(
                     if (viewModel.showSupportSheet) {
                         SupportUsBottomSheet(
                             onDismiss = {
-                                viewModel.setSupportSheet(false)
+                                viewModel.showSupportSheet = false
                             },
                             sheetState = sheetState
                         )
                     }
                     if(viewModel.showProtectionSheet){
                         EnableProtectionBottomSheet(
-                            onDismiss = { viewModel.setProtectionSheet(false) },
+                            onDismiss = { viewModel.showProtectionSheet = false },
                             sheetState = sheetState,
                             onConfirm = {
+                                // Show confirmation dialog - permission check will happen after user confirms
                                 onDialogStateChange(DialogState.EnableProtectionConfirm(selectedLevel))
-                                backStack.add(Screen.ProtectionActivated)
-                                viewModel.setProtectionSheet(false)
+                                // DO NOT add ProtectionActivated screen here!
+                                // It will be added by checkPermissionsAndActivateProtection() after verifying permissions
+                                viewModel.showProtectionSheet = false
                             }
                         )
                     }

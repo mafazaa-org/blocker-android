@@ -79,29 +79,15 @@ class AppViewModel(
     var paymentMethod by mutableStateOf("")
 
 
-    fun setSupportSheet(value : Boolean) {
-        showSupportSheet =  value
-    }
-    fun setProtectionSheet(value : Boolean) {
-        showProtectionSheet = value
-    }
-
     fun refreshPermissionState() {
-        if (!notificationPermission) {
-            notificationPermission = context.hasNotificationPermission()
-        }
-        if (vpnPermission) {
-            vpnPermission = context.hasVpnPermission()
-        }
-        if (!overlayPermission) {
-            overlayPermission = context.hasOverlayPermission()
-        }
-        if (!usageStatsPermission) {
-            usageStatsPermission = context.hasUsageStatsPermission()
-        }
-        if (!accessibilityPermission) {
-            accessibilityPermission = context.hasAccessibilityPermission()
-        }
+        // ALWAYS check current permission status (not just when cached value is false)
+        // This ensures we detect when permissions are revoked
+        notificationPermission = context.hasNotificationPermission()
+        vpnPermission = context.hasVpnPermission()
+        overlayPermission = context.hasOverlayPermission()
+        usageStatsPermission = context.hasUsageStatsPermission()
+        accessibilityPermission = context.hasAccessibilityPermission()
+
         permissionState = when {
             !notificationPermission -> PermissionState.Notification
             !vpnPermission -> PermissionState.Vpn

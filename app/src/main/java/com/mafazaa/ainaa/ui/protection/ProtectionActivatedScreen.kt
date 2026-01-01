@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +45,7 @@ fun ProtectionActivatedScreen(
     onUpdateClick: (updateState: UpdateState) -> Unit = { /* Default no-op */ },
     updateState: UpdateState = UpdateState.NoUpdate,
     ) {
-    val image = R.drawable.gradient
+    val image = R.drawable.browser_blocked_page
     Column(
         modifier = Modifier.fillMaxSize()
             .padding(top = 24.dp),
@@ -77,8 +80,10 @@ fun ProtectionActivatedScreen(
         Image(
             painter = rememberAsyncImagePainter(model = image),
             contentDescription = stringResource(R.string.safe_search_image),
+            contentScale = ContentScale.Fit,
             modifier = Modifier
                 .fillMaxWidth()
+                .fillMaxHeight(0.3f)
                 .padding(vertical = 8.dp)
                 .border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp))
                 .clip(RoundedCornerShape(8.dp))
