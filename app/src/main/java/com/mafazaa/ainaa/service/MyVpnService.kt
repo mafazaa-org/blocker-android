@@ -113,7 +113,7 @@ class MyVpnService : VpnService() {
             vpnInterface?.close()
             vpnInterface = null
             isRunning = false
-            stopForeground(true)
+            stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
         } catch (e: Exception) {
             MyLog.e(TAG, "Error in stopVpn: ${e.message}", e)
