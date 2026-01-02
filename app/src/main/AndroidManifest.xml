@@ -15,6 +15,9 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.htc.permission.QUICKBOOT_POWERON" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
@@ -45,8 +48,10 @@
         <service
             android:exported="false"
             android:foregroundServiceType="specialUse"
+            android:process=":vpn_service"
             android:permission="android.permission.BIND_VPN_SERVICE"
             tools:ignore="ForegroundServicePermission"
+            android:stopWithTask="false"
             android:name=".service.MyVpnService">
             <intent-filter>
                 <action android:name="android.net.VpnService" />
@@ -98,6 +103,44 @@
             <action android:name="android.intent.action.TIME_TICK" />
         </intent-filter>
             </receiver>
+
+        <receiver
+            android:name=".receiver.VpnWatchdogReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".service.ServiceRestartReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.mafazaa.ainaa.RESTART_SERVICE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".service.ServiceMonitorJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true" />
+
+        <receiver
+            android:name=".service.VpnRestartReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.mafazaa.ainaa.RESTART_VPN" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".service.VpnMonitorJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -112,6 +155,9 @@
             android:name=".service.MyAccessibilityService"
             android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:label="@string/app_name"
+            android:process=":accessibility_service"
+            android:stopWithTask="false"
             android:foregroundServiceType="specialUse">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />

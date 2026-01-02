@@ -1,5 +1,6 @@
 package com.mafazaa.ainaa.di
 
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import com.mafazaa.ainaa.viewmodels.AppViewModel
 import com.mafazaa.ainaa.BuildConfig
@@ -36,6 +37,6 @@ val appModule = module {
     }
     single<UpdateRepo> { UpdateManager(get(), get(), get()) }
 
-    viewModel { AppViewModel(get(), get(), get(), get(), get()) }
+    viewModel { AppViewModel(get<Context>(),get(), get(), get(), get(), get()) }
 
 }

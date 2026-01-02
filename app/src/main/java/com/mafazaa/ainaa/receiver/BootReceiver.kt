@@ -19,28 +19,32 @@ import com.mafazaa.ainaa.utils.startVpnService
 class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action != Intent.ACTION_BOOT_COMPLETED &&
-            intent.action != Intent.ACTION_LOCKED_BOOT_COMPLETED &&
-            intent.action != Intent.ACTION_REBOOT
-        ) {
-            MyLog.d("BootReceiver", "Device rebooted. Attempting to start accessibility service.")
-            val serviceIntent = Intent(context, MyAccessibilityService::class.java).apply {
-                action = MyAccessibilityService.ACTION_START_FOREGROUND
+        try {
+            if (intent.action != Intent.ACTION_BOOT_COMPLETED &&
+                intent.action != Intent.ACTION_LOCKED_BOOT_COMPLETED &&
+                intent.action != Intent.ACTION_REBOOT
+            ) {
+                MyLog.d("BootReceiver", "Device rebooted. Attempting to start accessibility service.")
+                val serviceIntent = Intent(context, MyAccessibilityService::class.java).apply {
+                    action = MyAccessibilityService.ACTION_START_FOREGROUND
+                }
+                context.startForegroundService(serviceIntent)
             }
-            context.startForegroundService(serviceIntent)
-        }
 
-        if (!context.isKeyguardSecure()) {
-            MyLog.fileRepo = FakeFileRepo
-        } else {
-            MyLog.i(TAG, "Device :${intent.action}")
-        }
-        if (context.hasAccessibilityPermission()) {
-            context.startAccessibilityService()
-        }
-        if (context.hasVpnPermission()) {
-            MyLog.i(TAG, "Starting vpn on boot")
-            context.startVpnService()
+            if (!context.isKeyguardSecure()) {
+                MyLog.fileRepo = FakeFileRepo
+            } else {
+                MyLog.i(TAG, "Device :${intent.action}")
+            }
+            if (context.hasAccessibilityPermission()) {
+                context.startAccessibilityService()
+            }
+            if (context.hasVpnPermission()) {
+                MyLog.i(TAG, "Starting vpn on boot")
+                context.startVpnService()
+            }
+        } catch (e: Exception) {
+            MyLog.e(TAG, "Error in BootReceiver: ${e.message}", e)
         }
 
     }

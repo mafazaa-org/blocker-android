@@ -4,6 +4,7 @@ import androidx.annotation.IntegerRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,7 +15,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.sp
-import com.mafazaa.ainaa.ui.theme.lightGray
 
 
 @Composable
@@ -23,7 +23,7 @@ fun LabelledTextField(
     @IntegerRes placeholderResId: Int,
     valueState: MutableState<String>,
     errorState: MutableState<Boolean>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.fillMaxWidth(1f),
     keyboardType: KeyboardType = KeyboardType.Text,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
     maxLines: Int = 1,
@@ -31,7 +31,7 @@ fun LabelledTextField(
 ) {
 
     OutlinedTextField(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         value = valueState.value,
         onValueChange = {
             valueState.value = it
@@ -48,7 +48,7 @@ fun LabelledTextField(
         placeholder = {
             Text(
                 text = stringResource(placeholderResId),
-                color = lightGray,
+                color = MaterialTheme.colorScheme.secondary.copy(alpha = .5f),
                 fontSize = 12.sp,
             )
         },

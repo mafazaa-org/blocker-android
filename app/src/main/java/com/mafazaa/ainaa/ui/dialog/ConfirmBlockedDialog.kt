@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.mafazaa.ainaa.R
 import com.mafazaa.ainaa.domain.models.AppInfo
-import com.mafazaa.ainaa.ui.theme.red
 
 /**
  * A dialog to confirm blocking an app.
@@ -84,7 +83,7 @@ fun ConfirmBlockedDialog(
                     OutlinedButton(
                         onClick = onDismiss,
                         modifier = Modifier.padding(end = 8.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = red)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
                     ) {
                         Text(stringResource(R.string.cancel_text))
                     }
@@ -92,8 +91,8 @@ fun ConfirmBlockedDialog(
                     Button(
                         onClick = { onConfirm(app) },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = red,
-                            contentColor = Color.White
+                            containerColor =  MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     ) {
                         Text(stringResource(R.string.confirm_text))
