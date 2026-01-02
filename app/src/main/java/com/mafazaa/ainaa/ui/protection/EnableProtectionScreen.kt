@@ -37,6 +37,7 @@ fun EnableProtectionScreen(
     report: () -> Unit,
     enableProtection: (DnsProtectionLevel) -> Unit,
     selectedLevel: DnsProtectionLevel,
+    onSelectedLevelChange: (DnsProtectionLevel) -> Unit = {},
     supportUs: () -> Unit = {},
     onEnableProtection: () -> Unit = {}
 ) {
@@ -47,10 +48,12 @@ fun EnableProtectionScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp) // optional spacing between the two
     ) {
-        var selectedLevel by remember { mutableStateOf(selectedLevel) }
-        ProtectionLevelSelector(selectedLevel, {
-            selectedLevel = it
-        })
+
+        ProtectionLevelSelector(
+            selectedLevel = selectedLevel,
+            onLevelSelected = onSelectedLevelChange
+
+        )
         ProtectYourDevice(
             enableProtection = { enableProtection(selectedLevel) },
             report = onEnableProtection,

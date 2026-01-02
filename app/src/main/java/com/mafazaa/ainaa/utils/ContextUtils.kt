@@ -71,17 +71,16 @@ fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
     return false
 }
 
-fun Context.startVpnService( action: String = MyVpnService.ACTION_START) {
+fun Context.startVpnService(action: String = MyVpnService.ACTION_START) {
     val intent = Intent(this, MyVpnService::class.java).apply {
-        this.action = if (
-            action == MyVpnService.ACTION_START
-        ) {
-            MyVpnService.ACTION_START
-        } else {
-            MyVpnService.ACTION_START
-        }
+        this.action = action
     }
-    startService(intent)
+    try {
+        startService(intent)
+        MyLog.d("ContextUtils", "VPN Service start requested with action: $action")
+    } catch (e: Exception) {
+        MyLog.e("ContextUtils", "Error starting VPN Service: ${e.message}", e)
+    }
 }
 
 fun Context.openUrl(url: String) {

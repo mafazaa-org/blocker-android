@@ -22,7 +22,6 @@ import androidx.core.view.ViewCompat.setLayoutDirection
 import androidx.lifecycle.lifecycleScope
 import com.mafazaa.ainaa.data.local.SharedPrefs
 import com.mafazaa.ainaa.domain.models.AppInfo
-import com.mafazaa.ainaa.domain.models.DnsProtectionLevel
 import com.mafazaa.ainaa.domain.models.PermissionState
 import com.mafazaa.ainaa.helpers.LocaleHelper
 import com.mafazaa.ainaa.receiver.AppDeviceAdminReceiver
@@ -49,8 +48,6 @@ sealed interface DialogState {
     data class BlockApps(val confirmApp: AppInfo? = null) : DialogState
     data object HowItWorks : DialogState
     data object BlockWords : DialogState
-    data class EnableProtectionConfirm(val level: DnsProtectionLevel) :
-        DialogState
 }
 
 class AppActivity : ComponentActivity() {
@@ -95,12 +92,12 @@ class AppActivity : ComponentActivity() {
                 AinaaTheme {
                     MainRoot(
                         viewModel = viewModel,
-                        sharedPrefs = sharedPrefs,
                         dialogState = dialogState,
                         onDialogStateChange = { dialogState = it },
                         grantPermission = { permissionState -> grantPermission(permissionState) },
-                        findNextMissingPermission = { viewModel.permissionState?: PermissionState.Granted },
-                        permissionDialogChecker = {}
+                        permissionDialogChecker = {},
+                        selectedLevel = viewModel.selectedLevel,
+                        onSelectedLevelChange = { viewModel.selectedLevel = it }
                     )
                 }
             }

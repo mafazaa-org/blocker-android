@@ -48,22 +48,29 @@ class MyAccessibilityService : AccessibilityService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         try {
+            MyLog.i(TAG, "=== onStartCommand called ===")
+            MyLog.i(TAG, "Intent Action: ${intent?.action}")
+            MyLog.i(TAG, "Current isRunning state: $isRunning")
+
             when (intent?.action) {
                 ACTION_START_FOREGROUND -> {
+                    MyLog.i(TAG, "Starting Accessibility Service in FOREGROUND")
                     MyNotificationManager.startForegroundService(this)
-                    MyLog.i(TAG, "Accessibility Service started in foreground.")
+                    MyLog.i(TAG, "Foreground service notification started")
                     isRunning = true
+                    MyLog.i(TAG, "isRunning set to TRUE")
                 }
 
-
                 ACTION_STOP -> {
+                    MyLog.i(TAG, "Stopping Accessibility Service")
                     isRunning = false
-                    stopForeground(STOP_FOREGROUND_REMOVE)
+                    MyNotificationManager.stopForegroundService(this)
                     stopSelf()
-
+                    MyLog.i(TAG, "Service stopped")
                 }
 
                 ACTION_SHARE_CURRENT_SCREEN -> {
+                    MyLog.i(TAG, "Sharing current screen, isRunning: $isRunning")
                     if (!isRunning) {
                         MyLog.w(TAG, "Service not running, cannot share screen")
                     }
@@ -82,8 +89,10 @@ class MyAccessibilityService : AccessibilityService() {
                 }
 
                 else -> {
-                    isRunning = true
-                    MyLog.w(TAG, "Unknown action received: ${intent?.action}")
+                    MyLog.w(TAG, "Service bound/started without explicit action: ${intent?.action}")
+                    MyLog.w(TAG, "Service will not run until ACTION_START_FOREGROUND is sent")
+                    // Don't set isRunning = true here!
+                    // Service should only run when explicitly started with ACTION_START_FOREGROUND
                 }
             }
         } catch (e: Exception) {
@@ -121,7 +130,8 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onCreate() {
         try {
             super.onCreate()
-            MyLog.i(TAG, "Accessibility Service created.")
+            MyLog.i(TAG, "=== Accessibility Service CREATED ===")
+            MyLog.i(TAG, "Service lifecycle: onCreate() called")
             scheduleWatchdog()
             ServiceMonitorJobService.scheduleJob(this)
         } catch (e: Exception) {
@@ -132,12 +142,23 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         try {
             super.onServiceConnected()
+            MyLog.i(TAG, "=== Accessibility Service CONNECTED ===")
+            MyLog.i(TAG, "Service is now bound to the system")
+
             val info = AccessibilityServiceInfo()
             info.flags = info.flags or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
             info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK
             info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
             serviceInfo = info
-            MyLog.i(TAG, "Accessibility Service connected.")
+
+            MyLog.i(TAG, "Service Info configured:")
+            MyLog.i(TAG, "  - Event Types: TYPES_ALL_MASK (all events)")
+            MyLog.i(TAG, "  - Feedback Type: FEEDBACK_GENERIC")
+            MyLog.i(TAG, "  - Report View IDs: ENABLED")
+
+            // Update notification manager state and notification if service was already running
+            MyLog.d(TAG, "Updating notification state after service connected")
+            MyNotificationManager.updateServiceState(this)
         } catch (e: Exception) {
             MyLog.e(TAG, "Error in onServiceConnected: ${e.message}", e)
         }
@@ -147,14 +168,29 @@ class MyAccessibilityService : AccessibilityService() {
         try {
             // Return early if event is null or service is not running
             event ?: return
-            if (!isRunning) return
+
+            MyLog.d(TAG, "=== Accessibility Event Received ===")
+            MyLog.d(TAG, "Event Type: ${event.eventType}")
+            MyLog.d(TAG, "Service is Running: $isRunning")
+            MyLog.d(TAG, "Package Name: ${rootInActiveWindow?.packageName}")
+
+            if (!isRunning) {
+                MyLog.w(TAG, "Service is NOT running, ignoring event")
+                return
+            }
+
             if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED &&
                 event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
             ) {
+                MyLog.d(TAG, "Event type not monitored (${event.eventType}), skipping")
                 return
             }
+
             rootInActiveWindow?.let { rootNode ->
+                MyLog.d(TAG, "Root node found, package: ${rootNode.packageName}")
+
                 if (rootNode.packageName == "com.mafazaa.ainaa") {
+                    MyLog.d(TAG, "Own app package detected, ignoring")
                     return
                 }
 
@@ -169,6 +205,8 @@ class MyAccessibilityService : AccessibilityService() {
                             "Screen analyzed in ${analysisDuration.inWholeMilliseconds}ms, nodes=${analysisResult.nodesCount}"
                         )
                         val currentPackage = analysisResult.pkg
+                        MyLog.d(TAG, "Current Package: $currentPackage")
+
                         if (checkBlockedApp(currentPackage)) {
                             MyLog.i(TAG, "Blocked app in use: $currentPackage")
                             block(BlockReason.UsingBlockedApp(currentPackage ?: "unknown"))
@@ -213,6 +251,8 @@ class MyAccessibilityService : AccessibilityService() {
                         MyLog.e(TAG, "Error processing accessibility event: ${e.message}", e)
                     }
                 }
+            } ?: run {
+                MyLog.w(TAG, "Root node is NULL! Cannot process event")
             }
         } catch (e: Exception) {
             MyLog.e(TAG, "Error in onAccessibilityEvent: ${e.message}", e)
@@ -367,6 +407,9 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onDestroy() {
         try {
             MyLog.w(TAG, "Service being destroyed, scheduling restart")
+
+            // Notify that accessibility service is stopping
+            MyNotificationManager.stopForegroundService(this)
 
             // Send broadcast to restart service
             val restartIntent = Intent(ServiceRestartReceiver.ACTION_RESTART_SERVICE)
