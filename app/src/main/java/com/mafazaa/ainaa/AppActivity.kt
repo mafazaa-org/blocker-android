@@ -85,7 +85,6 @@ class AppActivity : ComponentActivity() {
         MyLog.i(TAG, "Opening app")
         viewModel.refreshPermissionState()
 
-        requestAdminPermission(adminReceiver, requestAdmin)
 
         setContent {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -128,7 +127,14 @@ class AppActivity : ComponentActivity() {
             PermissionState.Vpn -> requestVpnPermission()
             PermissionState.Overlay -> requestDrawOverlaysPermission()
             PermissionState.Accessibility -> requestAccessibilityPermission()
-            PermissionState.Administrative -> requestAdminPermission(adminReceiver, requestAdmin)
+            PermissionState.Administrative -> {
+                // Only request admin permission if uninstall protection is enabled
+                if (viewModel.uninstallAppCheck) {
+                    requestAdminPermission(adminReceiver, requestAdmin)
+                } else {
+                    MyLog.w(TAG, "Admin permission requested but uninstallAppCheck is disabled")
+                }
+            }
             PermissionState.Granted -> {}
         }
     }
