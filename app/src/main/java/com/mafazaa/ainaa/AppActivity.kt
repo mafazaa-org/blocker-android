@@ -106,7 +106,12 @@ class AppActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Refresh permission state to detect any changes
         viewModel.refreshPermissionState()
+
+        // Check if services are running and navigate to ProtectionActivated if ready
+        // This handles the case when user returns after granting permissions
+        viewModel.checkServicesAndNavigate(viewModel.backStack)
     }
 
 

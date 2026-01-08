@@ -215,6 +215,19 @@ fun LockScreenOverlay(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    FilledTonalButton(
+                        onClick = onShareLog,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.share_logs_text),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
                     Button(
                         onClick = onClose,
                         modifier = Modifier
@@ -230,21 +243,6 @@ fun LockScreenOverlay(
                             text = stringResource(R.string.close_text),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    FilledTonalButton(
-                        onClick = onShareLog,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.share_logs_text),
-                            style = MaterialTheme.typography.titleMedium
                         )
                     }
                 }

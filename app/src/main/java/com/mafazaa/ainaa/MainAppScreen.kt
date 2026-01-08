@@ -153,14 +153,16 @@ fun MainRoot(
                                                 return@EnableProtectionScreen
                                             }
 
-                                            // Check and request missing permissions
-                                            viewModel.refreshPermissionState()
-                                            if (viewModel.permissionState != PermissionState.Granted) {
-                                                // Show permission dialog for the missing permission
-                                                onDialogStateChange(DialogState.Permission(viewModel.permissionState!!))
+                                            // Check only non-critical permissions (Notification and Overlay)
+                                            // VPN, Accessibility, and Admin will be requested in the bottom sheet
+                                            val missingPermission = viewModel.checkNonCriticalPermissions()
+                                            if (missingPermission != null) {
+                                                // Show permission dialog for the missing non-critical permission
+                                                onDialogStateChange(DialogState.Permission(missingPermission))
                                                 return@EnableProtectionScreen
                                             }
 
+                                            // All non-critical permissions granted, show the bottom sheet
                                             onSelectedLevelChange(level)
                                             viewModel.showProtectionSheet = true
                                         },
@@ -196,17 +198,21 @@ fun MainRoot(
                             sheetState = sheetState,
                             viewModel = viewModel,
                             onConfirm = {
-                                // Close the bottom sheet
-                                viewModel.showProtectionSheet = false
-
                                 // Save the selected protection level
                                 viewModel.saveLevel(selectedLevel)
 
-                                // Directly check permissions and activate protection
-                                viewModel.checkPermissionsAndActivateProtection(
-                                    backStack = backStack,
+                                // Close the bottom sheet first
+                                viewModel.showProtectionSheet = false
+
+                                // Request critical permissions (VPN, Accessibility, Admin if needed)
+                                // This will show permission dialogs one by one
+                                viewModel.requestCriticalPermissions(
                                     onDialogStateChange = onDialogStateChange
                                 )
+
+                                // If all permissions are already granted, directly check services and navigate
+                                // (onResume won't be called if we don't leave the app)
+                                viewModel.checkServicesAndNavigate(backStack)
                             }
                         )
                     }
