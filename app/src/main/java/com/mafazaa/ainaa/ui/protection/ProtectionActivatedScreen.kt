@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -69,55 +70,63 @@ fun ProtectionActivatedScreen(
                 textAlign = TextAlign.Center
             )
         }
-
-        // Subtitle
-        Text(
-            text = stringResource(R.string.test_protection_text),
-            style = MaterialTheme.typography.bodyMedium,
-        )
-
-        // Buttons row
-        Image(
-            painter = rememberAsyncImagePainter(model = image),
-            contentDescription = stringResource(R.string.safe_search_image),
-            contentScale = ContentScale.Fit,
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.3f)
-                .padding(vertical = 8.dp)
-                .border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp))
-                .clip(RoundedCornerShape(8.dp))
-        )
-        ReportLink(onReportClick = onReportClick)
-        Spacer(modifier = Modifier.height(16.dp))
-        val (black, red) = when (updateState) {
-            UpdateState.NoUpdate -> Pair(
-                stringResource(R.string.no_update_found_text),
-                stringResource(R.string.click_to_check_text)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Subtitle
+            Text(
+                text = stringResource(R.string.test_protection_text),
+                style = MaterialTheme.typography.bodyMedium,
             )
 
-            UpdateState.Checking -> Pair(
-                stringResource(R.string.check_update_text),
-                stringResource(R.string.empty_string)
-            )
+            // Buttons row
+            Image(
+                painter = rememberAsyncImagePainter(model = image),
+                contentDescription = stringResource(R.string.safe_search_image),
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.3f)
+                    .padding(vertical = 8.dp)
+                    .border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.White) // Set the background color to white since the image has white background
 
-            is UpdateState.Downloading -> Pair(
-                stringResource(R.string.downloading_update_text),
-                stringResource(R.string.empty_string)
             )
+            ReportLink(onReportClick = onReportClick)
+            val (black, red) = when (updateState) {
+                UpdateState.NoUpdate -> Pair(
+                    stringResource(R.string.no_update_found_text),
+                    stringResource(R.string.click_to_check_text)
+                )
 
-            is UpdateState.Failed -> Pair(
-                stringResource(R.string.update_failed_text),
-                stringResource(R.string.try_again)
-            )
+                UpdateState.Checking -> Pair(
+                    stringResource(R.string.check_update_text),
+                    stringResource(R.string.empty_string)
+                )
 
-            UpdateState.Downloaded -> Pair(
-                stringResource(R.string.update_done),
-                stringResource(R.string.confirmation_text)
-            )
+                is UpdateState.Downloading -> Pair(
+                    stringResource(R.string.downloading_update_text),
+                    stringResource(R.string.empty_string)
+                )
+
+                is UpdateState.Failed -> Pair(
+                    stringResource(R.string.update_failed_text),
+                    stringResource(R.string.try_again)
+                )
+
+                UpdateState.Downloaded -> Pair(
+                    stringResource(R.string.update_done),
+                    stringResource(R.string.confirmation_text)
+                )
+            }
+
+            TwoColorText(black = black, red = red, onClick = { onUpdateClick(updateState) })
         }
-
-        TwoColorText(black = black, red = red, onClick = { onUpdateClick(updateState) })
 
     }
 }

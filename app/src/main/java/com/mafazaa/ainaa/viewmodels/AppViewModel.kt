@@ -42,10 +42,12 @@ import com.mafazaa.ainaa.utils.hasVpnPermission
 import com.mafazaa.ainaa.utils.isServiceRunning
 import com.mafazaa.ainaa.utils.startVpnService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class AppViewModel(
@@ -88,8 +90,7 @@ class AppViewModel(
     var selectedLevel by mutableStateOf(DnsProtectionLevel.NONE)
     
     init {
-        // check for current screen state
-
+        getInitialScreenState()
     }
 
     /**
@@ -133,6 +134,94 @@ class AppViewModel(
         }
     }
 
+    /**
+     * Checks if both critical services (VPN and Accessibility) are running.
+     * If all permissions are granted but services aren't running, starts them.
+     * If both are running and all permissions are granted, navigates to ProtectionActivated screen.
+     * This is called reactively from onResume to handle navigation after permissions are granted.
+     *
+     * @param backStack The navigation back stack to update
+     */
+    fun checkServicesAndNavigate(backStack: MutableList<Screen>) {
+        viewModelScope.launch {
+            // Refresh permission state
+            refreshPermissionState()
+
+            // Check if all permissions are granted
+            val allPermissionsGranted = permissionState == PermissionState.Granted
+
+            // Check if both services are running
+            val accessibilityRunning = isServiceRunning(context, MyAccessibilityService::class.java)
+            val vpnRunning = isServiceRunning(context, MyVpnService::class.java)
+
+            Log.d(TAG, "=== Checking Services for Navigation ===")
+            Log.d(TAG, "All Permissions Granted: $allPermissionsGranted")
+            Log.d(TAG, "Accessibility Running: $accessibilityRunning")
+            Log.d(TAG, "VPN Running: $vpnRunning")
+            Log.d(TAG, "Current backStack: $backStack")
+
+            // If not all permissions granted, stay on current screen
+            if (!allPermissionsGranted) {
+                Log.d(TAG, "Permissions not fully granted yet - staying on current screen")
+                Log.w(TAG, "Missing permission: $permissionState")
+                return@launch
+            }
+
+            // All permissions granted - handle services and navigation
+            try {
+                // Start services if needed
+                if (!accessibilityRunning) {
+                    Log.d(TAG, "Starting Accessibility Service...")
+                    withContext(Dispatchers.Main) {
+                        context.startAccessibilityService(MyAccessibilityService.ACTION_START_FOREGROUND)
+                    }
+                    delay(1500) // Wait for service to start
+                }
+
+                if (!vpnRunning) {
+                    Log.d(TAG, "Starting VPN Service...")
+                    withContext(Dispatchers.Main) {
+                        context.startVpnService(MyVpnService.ACTION_START)
+                    }
+                    delay(1500) // Wait for service to start
+                }
+
+                // Check services again after potential start
+                val accessibilityFinal = isServiceRunning(context, MyAccessibilityService::class.java)
+                val vpnFinal = isServiceRunning(context, MyVpnService::class.java)
+
+                Log.d(TAG, "Final check - Accessibility: $accessibilityFinal, VPN: $vpnFinal")
+
+                // If both services are running, navigate
+                if (accessibilityFinal && vpnFinal) {
+                    Log.i(TAG, "Both services confirmed running - navigating to ProtectionActivated")
+
+                    withContext(Dispatchers.Main) {
+                        // Add ProtectionActivated screen if not already there
+                        if (!backStack.contains(Screen.ProtectionActivated)) {
+                            backStack.add(Screen.ProtectionActivated)
+                            Log.d(TAG, "Added ProtectionActivated to backStack")
+                        }
+
+                        // Remove EnableProtection screen from backStack
+                        if (backStack.remove(Screen.EnableProtection)) {
+                            Log.d(TAG, "Removed EnableProtection from backStack")
+                        }
+
+                        // Sync notification state
+                        MyNotificationManager.syncNotificationState(context, true, true)
+
+                        Log.d(TAG, "Updated backStack: $backStack")
+                    }
+                } else {
+                    Log.w(TAG, "Services failed to start - Accessibility: $accessibilityFinal, VPN: $vpnFinal")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error in checkServicesAndNavigate: ${e.message}", e)
+            }
+        }
+    }
+
 
 
     fun refreshPermissionState() {
@@ -165,6 +254,26 @@ class AppViewModel(
             else -> PermissionState.Granted
         }
 
+    }
+
+    /**
+     * Checks only non-critical permissions (Notification and Overlay)
+     * that should be requested BEFORE showing the EnableProtectionBottomSheet.
+     *
+     * Critical permissions (VPN, Accessibility, Admin) are requested IN the bottom sheet.
+     *
+     * @return The missing permission state, or null if all non-critical permissions are granted
+     */
+    fun checkNonCriticalPermissions(): PermissionState? {
+        // Refresh permission state
+        notificationPermission = context.hasNotificationPermission()
+        overlayPermission = context.hasOverlayPermission()
+
+        return when {
+            !notificationPermission -> PermissionState.Notification
+            !overlayPermission -> PermissionState.Overlay
+            else -> null // All non-critical permissions are granted
+        }
     }
 
 
@@ -266,6 +375,7 @@ class AppViewModel(
         Log.d(TAG, "Accessibility: $accessibilityPermission")
         Log.d(TAG, "VPN: $vpnPermission")
         Log.d(TAG, "Overlay: $overlayPermission")
+        Log.d(TAG, "Admin: $adminPermission")
         Log.d(TAG, "Permission State: $permissionState")
 
         if (permissionState != PermissionState.Granted) {
@@ -277,6 +387,47 @@ class AppViewModel(
 
         Log.i(TAG, "All permissions granted!")
         return true
+    }
+
+    /**
+     * Requests critical permissions needed for protection activation.
+     * This is called from the EnableProtectionBottomSheet when user confirms.
+     *
+     * @param onDialogStateChange Callback to show permission dialog
+     */
+    fun requestCriticalPermissions(
+        onDialogStateChange: (DialogState?) -> Unit
+    ) {
+        // Refresh permission state to get current status
+        refreshPermissionState()
+
+        Log.d(TAG, "=== Requesting Critical Permissions ===")
+        Log.d(TAG, "VPN: $vpnPermission")
+        Log.d(TAG, "Accessibility: $accessibilityPermission")
+        Log.d(TAG, "Admin (if needed): $adminPermission, uninstallAppCheck: $uninstallAppCheck")
+
+        // request Admin permission if uninstall protection is enabled and not granted
+        if (uninstallAppCheck && !adminPermission) {
+            Log.i(TAG, "Requesting Admin permission for uninstall protection")
+            onDialogStateChange(DialogState.Permission(PermissionState.Administrative))
+            return
+        }
+
+        // Request VPN permission second if not granted
+        if (!vpnPermission) {
+            Log.i(TAG, "Requesting VPN permission")
+            onDialogStateChange(DialogState.Permission(PermissionState.Vpn))
+            return
+        }
+
+        // Finally request Accessibility permission if not granted since these will block screens
+        if (!accessibilityPermission) {
+            Log.i(TAG, "Requesting Accessibility permission")
+            onDialogStateChange(DialogState.Permission(PermissionState.Accessibility))
+            return
+        }
+
+        Log.i(TAG, "All critical permissions granted!")
     }
 
     /**
@@ -308,7 +459,7 @@ class AppViewModel(
                             Log.d(TAG, "Accessibility Service start initiated")
                         }.join()
                         // Wait for accessibility service to fully initialize
-                        kotlinx.coroutines.delay(1500)
+                        delay(1500)
                         Log.d(TAG, "Accessibility Service initialized, ready to start VPN")
                     } catch (e: Exception) {
                         Log.e(TAG, "Error starting Accessibility Service: ${e.message}", e)
@@ -325,7 +476,7 @@ class AppViewModel(
                             Log.d(TAG, "VPN Service start initiated")
                         }.join()
                         // Wait for VPN service to fully initialize
-                        kotlinx.coroutines.delay(1500)
+                        delay(1500)
                         Log.d(TAG, "VPN Service initialized")
                     } catch (e: Exception) {
                         Log.e(TAG, "Error starting VPN Service: ${e.message}", e)
@@ -335,7 +486,7 @@ class AppViewModel(
 
                 // Wait longer for both services to fully start and initialize
                 Log.d(TAG, "Waiting for all services to fully initialize...")
-                kotlinx.coroutines.delay(1000)
+                delay(1000)
 
                 val accessibilityAfterStart = isServiceRunning(context, MyAccessibilityService::class.java)
                 val vpnAfterStart = isServiceRunning(context, MyVpnService::class.java)
@@ -398,28 +549,4 @@ class AppViewModel(
         }
     }
 
-    /**
-     * Combined function that checks permissions and activates protection.
-     * Uses checkAllPermissions() and activateProtection() internally.
-     * Kept for backward compatibility.
-     *
-     * @param backStack The navigation back stack to update
-     * @param onDialogStateChange Callback to show permission dialog if needed
-     */
-    fun checkPermissionsAndActivateProtection(
-        backStack: MutableList<Screen>,
-        onDialogStateChange: (DialogState?) -> Unit
-    ) {
-        // Check permissions first
-        if (checkAllPermissions(onDialogStateChange)) {
-            // If all permissions granted, activate protection
-            activateProtection(backStack)
-        } else {
-            // Permissions missing, ensure we're on EnableProtection screen
-            if (!backStack.contains(Screen.EnableProtection)) {
-                backStack.add(Screen.EnableProtection)
-            }
-            backStack.remove(Screen.ProtectionActivated)
-        }
-    }
 }
