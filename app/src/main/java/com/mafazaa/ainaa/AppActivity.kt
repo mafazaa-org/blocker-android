@@ -68,15 +68,7 @@ class AppActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Apply system locale and layout direction (supports both RTL and LTR)
-        val isRtl = LocaleHelper.isRtl(this)
-        val layoutDirection = if (isRtl) {
-            ViewCompat.LAYOUT_DIRECTION_RTL
-        } else {
-            ViewCompat.LAYOUT_DIRECTION_LTR
-        }
-        setLayoutDirection(window.decorView, layoutDirection)
-
+        setLayoutDirection(window.decorView, ViewCompat.LAYOUT_DIRECTION_RTL)
         enableEdgeToEdge()
         val splashscreen = installSplashScreen()
         var keepSplashScreen = true
@@ -121,12 +113,7 @@ class AppActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Refresh permission state to detect any changes
         viewModel.refreshPermissionState()
-
-        // Check if services are running and navigate to ProtectionActivated if ready
-        // This handles the case when user returns after granting permissions
-        viewModel.checkServicesAndNavigate(viewModel.backStack)
     }
 
 
