@@ -148,15 +148,7 @@
     <string name="donation_amount_placeholder">المبلغ بالجنية المصري</string>
     <string name="select_payment_method_text">طريقة الدفع</string>
     <string name="vodafon_text">فودافون كاش</string>
-    <string name="add_keyword_hint">"                 "</string>
-    <string name="no_keywords_text">"             "</string>
-    <string name="confirm_delete_keyword">"                      "</string>
-    <string name="delete_keyword_text">"                              "</string>
-    <string name="add_keyword">"                     "</string>
-    <string name="blocked_word_detected_text">"              "</string>
-    <string name="block_word">"                           "</string>
-    <string name="stop_blocking">"               "</string>
-    <string name="start_blocking">"                    "</string>
+    <string name="add_keyword_hint">" إدارة الكلمات"</string>
     <string name="test_protection_text">لإختبار الحماية،\nتأكد من أن تحتوي الصفحة الوهمية على ما يشبه هذه الصوره</string>
     <string name="enable_protection_lvl_high_text">تفعيل الحماية العالية</string>
     <string name="enable_protection_lvl_low_text">تفعيل الحماية المنخفضة</string>
@@ -164,5 +156,15 @@
     <string name="uninstall_protection_description">في حال رغبتك بازالة التطبيق مستقبلا، سيتعين عليك التواصل مع خدمة العملاء و اتباع اجراءات التحقق و الفك الخاصة بهم.لذلك، فان موافقتك على تفعيل الحماية تعتبر موافقة صريحة منك على تفعيل خاصية عدم الحذف و الإلتزام بجميع قيود الحماية المترتبة عليها.</string>
     <string name="confirm_protection_text">هل أنت متأكد أنك لا تريد خاصية عدم حذف التطبيق؟</string>
     <string name="confirm_protection_description">في لحظات الضعف، تكون قراراتنا غير صائبة. هذا الإعداد موجود عندما تضعف الإراده. الأفضل أن تأخذ وقتاً للتفكير قبل الموافقة.</string>
-
+    <string name="manage_keywords_text">إدارة الكلمات المحظورة</string>
+    <string name="no_keywords_text">لم يتم إضافة كلمات بعد</string>
+    <string name="confirm_delete_keyword">هل أنت متأكد من حذف هذه الكلمة؟</string>
+    <string name="delete_keyword_text">حذف الكلمة</string>
+    <string name="add_keyword">إضافة كلمة</string>
+    <string name="blocked_word_detected_text">تم رصد كلمة محظورة</string>
+    <string name="block_word">حظر الكلمة</string>
+    <string name="stop_blocking">إيقاف الحظر</string>
+    <string name="start_blocking">تفعيل الحظر</string>
+    <string name="next_text">التالي</string>
+    <string name="previous_text">تراجع</string>
 </resources>

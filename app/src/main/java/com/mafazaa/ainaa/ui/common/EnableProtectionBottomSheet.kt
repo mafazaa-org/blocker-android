@@ -189,8 +189,8 @@ private fun SheetNavButtons(
     onContinue: () -> Unit = {},
     onBack: () -> Unit = {},
     sheetContentState: SheetContentState = SheetContentState.EnableProtection,
-    primaryText: String = "التالي",
-    tertiaryText: String = "تراجع"
+    primaryText: String = stringResource(R.string.next_text),
+    tertiaryText: String = stringResource(R.string.previous_text)
 ) {
     var cooldown by remember(sheetContentState) {
         mutableIntStateOf(

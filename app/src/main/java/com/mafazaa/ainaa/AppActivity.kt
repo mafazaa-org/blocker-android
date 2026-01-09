@@ -68,7 +68,15 @@ class AppActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setLayoutDirection(window.decorView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        // Apply system locale and layout direction (supports both RTL and LTR)
+        val isRtl = LocaleHelper.isRtl(this)
+        val layoutDirection = if (isRtl) {
+            ViewCompat.LAYOUT_DIRECTION_RTL
+        } else {
+            ViewCompat.LAYOUT_DIRECTION_LTR
+        }
+        setLayoutDirection(window.decorView, layoutDirection)
+
         enableEdgeToEdge()
         val splashscreen = installSplashScreen()
         var keepSplashScreen = true
@@ -87,7 +95,14 @@ class AppActivity : ComponentActivity() {
 
 
         setContent {
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            // Use adaptive layout direction based on system locale
+            val composeLayoutDirection = if (isRtl) {
+                LayoutDirection.Rtl
+            } else {
+                LayoutDirection.Ltr
+            }
+
+            CompositionLocalProvider(LocalLayoutDirection provides composeLayoutDirection) {
                 AinaaTheme {
                     MainRoot(
                         viewModel = viewModel,
@@ -149,7 +164,8 @@ class AppActivity : ComponentActivity() {
     }
 
     override fun attachBaseContext(newBase: Context) {
-        val context = LocaleHelper.forceArabicLocale(newBase)
+        // Apply system locale (supports both Arabic and English)
+        val context = LocaleHelper.applySystemLocale(newBase)
         super.attachBaseContext(context)
     }
 }
